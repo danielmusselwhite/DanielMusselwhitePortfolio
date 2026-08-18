@@ -21,8 +21,7 @@
     "Azure Blob Storage"
   ],
   "featured": true,
-  "order": 1,
+  "order": 2,
   "github": "https://github.com/danielmusselwhite/DotNote",
-  "demo": "https://www.youtube.com/watch?v=WZyvW5tASI8",
-  "coverImage": "cover.png"
+  "demo": "https://www.youtube.com/watch?v=WZyvW5tASI8"
 }

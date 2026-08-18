@@ -1,0 +1,28 @@
+{
+  "title": "Windows Folder Customizer",
+  "shortDescription": "Windows Folder Customizer is a WPF desktop application for designing and applying custom Windows folder icons. Users can select a folder, choose a base folder style, recolour it, add custom imagery, and apply the finished design directly through Windows Explorer.",
+  "overview": "A Windows desktop utility that provides a visual editor for creating personalised folder icons and automatically handles the image rendering, icon conversion, and Windows shell configuration required to apply them.",
+  "problem": "Customising Windows folder icons normally requires manually creating an ICO file, placing it alongside the folder, configuring desktop.ini correctly, and setting the appropriate Windows file attributes. I wanted to make that process visual and accessible while also exploring WPF graphics, image manipulation, and lower-level Windows shell behaviour.",
+  "solution": "I built a WPF application with an interactive icon editor where users can select a target folder, choose between different base folder designs, recolour the folder, and overlay their own images. The application performs pixel-level colour transformation using a WriteableBitmap, renders the completed WPF canvas into an image, converts the result into an ICO file, and automatically configures the folder's desktop.ini and Windows file attributes so Explorer uses the generated icon.",
+  "outcome": "The project turns a normally manual Windows customisation process into a simple graphical workflow while demonstrating image processing, WPF rendering, filesystem manipulation, and integration with Windows Explorer.",
+  "highlights": [
+    "Built an interactive WPF editor for composing custom folder icons from base designs and user-supplied images",
+    "Implemented pixel-level image recolouring using WriteableBitmap and direct bitmap buffer manipulation",
+    "Rendered dynamic WPF canvas content into PNG images and converted the result into Windows ICO files",
+    "Automated Windows folder icon configuration by generating desktop.ini and managing system and hidden file attributes",
+    "Integrated directly with Windows Explorer so customised folders are immediately surfaced after applying changes"
+  ],
+  "technologies": [
+    "C#",
+    "WPF",
+    ".NET",
+    "XAML",
+    "Windows Shell",
+    "Image Processing",
+    "File System APIs"
+  ],
+  "featured": true,
+  "order": 3,
+  "github": "https://github.com/danielmusselwhite/FolderCustomizer",
+  "demo": "https://www.youtube.com/watch?v=41PahQDnqHk"
+}
