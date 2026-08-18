@@ -1,0 +1,31 @@
+{
+  "title": "Commerce Fabric",
+  "shortDescription": "CommerceFabric is a portfolio project exploring distributed systems and microservice architecture using a production-inspired eCommerce domain. The goal is not just to build an online store, but to demonstrate architectural decision-making around service boundaries, data consistency, resilience, observability, and scalability.",
+  "overview": "A production-inspired microservices e-commerce platform designed to showcase service isolation, scalability, observability, and resilient event-driven integrations across distributed systems.",
+  "problem": "I wanted to model a realistic e-commerce system without creating tightly coupled services, while still proving how authentication, data ownership, caching, and asynchronous events work in a modern platform.",
+  "solution": "I split the platform into independent services for users, products, and orders, connected through REST APIs, message-based events, and Azure-native infrastructure. The frontend was delivered in Angular with authentication and routing handled through Azure API Management and Microsoft Entra ID.",
+  "outcome": "The project demonstrates a practical architecture for fault tolerance, asynchronous communication, and scalable service boundaries in a cloud-native environment.",
+  "highlights": [
+    "Built a distributed .NET microservice architecture with independent data ownership",
+    "Used Azure Service Bus and RabbitMQ to decouple domain events and improve resilience",
+    "Layered Redis caching and retry policies to reduce load and handle transient failures",
+    "Designed a production-inspired deployment model on AKS with API gateway and identity controls"
+  ],
+  "technologies": [
+    "ASP.NET",
+    "C#",
+    "Azure",
+    "Kubernetes",
+    "RabbitMQ",
+    "RedisCache",
+    "AzureServiceBus",
+    "SQL",
+    "Angular",
+    "TypeScript"
+  ],
+  "featured": true,
+  "order": 1,
+  "github": "https://github.com/CommerceFabric",
+  "demo": "https://www.youtube.com/watch?v=e2fCbs92Rsk",
+  "coverImage": "cover.png"
+}

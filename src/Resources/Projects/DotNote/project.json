@@ -1,0 +1,28 @@
+{
+  "title": "DotNote",
+  "shortDescription": "DotNote is a desktop note-taking application inspired by Evernote, built to explore MVVM architecture, cloud-backed data persistence, rich text editing, and secure per-user data isolation. The application combines Firebase services with Azure storage and speech capabilities to provide a practical, cloud-connected note-taking experience.",
+  "overview": "A cloud-connected desktop note-taking application featuring rich text editing, notebooks, user profiles, file storage, and speech-to-text, built with MVVM architecture and a hybrid Firebase and Azure backend.",
+  "problem": "I wanted to build a desktop note-taking application that could securely persist user content in the cloud while supporting rich text formatting, file storage, and clear separation between presentation, application logic, and external services.",
+  "solution": "I designed the application around MVVM, separating the UI, domain logic, and service integrations. Firebase Authentication and Realtime Database handle identity and structured application data, while Azure Blob Storage stores user files and profile images. I also integrated Azure Speech Services to provide real-time speech-to-text dictation within the note editor.",
+  "outcome": "The project demonstrates a practical desktop application architecture that combines secure user-specific cloud storage, rich text editing, and multiple managed cloud services while maintaining clear separation of concerns.",
+  "highlights": [
+    "Implemented MVVM architecture with clear separation between UI, domain logic, and external services",
+    "Designed a hybrid cloud storage model using Firebase Realtime Database and Azure Blob Storage",
+    "Built a rich text editor with font, size, colour, styling, and formatting persistence",
+    "Integrated Azure Speech Services for real-time speech-to-text dictation",
+    "Enforced per-user data isolation through Firebase authentication rules and structured database paths"
+  ],
+  "technologies": [
+    "C#",
+    "WPF",
+    "MVVM",
+    "Firebase",
+    "Azure",
+    "Azure Blob Storage"
+  ],
+  "featured": true,
+  "order": 1,
+  "github": "https://github.com/danielmusselwhite/DotNote",
+  "demo": "https://www.youtube.com/watch?v=WZyvW5tASI8",
+  "coverImage": "cover.png"
+}

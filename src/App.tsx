@@ -1,122 +1,203 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import "./App.css";
+
+import { useEffect, useRef } from "react";
+
+import About from "./Components/About/About";
+import Contact from "./Components/Contact/Contact";
+import Experience from "./Components/Experience/Experience";
+import Hero from "./Components/Hero/Hero";
+import Navbar from "./Components/Navbar/Navbar";
+import Projects from "./Components/Projects/Projects";
+import Skills from "./Components/Skills/Skills";
+
+type Particle = {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  radius: number;
+  alpha: number;
+};
 
 function App() {
-  const [count, setCount] = useState(0)
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const pointerRef = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+  const glowRef = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+
+  useEffect(() => {
+    const handlePointerMove = (event: PointerEvent) => {
+      pointerRef.current.x = event.clientX;
+      pointerRef.current.y = event.clientY;
+    };
+
+    const handlePointerLeave = () => {
+      pointerRef.current.x = window.innerWidth / 2;
+      pointerRef.current.y = window.innerHeight / 2;
+    };
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerleave", handlePointerLeave);
+
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerleave", handlePointerLeave);
+    };
+  }, []);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) {
+      return undefined;
+    }
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      return undefined;
+    }
+
+    let animationFrameId = 0;
+    let particles: Particle[] = [];
+
+    const setupParticles = () => {
+      particles = Array.from({ length: 900 }, () => ({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        vx: (Math.random() - 0.5) * 0.75,
+        vy: (Math.random() - 0.5) * 0.75,
+        radius: Math.random() * 2.5 + 1.2,
+        alpha: Math.random() * 0.8 + 0.2,
+      }));
+    };
+
+    const resizeCanvas = () => {
+      const ratio = window.devicePixelRatio || 1;
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      canvas.width = width * ratio;
+      canvas.height = height * ratio;
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+      glowRef.current.x = pointerRef.current.x;
+      glowRef.current.y = pointerRef.current.y;
+      setupParticles();
+    };
+
+    const draw = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      glowRef.current.x += (pointerRef.current.x - glowRef.current.x) * 0.08;
+      glowRef.current.y += (pointerRef.current.y - glowRef.current.y) * 0.08;
+
+      document.documentElement.style.setProperty("--pointer-x", `${glowRef.current.x}px`);
+      document.documentElement.style.setProperty("--pointer-y", `${glowRef.current.y}px`);
+
+      ctx.clearRect(0, 0, width, height);
+
+      for (let i = 0; i < particles.length; i += 1) {
+        const particle = particles[i];
+
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+
+        if (particle.x < 0 || particle.x > width) particle.vx *= -1;
+        if (particle.y < 0 || particle.y > height) particle.vy *= -1;
+
+        const dx = particle.x - glowRef.current.x;
+        const dy = particle.y - glowRef.current.y;
+        const distance = Math.hypot(dx, dy) || 1;
+
+        if (distance < 180) {
+          particle.x += (dx / distance) * 0.7;
+          particle.y += (dy / distance) * 0.7;
+        }
+
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(110, 231, 209, ${particle.alpha})`;
+        ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      for (let i = 0; i < particles.length; i += 1) {
+        for (let j = i + 1; j < particles.length; j += 1) {
+          const a = particles[i];
+          const b = particles[j];
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const distance = Math.hypot(dx, dy);
+
+          if (distance < 110) {
+            const opacity = (1 - distance / 110) * 0.45;
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(110, 231, 209, ${opacity})`;
+            ctx.lineWidth = 1;
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      const glowSize = 140;
+      const glowGradient = ctx.createRadialGradient(
+        glowRef.current.x,
+        glowRef.current.y,
+        0,
+        glowRef.current.x,
+        glowRef.current.y,
+        glowSize,
+      );
+      glowGradient.addColorStop(0, "rgba(110, 231, 209, 0.22)");
+      glowGradient.addColorStop(0.5, "rgba(110, 231, 209, 0.08)");
+      glowGradient.addColorStop(1, "rgba(110, 231, 209, 0)");
+
+      ctx.beginPath();
+      ctx.fillStyle = glowGradient;
+      ctx.arc(glowRef.current.x, glowRef.current.y, glowSize, 0, Math.PI * 2);
+      ctx.fill();
+
+      animationFrameId = window.requestAnimationFrame(draw);
+    };
+
+    resizeCanvas();
+    draw();
+
+    window.addEventListener("resize", resizeCanvas);
+
+    return () => {
+      window.cancelAnimationFrame(animationFrameId);
+      window.removeEventListener("resize", resizeCanvas);
+    };
+  }, []);
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="site-shell">
+      <div className="background-grid" aria-hidden="true" />
+      <div className="background-glow background-glow--one" aria-hidden="true" />
+      <div className="background-glow background-glow--two" aria-hidden="true" />
+      <canvas ref={canvasRef} className="particle-canvas" aria-hidden="true" />
 
-      <div className="ticks"></div>
+      <div className="site-content">
+        <Navbar />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+        <main>
+          <Hero />
+          <About />
+          <Skills />
+          <Projects />
+          <Experience />
+          <Contact />
+        </main>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        <footer className="footer">
+          <p>© {new Date().getFullYear()} Daniel Musselwhite</p>
+        </footer>
+      </div>
+    </div>
+  );
 }
 
-export default App
+export default App;
