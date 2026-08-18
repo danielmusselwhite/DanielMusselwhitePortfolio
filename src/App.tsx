@@ -1,9 +1,10 @@
 import "./App.css";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import About from "./Components/About/About";
 import Contact from "./Components/Contact/Contact";
+import Education from "./Components/Education/Education";
 import Experience from "./Components/Experience/Experience";
 import Hero from "./Components/Hero/Hero";
 import Navbar from "./Components/Navbar/Navbar";
@@ -20,9 +21,18 @@ type Particle = {
 };
 
 function App() {
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    const savedTheme = window.localStorage.getItem("portfolio-theme");
+    return savedTheme === "light" ? "light" : "dark";
+  });
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const pointerRef = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
   const glowRef = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+
+  useEffect(() => {
+    window.localStorage.setItem("portfolio-theme", theme);
+    document.documentElement.style.colorScheme = theme;
+  }, [theme]);
 
   useEffect(() => {
     const handlePointerMove = (event: PointerEvent) => {
@@ -174,14 +184,19 @@ function App() {
   }, []);
 
   return (
-    <div className="site-shell">
+    <div className={`site-shell site-shell--${theme}`}>
       <div className="background-grid" aria-hidden="true" />
       <div className="background-glow background-glow--one" aria-hidden="true" />
       <div className="background-glow background-glow--two" aria-hidden="true" />
       <canvas ref={canvasRef} className="particle-canvas" aria-hidden="true" />
 
       <div className="site-content">
-        <Navbar />
+        <Navbar
+          theme={theme}
+          onToggleTheme={() => {
+            setTheme((current) => (current === "dark" ? "light" : "dark"));
+          }}
+        />
 
         <main>
           <Hero />
@@ -189,6 +204,7 @@ function App() {
           <Skills />
           <Projects />
           <Experience />
+          <Education />
           <Contact />
         </main>
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 import type { Project } from "../../Types/Project";
 
@@ -12,7 +13,7 @@ export default function ProjectCard({
     index,
 }: ProjectCardProps) {
     const [activeImageIndex, setActiveImageIndex] = useState(0);
-    const [activeDetailIndex, setActiveDetailIndex] = useState(0);
+    const [isDetailsOpen, setIsDetailsOpen] = useState(false);
     const slides =
         project.images.length > 0
             ? project.images
@@ -60,28 +61,43 @@ export default function ProjectCard({
             return;
         }
 
-        const interval = window.setInterval(() => {
-            setActiveImageIndex((current) =>
-                current === slides.length - 1 ? 0 : current + 1,
-            );
-        }, 4000);
+        let interval: number | undefined;
+        const startAutoplay = () => {
+            interval = window.setInterval(() => {
+                setActiveImageIndex((current) =>
+                    current === slides.length - 1 ? 0 : current + 1,
+                );
+            }, 4000);
+        };
+        const initialDelay = window.setTimeout(startAutoplay, 4000 + index * 900);
 
-        return () => window.clearInterval(interval);
-    }, [slides.length]);
+        return () => {
+            window.clearTimeout(initialDelay);
+            if (interval !== undefined) {
+                window.clearInterval(interval);
+            }
+        };
+    }, [index, slides.length]);
 
-    const previousDetail = () => {
-        setActiveDetailIndex((current) =>
-            current === 0 ? detailSections.length - 1 : current - 1,
-        );
-    };
+    useEffect(() => {
+        if (!isDetailsOpen) {
+            return;
+        }
 
-    const nextDetail = () => {
-        setActiveDetailIndex((current) =>
-            current === detailSections.length - 1 ? 0 : current + 1,
-        );
-    };
+        const closeOnEscape = (event: KeyboardEvent) => {
+            if (event.key === "Escape") {
+                setIsDetailsOpen(false);
+            }
+        };
 
-    const activeDetail = detailSections[activeDetailIndex] ?? detailSections[0];
+        document.addEventListener("keydown", closeOnEscape);
+        document.body.classList.add("modal-open");
+
+        return () => {
+            document.removeEventListener("keydown", closeOnEscape);
+            document.body.classList.remove("modal-open");
+        };
+    }, [isDetailsOpen]);
 
     return (
         <article className={cardClassName}>
@@ -94,6 +110,10 @@ export default function ProjectCard({
 
                 <span className="project-window__path">
                     ~/projects/{project.slug}
+                </span>
+
+                <span className="project-window__state">
+                    {project.featured ? "featured" : "project"}
                 </span>
             </div>
 
@@ -109,6 +129,7 @@ export default function ProjectCard({
                                 : "project-window__image"
                         }
                         aria-hidden={slideIndex !== activeImageIndex}
+                        draggable={false}
                     />
                 ))}
 
@@ -162,43 +183,18 @@ export default function ProjectCard({
                     <h3>{project.title}</h3>
                 </div>
 
-                {detailSections.length > 0 && activeDetail && (
-                    <div className="project-window__detail-panel">
-                        <div className="project-window__detail-header">
-                            <span>{activeDetail.label}</span>
-                            <div className="project-window__detail-nav">
-                                <button
-                                    type="button"
-                                    onClick={previousDetail}
-                                    aria-label="Previous detail"
-                                >
-                                    ←
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={nextDetail}
-                                    aria-label="Next detail"
-                                >
-                                    →
-                                </button>
-                            </div>
-                        </div>
+                <p className="project-window__summary">
+                    {project.overview ?? project.shortDescription}
+                </p>
 
-                        <div className="project-window__detail-content">
-                            {typeof activeDetail.value === "string" ? (
-                                <p className="project-window__summary">
-                                    {activeDetail.value}
-                                </p>
-                            ) : (
-                                <ul className="project-window__highlights">
-                                    {activeDetail.value.map((highlight: string) => (
-                                        <li key={highlight}>{highlight}</li>
-                                    ))}
-                                </ul>
-                            )}
-                        </div>
-                    </div>
-                )}
+                <button
+                    type="button"
+                    className="project-window__details-trigger"
+                    onClick={() => setIsDetailsOpen(true)}
+                >
+                    <span>View project details</span>
+                    <span aria-hidden="true">↗</span>
+                </button>
 
                 <div className="project-card__technologies">
                     {project.technologies.map((technology) => (
@@ -230,6 +226,85 @@ export default function ProjectCard({
                     )}
                 </div>
             </div>
+
+            {isDetailsOpen &&
+                createPortal(
+                    <div
+                        className="project-modal"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby={`${project.slug}-details-title`}
+                        onClick={() => setIsDetailsOpen(false)}
+                    >
+                        <div
+                            className="project-modal__content"
+                            onClick={(event) => event.stopPropagation()}
+                        >
+                            <div className="project-modal__header">
+                                <div>
+                                    <p className="project-modal__eyebrow">
+                                        ~/projects/{project.slug}
+                                    </p>
+                                    <h4 id={`${project.slug}-details-title`}>
+                                        {project.title}
+                                    </h4>
+                                </div>
+                                <button
+                                    type="button"
+                                    className="project-modal__close"
+                                    onClick={() => setIsDetailsOpen(false)}
+                                    aria-label="Close project details"
+                                >
+                                    ×
+                                </button>
+                            </div>
+
+                            <div className="project-modal__body">
+                                {detailSections.map((detail) => (
+                                    <section
+                                        key={detail.key}
+                                        className="project-modal__section"
+                                    >
+                                        <h5>{detail.label}</h5>
+                                        {typeof detail.value === "string" ? (
+                                            <p>{detail.value}</p>
+                                        ) : (
+                                            <ul>
+                                                {detail.value.map((highlight: string) => (
+                                                    <li key={highlight}>{highlight}</li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </section>
+                                ))}
+                            </div>
+
+                            <div className="project-modal__footer">
+                                <div className="project-card__technologies">
+                                    {project.technologies.map((technology) => (
+                                        <span key={technology} className="technology">
+                                            {technology}
+                                        </span>
+                                    ))}
+                                </div>
+                                <div className="project-card__actions">
+                                    {project.demo && (
+                                        <a href={project.demo} target="_blank" rel="noreferrer">
+                                            Live Demo
+                                        </a>
+                                    )}
+                                    {project.github && (
+                                        <a href={project.github} target="_blank" rel="noreferrer">
+                                            GitHub
+                                        </a>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>,
+                    document.body,
+                )}
+
         </article>
     );
 }

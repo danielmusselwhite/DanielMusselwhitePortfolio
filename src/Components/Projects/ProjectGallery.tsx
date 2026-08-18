@@ -31,7 +31,9 @@ export default function ProjectGallery({
         }
 
         const interval = window.setInterval(() => {
-            nextImage();
+            setCurrentIndex((current) =>
+                current === images.length - 1 ? 0 : current + 1,
+            );
         }, 4000);
 
         return () => window.clearInterval(interval);
