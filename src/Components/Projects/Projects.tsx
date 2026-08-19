@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { loadProjects } from "../../Utils/loadProjects";
 import ProjectCard from "./ProjectCard";
@@ -7,13 +7,46 @@ const projects = loadProjects();
 
 export default function Projects() {
     const [closedSlugs, setClosedSlugs] = useState<string[]>([]);
+    const [showTrafficHint, setShowTrafficHint] = useState(false);
+    const sectionRef = useRef<HTMLElement | null>(null);
     const visibleProjects = projects.filter(
         (project) => !closedSlugs.includes(project.slug),
     );
     const allClosed = projects.length > 0 && visibleProjects.length === 0;
 
+    useEffect(() => {
+        const sectionEl = sectionRef.current;
+        if (!sectionEl) {
+            return undefined;
+        }
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setShowTrafficHint(true);
+                    observer.disconnect();
+                }
+            },
+            { threshold: 0.35 },
+        );
+
+        observer.observe(sectionEl);
+
+        return () => observer.disconnect();
+    }, []);
+
+    useEffect(() => {
+        if (!showTrafficHint) {
+            return undefined;
+        }
+
+        const dismissTimeout = window.setTimeout(() => setShowTrafficHint(false), 6000);
+
+        return () => window.clearTimeout(dismissTimeout);
+    }, [showTrafficHint]);
+
     return (
-        <section id="projects" className="section">
+        <section id="projects" className="section" ref={sectionRef}>
             <div className="section__content">
                 <div className="projects__heading">
                     <div>
@@ -55,6 +88,8 @@ export default function Projects() {
                                 onClose={() =>
                                     setClosedSlugs((current) => [...current, project.slug])
                                 }
+                                showTrafficHint={index === 0 && showTrafficHint}
+                                onDismissTrafficHint={() => setShowTrafficHint(false)}
                             />
                         ))}
                     </div>

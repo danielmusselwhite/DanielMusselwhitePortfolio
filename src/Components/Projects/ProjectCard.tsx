@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 import type { Project } from "../../Types/Project";
 
@@ -6,18 +7,24 @@ interface ProjectCardProps {
     project: Project;
     index: number;
     onClose: () => void;
+    showTrafficHint?: boolean;
+    onDismissTrafficHint?: () => void;
 }
 
 export default function ProjectCard({
     project,
     index,
     onClose,
+    showTrafficHint = false,
+    onDismissTrafficHint,
 }: ProjectCardProps) {
     const [activeImageIndex, setActiveImageIndex] = useState(0);
     const [viewMode, setViewMode] = useState<"minimized" | "normal" | "expanded">("minimized");
     const [isPathOverflowing, setIsPathOverflowing] = useState(false);
+    const [hintPosition, setHintPosition] = useState<{ top: number; left: number } | null>(null);
     const pathRef = useRef<HTMLSpanElement>(null);
     const pathTextRef = useRef<HTMLSpanElement>(null);
+    const trafficRef = useRef<HTMLDivElement>(null);
     const slides =
         project.images.length > 0
             ? project.images
@@ -109,39 +116,86 @@ export default function ProjectCard({
         return () => resizeObserver.disconnect();
     }, [project.slug]);
 
+    useEffect(() => {
+        if (!showTrafficHint) {
+            setHintPosition(null);
+            return undefined;
+        }
+
+        const updatePosition = () => {
+            const rect = trafficRef.current?.getBoundingClientRect();
+            if (rect) {
+                setHintPosition({ top: rect.bottom + 12, left: rect.left });
+            }
+        };
+
+        updatePosition();
+        window.addEventListener("scroll", updatePosition, true);
+        window.addEventListener("resize", updatePosition);
+
+        return () => {
+            window.removeEventListener("scroll", updatePosition, true);
+            window.removeEventListener("resize", updatePosition);
+        };
+    }, [showTrafficHint]);
+
     return (
         <article className={cardClassName}>
             <div className="project-window__chrome">
-                <div className="project-window__traffic">
+                <div className="project-window__traffic" ref={trafficRef}>
                     <button
                         type="button"
                         className="traffic-dot traffic-dot--red"
-                        onClick={onClose}
+                        onClick={() => {
+                            onClose();
+                            onDismissTrafficHint?.();
+                        }}
                         aria-label="Close project window"
                     />
                     <button
                         type="button"
                         className="traffic-dot traffic-dot--yellow"
-                        onClick={() =>
+                        onClick={() => {
                             setViewMode((current) =>
                                 current === "minimized" ? "normal" : "minimized",
-                            )
-                        }
+                            );
+                            onDismissTrafficHint?.();
+                        }}
                         aria-label={viewMode === "minimized" ? "Restore project preview" : "Minimize project window"}
                         aria-pressed={viewMode === "minimized"}
                     />
                     <button
                         type="button"
                         className="traffic-dot traffic-dot--green"
-                        onClick={() =>
+                        onClick={() => {
                             setViewMode((current) =>
                                 current === "expanded" ? "normal" : "expanded",
-                            )
-                        }
+                            );
+                            onDismissTrafficHint?.();
+                        }}
                         aria-label={viewMode === "expanded" ? "Collapse project details" : "Expand project details"}
                         aria-pressed={viewMode === "expanded"}
                     />
                 </div>
+
+                {showTrafficHint &&
+                    hintPosition &&
+                    createPortal(
+                        <div
+                            className="traffic-hint"
+                            role="status"
+                            style={{ top: hintPosition.top, left: hintPosition.left }}
+                        >
+                            <span className="traffic-hint__cursor" aria-hidden="true">
+                                <span className="traffic-hint__cursor-glyph">🖱️</span>
+                                <span className="traffic-hint__cursor-ripple" />
+                            </span>
+                            <p className="traffic-hint__text">
+                                Click these to close, minimize, or maximize this project
+                            </p>
+                        </div>,
+                        document.body,
+                    )}
 
                 <span className="project-window__path" ref={pathRef}>
                     <span
