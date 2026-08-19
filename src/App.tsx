@@ -28,10 +28,12 @@ function App() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const pointerRef = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
   const glowRef = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+  const themeRef = useRef(theme);
 
   useEffect(() => {
     window.localStorage.setItem("portfolio-theme", theme);
     document.documentElement.style.colorScheme = theme;
+    themeRef.current = theme;
   }, [theme]);
 
   useEffect(() => {
@@ -69,7 +71,11 @@ function App() {
     let particles: Particle[] = [];
 
     const setupParticles = () => {
-      particles = Array.from({ length: 900 }, () => ({
+      // Scale particle count with viewport area so mobile screens render far fewer.
+      const area = window.innerWidth * window.innerHeight;
+      const particleCount = Math.max(120, Math.min(900, Math.round(area / 18000)));
+
+      particles = Array.from({ length: particleCount }, () => ({
         x: Math.random() * window.innerWidth,
         y: Math.random() * window.innerHeight,
         vx: (Math.random() - 0.5) * 0.75,
@@ -107,6 +113,9 @@ function App() {
 
       ctx.clearRect(0, 0, width, height);
 
+      // Light mode inverts the palette: dark particles/accents on a light backdrop.
+      const particleRgb = themeRef.current === "light" ? "15, 135, 113" : "110, 231, 209";
+
       for (let i = 0; i < particles.length; i += 1) {
         const particle = particles[i];
 
@@ -126,7 +135,7 @@ function App() {
         }
 
         ctx.beginPath();
-        ctx.fillStyle = `rgba(110, 231, 209, ${particle.alpha})`;
+        ctx.fillStyle = `rgba(${particleRgb}, ${particle.alpha})`;
         ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
         ctx.fill();
       }
@@ -142,7 +151,7 @@ function App() {
           if (distance < 110) {
             const opacity = (1 - distance / 110) * 0.45;
             ctx.beginPath();
-            ctx.strokeStyle = `rgba(110, 231, 209, ${opacity})`;
+            ctx.strokeStyle = `rgba(${particleRgb}, ${opacity})`;
             ctx.lineWidth = 1;
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
@@ -160,9 +169,9 @@ function App() {
         glowRef.current.y,
         glowSize,
       );
-      glowGradient.addColorStop(0, "rgba(110, 231, 209, 0.22)");
-      glowGradient.addColorStop(0.5, "rgba(110, 231, 209, 0.08)");
-      glowGradient.addColorStop(1, "rgba(110, 231, 209, 0)");
+      glowGradient.addColorStop(0, `rgba(${particleRgb}, 0.22)`);
+      glowGradient.addColorStop(0.5, `rgba(${particleRgb}, 0.08)`);
+      glowGradient.addColorStop(1, `rgba(${particleRgb}, 0)`);
 
       ctx.beginPath();
       ctx.fillStyle = glowGradient;

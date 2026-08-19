@@ -112,7 +112,7 @@ export default function ProjectCard({
                     ~/projects/{project.slug}
                 </span>
 
-                <span className="project-window__state">
+                <span className="status-label">
                     {project.featured ? "featured" : "project"}
                 </span>
             </div>
@@ -137,7 +137,7 @@ export default function ProjectCard({
                     <>
                         <button
                             type="button"
-                            className="project-window__arrow project-window__arrow--left"
+                            className="icon-btn project-window__arrow project-window__arrow--left"
                             onClick={previousSlide}
                             aria-label="Previous project view"
                         >
@@ -146,7 +146,7 @@ export default function ProjectCard({
 
                         <button
                             type="button"
-                            className="project-window__arrow project-window__arrow--right"
+                            className="icon-btn project-window__arrow project-window__arrow--right"
                             onClick={nextSlide}
                             aria-label="Next project view"
                         >
@@ -251,7 +251,7 @@ export default function ProjectCard({
                                 </div>
                                 <button
                                     type="button"
-                                    className="project-modal__close"
+                                    className="icon-btn project-modal__close"
                                     onClick={() => setIsDetailsOpen(false)}
                                     aria-label="Close project details"
                                 >

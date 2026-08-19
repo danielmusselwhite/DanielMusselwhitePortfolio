@@ -33,7 +33,7 @@ export default function About() {
                         <div className="about__readout-header">
                             <span className="about__status-dot" />
                             <span>developer.profile</span>
-                            <span className="about__readout-status">active</span>
+                            <span className="status-label">active</span>
                         </div>
 
                         <dl className="about__facts">

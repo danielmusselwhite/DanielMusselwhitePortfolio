@@ -25,7 +25,7 @@ export default function Contact() {
                         <div className="contact__panel-header">
                             <span className="contact__status-dot" />
                             <span>communication.channels</span>
-                            <span className="contact__status">open</span>
+                            <span className="status-label">open</span>
                         </div>
 
                         <p className="contact__command">

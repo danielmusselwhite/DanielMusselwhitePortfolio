@@ -76,7 +76,7 @@ export default function ProjectGallery({
 
                 <button
                     type="button"
-                    className="project-gallery__button project-gallery__button--previous"
+                    className="icon-btn project-gallery__button project-gallery__button--previous"
                     onClick={previousImage}
                     aria-label="Previous image"
                 >
@@ -85,7 +85,7 @@ export default function ProjectGallery({
 
                 <button
                     type="button"
-                    className="project-gallery__button project-gallery__button--next"
+                    className="icon-btn project-gallery__button project-gallery__button--next"
                     onClick={nextImage}
                     aria-label="Next image"
                 >
