@@ -20,7 +20,6 @@ export default function ProjectCard({
 }: ProjectCardProps) {
     const [activeImageIndex, setActiveImageIndex] = useState(0);
     const [viewMode, setViewMode] = useState<"minimized" | "normal" | "expanded">("minimized");
-    const [isPathOverflowing, setIsPathOverflowing] = useState(false);
     const [hintPosition, setHintPosition] = useState<{ top: number; left: number } | null>(null);
     const pathRef = useRef<HTMLSpanElement>(null);
     const pathTextRef = useRef<HTMLSpanElement>(null);
@@ -93,28 +92,6 @@ export default function ProjectCard({
             }
         };
     }, [index, slides.length]);
-
-    useEffect(() => {
-        const pathEl = pathRef.current;
-        const textEl = pathTextRef.current;
-
-        if (!pathEl || !textEl) {
-            return undefined;
-        }
-
-        const checkOverflow = () => {
-            setIsPathOverflowing(textEl.scrollWidth > pathEl.clientWidth);
-        };
-
-        checkOverflow();
-
-        // Re-measure as the card's width transition plays out, not just once per render.
-        const resizeObserver = new ResizeObserver(checkOverflow);
-        resizeObserver.observe(pathEl);
-        resizeObserver.observe(textEl);
-
-        return () => resizeObserver.disconnect();
-    }, [project.slug]);
 
     useEffect(() => {
         if (!showTrafficHint) {
@@ -200,7 +177,7 @@ export default function ProjectCard({
                 <span className="project-window__path" ref={pathRef}>
                     <span
                         className={
-                            isPathOverflowing
+                            viewMode === "minimized"
                                 ? "project-window__path-marquee project-window__path-marquee--scrolling"
                                 : "project-window__path-marquee"
                         }
@@ -208,7 +185,7 @@ export default function ProjectCard({
                         <span className="project-window__path-track" ref={pathTextRef}>
                             ~/projects/{project.slug}
                         </span>
-                        {isPathOverflowing && (
+                        {viewMode === "minimized" && (
                             <span className="project-window__path-track" aria-hidden="true">
                                 ~/projects/{project.slug}
                             </span>
