@@ -192,6 +192,35 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    const sections = document.querySelectorAll<HTMLElement>(".section");
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (prefersReducedMotion) {
+      sections.forEach((section) => section.classList.add("section--visible"));
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("section--visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: "0px 0px -60px 0px" },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className={`site-shell site-shell--${theme}`}>
       <div className="background-grid" aria-hidden="true" />

@@ -1765,3 +1765,302 @@
     flex-direction: column;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* general section content */
+.section .section__content > * {
+  opacity: 0;
+  transform: translateY(36px);
+
+  transition:
+    opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.section.section--visible .section__content > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* heading */
+.section.section--visible .projects__heading {
+  transition-delay: 0.05s;
+}
+
+/* don't animate the whole grid */
+.project-terminal-grid {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* animate each project instead */
+.project-terminal-grid > * {
+  opacity: 0;
+  transform: translateY(28px);
+
+  transition:
+    opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.section.section--visible .project-terminal-grid > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section.section--visible .project-terminal-grid > *:nth-child(1) {
+  transition-delay: 0.25s;
+}
+
+.section.section--visible .project-terminal-grid > *:nth-child(2) {
+  transition-delay: 0.4s;
+}
+
+.section.section--visible .project-terminal-grid > *:nth-child(3) {
+  transition-delay: 0.55s;
+}
+
+.section.section--visible .project-terminal-grid > *:nth-child(4) {
+  transition-delay: 0.7s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section .section__content > *,
+  .project-terminal-grid > * {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Initial hidden states */
+.skills__heading,
+.skills__band-heading,
+.skill-group {
+  opacity: 0;
+  transform: translateY(28px);
+
+  transition:
+    opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Reveal once the section becomes visible */
+.section--visible .skills__heading,
+.section--visible .skills__band-heading,
+.section--visible .skill-group {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Main heading first */
+.section--visible .skills__heading {
+  transition-delay: 0.05s;
+}
+
+/* First band heading */
+.section--visible .skills__band:nth-child(1) .skills__band-heading {
+  transition-delay: 0.2s;
+}
+
+/* First row of skill cards */
+.section--visible
+  .skills__band:nth-child(1)
+  .skill-group:nth-child(1) {
+  transition-delay: 0.32s;
+}
+
+.section--visible
+  .skills__band:nth-child(1)
+  .skill-group:nth-child(2) {
+  transition-delay: 0.44s;
+}
+
+.section--visible
+  .skills__band:nth-child(1)
+  .skill-group:nth-child(3) {
+  transition-delay: 0.56s;
+}
+
+/* Second band */
+.section--visible .skills__band:nth-child(2) .skills__band-heading {
+  transition-delay: 0.68s;
+}
+
+.section--visible
+  .skills__band:nth-child(2)
+  .skill-group:nth-child(1) {
+  transition-delay: 0.8s;
+}
+
+.section--visible
+  .skills__band:nth-child(2)
+  .skill-group:nth-child(2) {
+  transition-delay: 0.92s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skills__heading,
+  .skills__band-heading,
+  .skill-group {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Initial states */
+.experience__heading,
+.experience-list .experience {
+  opacity: 0;
+  transform: translateY(28px);
+
+  transition:
+    opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Reveal */
+.section--visible .experience__heading,
+.section--visible .experience-list .experience {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Heading first */
+.section--visible .experience__heading {
+  transition-delay: 0.05s;
+}
+
+/* Then each role */
+.section--visible .experience-list .experience:nth-child(1) {
+  transition-delay: 0.22s;
+}
+
+.section--visible .experience-list .experience:nth-child(2) {
+  transition-delay: 0.38s;
+}
+
+.section--visible .experience-list .experience:nth-child(3) {
+  transition-delay: 0.54s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .experience__heading,
+  .experience-list .experience {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+.education__heading,
+.education-list .education-card {
+  opacity: 0;
+  transform: translateY(28px);
+
+  transition:
+    opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.section--visible .education__heading,
+.section--visible .education-list .education-card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section--visible .education__heading {
+  transition-delay: 0.05s;
+}
+
+.section--visible .education-list .education-card:nth-child(1) {
+  transition-delay: 0.22s;
+}
+
+.section--visible .education-list .education-card:nth-child(2) {
+  transition-delay: 0.38s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .education__heading,
+  .education-list .education-card {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+.contact__copy,
+.contact__panel {
+  opacity: 0;
+  transform: translateY(28px);
+
+  transition:
+    opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.section--visible .contact__copy,
+.section--visible .contact__panel {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section--visible .contact__copy {
+  transition-delay: 0.05s;
+}
+
+.section--visible .contact__panel {
+  transition-delay: 0.25s;
+}
+
+/* Optional: stagger the individual contact links too */
+.contact__panel .contact__links a {
+  opacity: 0;
+  transform: translateY(16px);
+
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.section--visible .contact__panel .contact__links a {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section--visible .contact__panel .contact__links a:nth-child(1) {
+  transition-delay: 0.42s;
+}
+
+.section--visible .contact__panel .contact__links a:nth-child(2) {
+  transition-delay: 0.54s;
+}
+
+.section--visible .contact__panel .contact__links a:nth-child(3) {
+  transition-delay: 0.66s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact__copy,
+  .contact__panel,
+  .contact__panel .contact__links a {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
