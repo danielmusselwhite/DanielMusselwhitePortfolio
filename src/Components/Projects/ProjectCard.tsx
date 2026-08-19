@@ -1,19 +1,23 @@
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
+import { useEffect, useRef, useState } from "react";
 
 import type { Project } from "../../Types/Project";
 
 interface ProjectCardProps {
     project: Project;
     index: number;
+    onClose: () => void;
 }
 
 export default function ProjectCard({
     project,
     index,
+    onClose,
 }: ProjectCardProps) {
     const [activeImageIndex, setActiveImageIndex] = useState(0);
-    const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+    const [viewMode, setViewMode] = useState<"minimized" | "normal" | "expanded">("minimized");
+    const [isPathOverflowing, setIsPathOverflowing] = useState(false);
+    const pathRef = useRef<HTMLSpanElement>(null);
+    const pathTextRef = useRef<HTMLSpanElement>(null);
     const slides =
         project.images.length > 0
             ? project.images
@@ -39,10 +43,14 @@ export default function ProjectCard({
             : []),
     ];
 
-    const cardClassName =
-        index % 2 === 0
-            ? "project-window project-window--left"
-            : "project-window project-window--right";
+    const cardClassName = [
+        "project-window",
+        index % 2 === 0 ? "project-window--left" : "project-window--right",
+        viewMode === "expanded" ? "project-window--expanded" : "",
+        viewMode === "minimized" ? "project-window--minimized" : "",
+    ]
+        .filter(Boolean)
+        .join(" ");
 
     const previousSlide = () => {
         setActiveImageIndex((current) =>
@@ -80,36 +88,78 @@ export default function ProjectCard({
     }, [index, slides.length]);
 
     useEffect(() => {
-        if (!isDetailsOpen) {
-            return;
+        const pathEl = pathRef.current;
+        const textEl = pathTextRef.current;
+
+        if (!pathEl || !textEl) {
+            return undefined;
         }
 
-        const closeOnEscape = (event: KeyboardEvent) => {
-            if (event.key === "Escape") {
-                setIsDetailsOpen(false);
-            }
+        const checkOverflow = () => {
+            setIsPathOverflowing(textEl.scrollWidth > pathEl.clientWidth);
         };
 
-        document.addEventListener("keydown", closeOnEscape);
-        document.body.classList.add("modal-open");
+        checkOverflow();
 
-        return () => {
-            document.removeEventListener("keydown", closeOnEscape);
-            document.body.classList.remove("modal-open");
-        };
-    }, [isDetailsOpen]);
+        // Re-measure as the card's width transition plays out, not just once per render.
+        const resizeObserver = new ResizeObserver(checkOverflow);
+        resizeObserver.observe(pathEl);
+        resizeObserver.observe(textEl);
+
+        return () => resizeObserver.disconnect();
+    }, [project.slug]);
 
     return (
         <article className={cardClassName}>
             <div className="project-window__chrome">
                 <div className="project-window__traffic">
-                    <span className="traffic-dot traffic-dot--red" />
-                    <span className="traffic-dot traffic-dot--yellow" />
-                    <span className="traffic-dot traffic-dot--green" />
+                    <button
+                        type="button"
+                        className="traffic-dot traffic-dot--red"
+                        onClick={onClose}
+                        aria-label="Close project window"
+                    />
+                    <button
+                        type="button"
+                        className="traffic-dot traffic-dot--yellow"
+                        onClick={() =>
+                            setViewMode((current) =>
+                                current === "minimized" ? "normal" : "minimized",
+                            )
+                        }
+                        aria-label={viewMode === "minimized" ? "Restore project preview" : "Minimize project window"}
+                        aria-pressed={viewMode === "minimized"}
+                    />
+                    <button
+                        type="button"
+                        className="traffic-dot traffic-dot--green"
+                        onClick={() =>
+                            setViewMode((current) =>
+                                current === "expanded" ? "normal" : "expanded",
+                            )
+                        }
+                        aria-label={viewMode === "expanded" ? "Collapse project details" : "Expand project details"}
+                        aria-pressed={viewMode === "expanded"}
+                    />
                 </div>
 
-                <span className="project-window__path">
-                    ~/projects/{project.slug}
+                <span className="project-window__path" ref={pathRef}>
+                    <span
+                        className={
+                            isPathOverflowing
+                                ? "project-window__path-marquee project-window__path-marquee--scrolling"
+                                : "project-window__path-marquee"
+                        }
+                    >
+                        <span className="project-window__path-track" ref={pathTextRef}>
+                            ~/projects/{project.slug}
+                        </span>
+                        {isPathOverflowing && (
+                            <span className="project-window__path-track" aria-hidden="true">
+                                ~/projects/{project.slug}
+                            </span>
+                        )}
+                    </span>
                 </span>
 
                 <span className="status-label">
@@ -117,153 +167,114 @@ export default function ProjectCard({
                 </span>
             </div>
 
-            <div className="project-window__carousel">
-                {slides.map((slide, slideIndex) => (
-                    <img
-                        key={slide.fileName}
-                        src={slide.url}
-                        alt={`${project.title} preview ${slideIndex + 1}`}
-                        className={
-                            slideIndex === activeImageIndex
-                                ? "project-window__image project-window__image--active"
-                                : "project-window__image"
-                        }
-                        aria-hidden={slideIndex !== activeImageIndex}
-                        draggable={false}
-                    />
-                ))}
+            {viewMode !== "minimized" && (
+                <>
+                    <div className="project-window__carousel">
+                        {slides.map((slide, slideIndex) => (
+                            <img
+                                key={slide.fileName}
+                                src={slide.url}
+                                alt={`${project.title} preview ${slideIndex + 1}`}
+                                className={
+                                    slideIndex === activeImageIndex
+                                        ? "project-window__image project-window__image--active"
+                                        : "project-window__image"
+                                }
+                                aria-hidden={slideIndex !== activeImageIndex}
+                                draggable={false}
+                            />
+                        ))}
 
-                {slides.length > 1 && (
-                    <>
-                        <button
-                            type="button"
-                            className="icon-btn project-window__arrow project-window__arrow--left"
-                            onClick={previousSlide}
-                            aria-label="Previous project view"
-                        >
-                            ←
-                        </button>
-
-                        <button
-                            type="button"
-                            className="icon-btn project-window__arrow project-window__arrow--right"
-                            onClick={nextSlide}
-                            aria-label="Next project view"
-                        >
-                            →
-                        </button>
-
-                        <div className="project-window__image-status" aria-label={`Image ${activeImageIndex + 1} of ${slides.length}`}>
-                            {slides.map((slide, slideIndex) => (
+                        {slides.length > 1 && (
+                            <>
                                 <button
-                                    key={slide.fileName}
                                     type="button"
-                                    className={
-                                        slideIndex === activeImageIndex
-                                            ? "project-window__image-dot project-window__image-dot--active"
-                                            : "project-window__image-dot"
-                                    }
-                                    onClick={() => setActiveImageIndex(slideIndex)}
-                                    aria-label={`Show image ${slideIndex + 1}`}
-                                    aria-current={
-                                        slideIndex === activeImageIndex
-                                            ? "true"
-                                            : undefined
-                                    }
-                                />
+                                    className="icon-btn project-window__arrow project-window__arrow--left"
+                                    onClick={previousSlide}
+                                    aria-label="Previous project view"
+                                >
+                                    ←
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className="icon-btn project-window__arrow project-window__arrow--right"
+                                    onClick={nextSlide}
+                                    aria-label="Next project view"
+                                >
+                                    →
+                                </button>
+
+                                <div className="project-window__image-status" aria-label={`Image ${activeImageIndex + 1} of ${slides.length}`}>
+                                    {slides.map((slide, slideIndex) => (
+                                        <button
+                                            key={slide.fileName}
+                                            type="button"
+                                            className={
+                                                slideIndex === activeImageIndex
+                                                    ? "project-window__image-dot project-window__image-dot--active"
+                                                    : "project-window__image-dot"
+                                            }
+                                            onClick={() => setActiveImageIndex(slideIndex)}
+                                            aria-label={`Show image ${slideIndex + 1}`}
+                                            aria-current={
+                                                slideIndex === activeImageIndex
+                                                    ? "true"
+                                                    : undefined
+                                            }
+                                        />
+                                    ))}
+                                </div>
+                            </>
+                        )}
+                    </div>
+
+                    <div className="project-window__body">
+                        <div className="project-window__title-row">
+                            <span className="project-window__prompt">$</span>
+                            <h3>{project.title}</h3>
+                        </div>
+
+                        <p className="project-window__summary">
+                            {project.overview ?? project.shortDescription}
+                        </p>
+
+                        <div className="project-card__technologies">
+                            {project.technologies.map((technology) => (
+                                <span key={technology} className="technology">
+                                    {technology}
+                                </span>
                             ))}
                         </div>
-                    </>
-                )}
-            </div>
 
-            <div className="project-window__body">
-                <div className="project-window__title-row">
-                    <span className="project-window__prompt">$</span>
-                    <h3>{project.title}</h3>
-                </div>
-
-                <p className="project-window__summary">
-                    {project.overview ?? project.shortDescription}
-                </p>
-
-                <button
-                    type="button"
-                    className="project-window__details-trigger"
-                    onClick={() => setIsDetailsOpen(true)}
-                >
-                    <span>View project details</span>
-                    <span aria-hidden="true">↗</span>
-                </button>
-
-                <div className="project-card__technologies">
-                    {project.technologies.map((technology) => (
-                        <span key={technology} className="technology">
-                            {technology}
-                        </span>
-                    ))}
-                </div>
-
-                <div className="project-card__actions">
-                    {project.demo && (
-                        <a
-                            href={project.demo}
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            Live Demo
-                        </a>
-                    )}
-
-                    {project.github && (
-                        <a
-                            href={project.github}
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            GitHub
-                        </a>
-                    )}
-                </div>
-            </div>
-
-            {isDetailsOpen &&
-                createPortal(
-                    <div
-                        className="project-modal"
-                        role="dialog"
-                        aria-modal="true"
-                        aria-labelledby={`${project.slug}-details-title`}
-                        onClick={() => setIsDetailsOpen(false)}
-                    >
-                        <div
-                            className="project-modal__content"
-                            onClick={(event) => event.stopPropagation()}
-                        >
-                            <div className="project-modal__header">
-                                <div>
-                                    <p className="project-modal__eyebrow">
-                                        ~/projects/{project.slug}
-                                    </p>
-                                    <h4 id={`${project.slug}-details-title`}>
-                                        {project.title}
-                                    </h4>
-                                </div>
-                                <button
-                                    type="button"
-                                    className="icon-btn project-modal__close"
-                                    onClick={() => setIsDetailsOpen(false)}
-                                    aria-label="Close project details"
+                        <div className="project-card__actions">
+                            {project.demo && (
+                                <a
+                                    href={project.demo}
+                                    target="_blank"
+                                    rel="noreferrer"
                                 >
-                                    ×
-                                </button>
-                            </div>
+                                    Live Demo
+                                </a>
+                            )}
 
-                            <div className="project-modal__body">
+                            {project.github && (
+                                <a
+                                    href={project.github}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    GitHub
+                                </a>
+                            )}
+                        </div>
+
+                        {viewMode === "expanded" && (
+                            <div className="project-window__expanded-sections">
                                 {detailSections.map((detail) => (
                                     <section
                                         key={detail.key}
-                                        className="project-modal__section"
+                                        className="project-window__expanded-section"
                                     >
                                         <h5>{detail.label}</h5>
                                         {typeof detail.value === "string" ? (
@@ -278,33 +289,10 @@ export default function ProjectCard({
                                     </section>
                                 ))}
                             </div>
-
-                            <div className="project-modal__footer">
-                                <div className="project-card__technologies">
-                                    {project.technologies.map((technology) => (
-                                        <span key={technology} className="technology">
-                                            {technology}
-                                        </span>
-                                    ))}
-                                </div>
-                                <div className="project-card__actions">
-                                    {project.demo && (
-                                        <a href={project.demo} target="_blank" rel="noreferrer">
-                                            Live Demo
-                                        </a>
-                                    )}
-                                    {project.github && (
-                                        <a href={project.github} target="_blank" rel="noreferrer">
-                                            GitHub
-                                        </a>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </div>,
-                    document.body,
-                )}
-
+                        )}
+                    </div>
+                </>
+            )}
         </article>
     );
 }

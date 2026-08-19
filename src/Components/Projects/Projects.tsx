@@ -1,9 +1,17 @@
+import { useState } from "react";
+
 import { loadProjects } from "../../Utils/loadProjects";
 import ProjectCard from "./ProjectCard";
 
 const projects = loadProjects();
 
 export default function Projects() {
+    const [closedSlugs, setClosedSlugs] = useState<string[]>([]);
+    const visibleProjects = projects.filter(
+        (project) => !closedSlugs.includes(project.slug),
+    );
+    const allClosed = projects.length > 0 && visibleProjects.length === 0;
+
     return (
         <section id="projects" className="section">
             <div className="section__content">
@@ -25,15 +33,32 @@ export default function Projects() {
                     </div>
                 </div>
 
-                <div className="project-terminal-grid">
-                    {projects.map((project, index) => (
-                        <ProjectCard
-                            key={project.slug}
-                            project={project}
-                            index={index}
-                        />
-                    ))}
-                </div>
+                {allClosed ? (
+                    <div className="projects__empty-state" role="status">
+                        <p className="projects__empty-state__command">
+                            $ rm -rf ~/projects/*
+                        </p>
+                        <p className="projects__empty-state__message">
+                            Whoa, you closed every project window! 🎉
+                        </p>
+                        <p className="projects__empty-state__hint">
+                            Refresh the page to bring them all back.
+                        </p>
+                    </div>
+                ) : (
+                    <div className="project-terminal-grid">
+                        {visibleProjects.map((project, index) => (
+                            <ProjectCard
+                                key={project.slug}
+                                project={project}
+                                index={index}
+                                onClose={() =>
+                                    setClosedSlugs((current) => [...current, project.slug])
+                                }
+                            />
+                        ))}
+                    </div>
+                )}
             </div>
         </section>
     );
