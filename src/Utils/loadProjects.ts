@@ -5,7 +5,7 @@ import type {
 } from "../Types/Project";
 
 const metadataFiles = import.meta.glob<ProjectMetadata>(
-  "../Resources/Projects/*/project.json",
+  "../assets/Projects/*/project.json",
   {
     eager: true,
     import: "default",
@@ -13,7 +13,7 @@ const metadataFiles = import.meta.glob<ProjectMetadata>(
 );
 
 const imageFiles = import.meta.glob<string>(
-  "../Resources/Projects/*/Images/*",
+  "../assets/Projects/*/Images/*",
   {
     eager: true,
     query: "?url",

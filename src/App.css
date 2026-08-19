@@ -1103,13 +1103,12 @@
 }
 
 .site-shell--light .background-glow--one {
-  background: rgba(45, 190, 169, 0.14);
+  background: rgba(45, 190, 169, 0.32);
 }
 
 .site-shell--light .background-glow--two {
-  background: rgba(55, 137, 211, 0.12);
+  background: rgba(55, 137, 211, 0.26);
 }
-
 .site-shell--light::before {
   background: radial-gradient(
     circle at var(--pointer-x, 50vw) var(--pointer-y, 50vh),
@@ -1159,13 +1158,13 @@
 .site-shell--light .education-card__header h3,
 .site-shell--light .contact__copy h2,
 .site-shell--light .skills__band-heading h3,
+.site-shell--light .hero__typing-cursor,
 .site-shell--light .about__lead {
   color: #17343c;
 }
 
 .site-shell--light .section__eyebrow,
 .site-shell--light .hero__eyebrow,
-.site-shell--light .hero__typing-cursor,
 .site-shell--light .project-window__prompt,
 .site-shell--light .experience__header > span,
 .site-shell--light .education-card__marker span,
