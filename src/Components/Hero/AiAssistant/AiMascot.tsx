@@ -63,11 +63,18 @@ export default function AiMascot({
     const [eyeMood, setEyeMood] = useState<EyeMood>("neutral");
 
     useEffect(() => {
-        const root = rootRef.current;
+        const rootElement = rootRef.current;
 
-        if (!root) {
+        if (!rootElement) {
             return;
         }
+
+        /*
+         * Capture the guarded element in a non-null variable.
+         * TypeScript can then safely use it inside nested callbacks
+         * such as requestAnimationFrame handlers and pointer listeners.
+         */
+        const root = rootElement as HTMLDivElement;
 
         const reducedMotion = window.matchMedia(
             "(prefers-reduced-motion: reduce)",

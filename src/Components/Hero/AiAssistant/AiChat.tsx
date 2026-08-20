@@ -99,13 +99,6 @@ const debugCommands: Record<
 
 };
 
-/*
- * Intentionally omitted from the command palette.
- */
-const hiddenCommands = {
-    "/party": true,
-} as const;
-
 const commandEntries =
     Object.entries(debugCommands) as Array<
         [string, AssistantCommand]

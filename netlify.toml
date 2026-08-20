@@ -1,0 +1,6 @@
+[functions]
+  directory = "netlify/functions"
+  included_files = [
+    "src/assets/portfolio-context.txt",
+    "src/assets/Projects/**/project.json"
+  ]
