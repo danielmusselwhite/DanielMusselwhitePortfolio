@@ -7,6 +7,8 @@ import {
 } from "react";
 import type { AiBlobState } from "./AiMascot";
 import "./AiChat.css";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface AiChatProps {
     assistantState: AiBlobState;
@@ -543,7 +545,26 @@ export default function AiChat({
                                 : "bot"}
                         </span>
 
-                        <p>{message.content}</p>
+                        {message.role === "assistant" ? (
+                            <ReactMarkdown
+                                remarkPlugins={[remarkGfm]}
+                                components={{
+                                    a: ({ children, ...props }) => (
+                                        <a
+                                            {...props}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            {children}
+                                        </a>
+                                    ),
+                                }}
+                            >
+                                {message.content}
+                            </ReactMarkdown>
+                        ) : (
+                            <p>{message.content}</p>
+                        )}
                     </div>
                 ))}
 
