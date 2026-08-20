@@ -910,6 +910,7 @@
   }
 }
 
+
 .project-window__carousel {
   position: relative;
   width: 100%;
@@ -2140,5 +2141,37 @@
     opacity: 1;
     transform: scaleY(1);
     clip-path: inset(0 0 0 0);
+  }
+}
+
+.project-window__content {
+  display: grid;
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    grid-template-rows 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.25s ease,
+    visibility 0s linear 0s;
+}
+
+.project-window__content-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.project-window__content--minimized {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    grid-template-rows 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.2s ease,
+    visibility 0s linear 0.35s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-window__content {
+    transition: none;
   }
 }

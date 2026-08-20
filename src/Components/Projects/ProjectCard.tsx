@@ -198,8 +198,13 @@ export default function ProjectCard({
                 </span>
             </div>
 
-            {viewMode !== "minimized" && (
-                <>
+            <div
+                className={`project-window__content ${viewMode === "minimized"
+                        ? "project-window__content--minimized"
+                        : ""
+                    }`}
+            >
+                <div className="project-window__content-inner">
                     <div className="project-window__carousel">
                         {slides.map((slide, slideIndex) => (
                             <img
@@ -322,8 +327,8 @@ export default function ProjectCard({
                             </div>
                         )}
                     </div>
-                </>
-            )}
+                </div>
+            </div>
         </article>
     );
 }
