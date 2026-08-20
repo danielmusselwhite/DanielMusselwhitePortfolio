@@ -4,7 +4,7 @@ A modern, interactive developer portfolio built to showcase my projects, technic
 
 Built with **React**, **TypeScript**, and **Vite**, with an interactive visual design, light and dark themes, responsive layouts, and an AI-powered portfolio assistant.
 
-For more technical information please see the [Technical Documentation](./docs/TECHNICAL.md)
+For more technical information please see the [Technical Documentation](./docs/TECHNICAL.md).
 
 ## ✨ Features
 
@@ -122,6 +122,7 @@ Make sure you have the following installed:
 
 ```bash
 git clone https://github.com/danielmusselwhite/DanielMusselwhitePortfolio.git
+
 cd DanielMusselwhitePortfolio
 ```
 
@@ -131,19 +132,37 @@ cd DanielMusselwhitePortfolio
 npm install
 ```
 
-### Start the Development Server
+### Configure Environment Variables
 
-```bash
-npm run dev
+To use the AI portfolio assistant locally, create a `.env` file in the root of the project:
+
+```env
+OPENAI_API_KEY=your_openai_api_key
 ```
 
-Vite will output the local development URL in your terminal.
+An alternative OpenAI model can optionally be configured:
+
+```env
+OPENAI_MODEL=your_model_name
+```
+
+> **Important:** Never commit your `.env` file or OpenAI API key to the repository.
+
+### Start the Development Server
+
+Because the AI assistant is implemented using a Netlify Function, local development should be started using **Netlify Dev** rather than running the Vite development server directly.
+
+```bash
+npx netlify dev
+```
+
+Netlify Dev will start the frontend development server and make the Netlify Function available locally, allowing the AI portfolio assistant to work during development.
 
 ## 🔐 Environment Variables
 
 The AI portfolio assistant requires an OpenAI API key.
 
-When running or deploying the Netlify Function, configure:
+For local development, create a `.env` file in the project root containing:
 
 ```env
 OPENAI_API_KEY=your_openai_api_key
@@ -155,14 +174,18 @@ An alternative OpenAI model can optionally be configured with:
 OPENAI_MODEL=your_model_name
 ```
 
-> **Important:** Never commit your API key to the repository. Configure secrets through your local environment or Netlify's environment variable settings.
+When deploying to Netlify, configure these values through Netlify's environment variable settings rather than committing them to the repository.
+
+> **Important:** Never commit your API key or `.env` file to the repository.
 
 ## 📜 Available Scripts
 
-### Start development server
+### Start local development
+
+To run the full application locally, including the Netlify Function used by the AI assistant:
 
 ```bash
-npm run dev
+npx netlify dev
 ```
 
 ### Create a production build

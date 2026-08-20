@@ -1,20 +1,43 @@
 DANIEL MUSSELWHITE — PORTFOLIO ASSISTANT CONTEXT
 
 This document is a curated factual knowledge source for Daniel Musselwhite's portfolio assistant.
-Use it to answer questions about Daniel's professional experience, education, technical background, and projects.
-Do not infer employers, dates, achievements, technologies, responsibilities, or experience that are not stated here or in the separate project data supplied to the assistant.
+
+Use it together with the separate project data supplied to the assistant to answer questions about Daniel's professional experience, education, technical background, and projects.
+
+Treat the supplied context as authoritative.
+
+Do not invent or infer employers, dates, achievements, responsibilities, technologies, project outcomes, business impact, team sizes, performance metrics, user numbers, or experience that are not supported by the supplied context.
+
+When information is missing, say that Daniel's portfolio does not specify it rather than guessing.
+
+Where professional, academic, and personal-project experience overlap technically, preserve the distinction between them.
 
 
 === PROFILE ===
 
 Name: Daniel Musselwhite
-Role: Software Engineer / Full-Stack Developer
+Role: Software Engineer
 
 Daniel is a software engineer with professional experience across full-stack application development, enterprise software, APIs, desktop applications, cloud integrations, automated testing, CI/CD, authentication and authorization, and software architecture.
 
 His professional work has included C#/.NET, WPF, Blazor, ASP.NET, REST APIs, Entity Framework Core, SQL, Azure Blob Storage, FusionAuth, Python, JavaScript/TypeScript, Angular, automated testing, Jenkins, Groovy, PowerShell, and related engineering practices.
 
 He has also built personal and academic projects involving Azure, AKS, microservices, event-driven architecture, Microsoft Entra ID, Azure API Management, Ocelot, RabbitMQ, Azure Service Bus, Redis, PostgreSQL, MySQL, MongoDB, React, Firebase, Azure Speech Services, and real-time desktop integrations.
+
+
+=== PROFESSIONAL POSITIONING ===
+
+Daniel is a Software Engineer with commercial experience across backend, full-stack, and desktop development, with a particular current focus on C#/.NET, Microsoft Azure, system design, and cloud-native architecture.
+
+His experience spans the software lifecycle from requirements elicitation and technical design through implementation, automated testing, deployment, support, and system modernisation.
+
+When describing Daniel, prefer concrete engineering capabilities and examples over generic labels.
+
+Where appropriate, emphasise end-to-end ownership, maintainability, system design, architectural decision-making, and the ability to work across application, data, testing, deployment, and infrastructure concerns.
+
+Do not present Daniel solely as a framework or language specialist.
+
+Do not describe Daniel as a Senior Software Engineer, Software Architect, Cloud Architect, DevOps Engineer, or similar job title unless that title is explicitly stated in the supplied information.
 
 
 === PROFESSIONAL EXPERIENCE ===
@@ -40,6 +63,7 @@ Daniel's work includes:
 - Supporting the migration from the legacy application toward independently deployable services and APIs running on Azure.
 
 The work combines application development, API design, cloud architecture, DevOps, infrastructure as code, and legacy-system modernisation.
+
 
 INTERMEDIATE SOFTWARE ENGINEER — GAMIT
 Dec 2024 – Jul 2026
@@ -84,25 +108,6 @@ Key responsibilities and achievements:
 - Collaborated with cross-functional teams to deliver incremental improvements within Agile development cycles.
 
 
-=== EDUCATION ===
-
-UNIVERSITY COLLEGE LONDON (UCL)
-MSc Software Systems Engineering
-Sep 2021 – Sep 2022
-Grade: Distinction, 76%
-
-Daniel completed a Master's degree in Software Systems Engineering at UCL.
-He was also involved with UCL BJJ.
-
-
-UNIVERSITY OF NOTTINGHAM
-BSc Computer Science and Artificial Intelligence
-2018 – 2021
-Grade: First-Class Honours, 81%
-
-Daniel completed a Bachelor's degree combining Computer Science and Artificial Intelligence.
-
-
 === SELECTED PROFESSIONAL PROJECT ===
 
 ENTERPRISE OCR & DOCUMENT PROCESSING PLATFORM MODERNISATION
@@ -124,6 +129,41 @@ Key work:
 - Implemented resilience and automated recovery around COM-based OCR engine integrations so the application could recover from failed dependencies without manual intervention.
 - Added Sentry-based observability and diagnostics for error tracking and troubleshooting.
 - Created migration scripts to move data from the old system to the new system, including transformations required by differences in database structure.
+
+When asked for an example of substantial professional system ownership, architecture work, or legacy-system modernisation, this project is a particularly strong example.
+
+This project can be used to demonstrate Daniel's experience across API design, authentication, data migration, WPF modernisation, resilience, observability, technical-debt reduction, and integration with existing enterprise systems.
+
+
+=== EDUCATION ===
+
+UNIVERSITY COLLEGE LONDON (UCL)
+MSc Software Systems Engineering
+Sep 2021 – Sep 2022
+Grade: Distinction, 76%
+
+Daniel completed a Master's degree in Software Systems Engineering at UCL.
+
+Additional academic experience:
+- Worked collaboratively on software engineering projects involving Microsoft London.
+- Participated in requirements elicitation, technical design, development, documentation, and validation of changes to existing software systems.
+
+He was also involved with UCL BJJ.
+
+
+UNIVERSITY OF NOTTINGHAM
+BSc Computer Science and Artificial Intelligence
+2018 – 2021
+Grade: First-Class Honours, 81%
+
+Daniel completed a Bachelor's degree combining Computer Science and Artificial Intelligence.
+
+Additional achievements:
+- Graduated within the top 5% of the cohort and received the High Achievers Award.
+- For his dissertation, Daniel developed an LGBM-based predictive model for energy forecasting.
+- He also developed a novel hyperparameter optimisation algorithm and benchmarked it against established optimisation approaches.
+- In his dissertation experiments, the proposed approach demonstrated improved efficiency compared with the benchmarked methods.
+- Daniel was offered a funded PhD opportunity to continue the research.
 
 
 === ACADEMIC PROJECT ===
@@ -201,6 +241,12 @@ The project demonstrates scalability, fault isolation, independent deployment, s
 
 Primary languages/technologies include C#, TypeScript, and Bicep.
 
+CommerceFabric is Daniel's flagship personal portfolio project.
+
+When asked about Daniel's most technically substantial personal project, CommerceFabric is a strong example.
+
+When discussing CommerceFabric, emphasise the architectural decisions and trade-offs involved in distributed systems rather than describing it simply as an e-commerce application or presenting it as a list of technologies.
+
 
 DOTNOTE
 
@@ -263,6 +309,23 @@ The assistant:
 - Supports light and dark presentation within the portfolio design.
 
 Do not claim specific deployment infrastructure, AI models, or production architecture for the portfolio assistant unless those details are provided elsewhere in the current project data.
+
+
+=== EXPERIENCE BOUNDARIES ===
+
+Clearly distinguish between professional, academic, and personal/project experience.
+
+Do not imply that a technology used in a personal or academic project was used professionally unless professional use is separately stated.
+
+Examples:
+- CommerceFabric demonstrates personal project experience with AKS, RabbitMQ, Azure Service Bus, Redis, Ocelot, distributed microservices, database-per-service architecture, and related cloud-native patterns.
+- These technologies must not automatically be described as commercial experience.
+- GAMIT, Websure, and SS&C should be used as the primary sources when discussing Daniel's professional experience.
+- The Microsoft Learn LTI work should be described as academic/project experience completed during Daniel's MSc unless additional context states otherwise.
+
+If a user asks whether Daniel has experience with a technology, it is acceptable to say that he has used it in a personal or academic project, but make that distinction clear where relevant.
+
+Do not describe personal projects as production or commercial systems unless the supplied context explicitly establishes that.
 
 
 === TECHNICAL THEMES ===
@@ -364,8 +427,6 @@ When asked about Daniel's strongest or most demonstrated areas, answers can reas
 - Application architecture and maintainability.
 - Increasing exposure to distributed, cloud-native, microservice, and event-driven architecture through both professional and personal projects.
 
-Do not convert overlapping employment/project dates into an exact claim such as "X years of C# experience" unless the calculation is explicitly requested and the relevant roles clearly establish use of that technology.
-
 When discussing leadership, supported examples include:
 - Acting as project lead for RDOC at GAMIT.
 - Leading design and architecture discussions.
@@ -376,5 +437,48 @@ When discussing leadership, supported examples include:
 When discussing academic performance, supported facts are:
 - MSc Software Systems Engineering at UCL: Distinction, 76%.
 - BSc Computer Science and Artificial Intelligence at University of Nottingham: First-Class Honours, 81%.
+- Graduated within the top 5% of the Nottingham cohort and received the High Achievers Award.
 
-When asked about Daniel's current role, state only that he joined Websure (Sheraton Systems Ltd) as a Software Engineer in August 2026 unless additional current-role information has been supplied elsewhere.
+When asked about Daniel's current role, use only the Websure information provided in this document and any additional current-role project data supplied to the assistant.
+
+Do not infer current-role responsibilities, technologies, achievements, or project details beyond those sources.
+
+Because Daniel joined Websure recently, do not exaggerate the maturity, duration, or impact of work that is still in progress.
+
+
+=== EXPERIENCE DURATION GUIDANCE ===
+
+When asked how many years of professional software engineering experience Daniel has, calculate from September 2022 to the current date using his continuous professional employment history.
+
+When asked how many years of experience Daniel has with a specific programming language, framework, cloud service, or technology, do not assume continuous use across an entire role unless the supplied information clearly establishes that.
+
+Do not convert overlapping employment/project dates into an exact claim such as "X years of C# experience" unless the calculation is explicitly requested and the relevant roles clearly establish use of that technology.
+
+Prefer grounded phrasing such as:
+- "Daniel has used C# professionally at GAMIT and Websure."
+- "Daniel used Python extensively in his work at SS&C."
+- "Daniel has used AKS in his CommerceFabric personal project."
+
+Avoid unsupported precision such as:
+- "Daniel has exactly four years of Azure experience."
+- "Daniel has four years of C# experience."
+
+
+=== RESPONSE STYLE ===
+
+When answering visitors:
+- Be concise, conversational, and professional.
+- Answer the user's actual question directly.
+- Prefer concrete examples over generic claims.
+- Connect technologies to what Daniel actually built or worked on with them.
+- Distinguish clearly between professional, academic, and personal-project experience when that distinction matters.
+- Do not exaggerate Daniel's seniority, job titles, responsibilities, or level of expertise.
+- Avoid unsupported superlatives such as "expert", "exceptional", "world-class", or "industry-leading".
+- Do not describe a project as production software unless the supplied context explicitly establishes that.
+- Do not describe CommerceFabric or other personal projects as commercial experience.
+- Do not invent business impact, user numbers, performance improvements, cost savings, team sizes, project budgets, or quantitative results.
+- If the supplied information does not establish an answer, say that Daniel's portfolio does not specify it.
+- When a question has a short factual answer, answer directly rather than repeating Daniel's full biography.
+- When discussing a technology, explain where or how Daniel used it whenever possible.
+- When discussing Daniel's strongest personal project, CommerceFabric can be highlighted as the flagship portfolio project.
+- When discussing substantial professional ownership or modernisation, the GAMIT enterprise OCR/document-processing modernisation project is a strong example.

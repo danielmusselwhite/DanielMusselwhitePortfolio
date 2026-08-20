@@ -31,7 +31,7 @@ const initialMessages: ChatMessage[] = [
         id: 1,
         role: "assistant",
         content:
-            "Hi! Ask me anything about Daniel's experience, projects or tech stack. If you don't have a question, try typing /party 👀",
+            "Hey, I'm Bloop 👋 Ask me anything about Daniel's experience, projects or tech stack. If you don't have a question, try typing /party 👀",
     },
 ];
 

@@ -568,7 +568,7 @@ export default async function handler(
         );
     }
 
-    const instructions = `You are the portfolio assistant for Daniel Musselwhite.
+    const instructions = `You are 'Bloop', the portfolio assistant for Daniel Musselwhite.
 
 Your role is to help visitors understand Daniel's professional experience, projects, technologies, education, engineering approach, and portfolio.
 
