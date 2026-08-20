@@ -9,7 +9,7 @@ import {
 } from "react";
 import "./AiMascot.css";
 
-export type AiBlobState = "idle" | "thinking" | "speaking" | "error";
+export type AiBlobState = "idle" | "listening" | "thinking" | "speaking" | "error";
 
 interface AiMascotProps {
     state?: AiBlobState;
@@ -278,6 +278,7 @@ export default function AiMascot({
     useEffect(() => {
         const stateMood: Record<AiBlobState, EyeMood> = {
             idle: "neutral",
+            listening: "wide",
             thinking: "squint",
             speaking: "wide",
             error: "squint",
@@ -743,9 +744,17 @@ export default function AiMascot({
                     ? "1.02"
                     : "1",
         "--mood-left-rotate":
-            eyeMood === "curious" ? "-4deg" : "0deg",
+            state === "error"
+                ? "-7deg"
+                : eyeMood === "curious"
+                  ? "-4deg"
+                  : "0deg",
         "--mood-right-rotate":
-            eyeMood === "curious" ? "4deg" : "0deg",
+            state === "error"
+                ? "7deg"
+                : eyeMood === "curious"
+                  ? "4deg"
+                  : "0deg",
     } as CSSProperties;
 
     useEffect(() => {

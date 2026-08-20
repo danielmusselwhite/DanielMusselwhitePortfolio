@@ -1103,3 +1103,86 @@
 .ai-blob--snapping::before {
     animation-play-state: paused !important;
 }
+
+
+/* =========================================================
+   CHAT-DRIVEN MASCOT STATES
+   ========================================================= */
+
+/* Typing: alert, open eyes and a subtly perked-up body. */
+.ai-blob--listening {
+    --mood-eye-scale: 1.08;
+}
+
+.ai-blob--listening .ai-blob__floating {
+    animation-duration: 4.4s, 6.2s;
+}
+
+/* Thinking: slow soft compression while the eyes squint. */
+.ai-blob--thinking .ai-blob__tickle {
+    animation:
+        ai-blob-thinking-pulse 1.25s
+        ease-in-out infinite;
+}
+
+/* Replying: small friendly bob while the response appears. */
+.ai-blob--speaking .ai-blob__tickle {
+    animation:
+        ai-blob-speaking-bob 520ms
+        ease-in-out infinite alternate;
+}
+
+/* Error: brief uncertain wobble; eye angles are set in TSX. */
+.ai-blob--error .ai-blob__tickle {
+    animation:
+        ai-blob-error-wobble 420ms
+        ease-in-out 2;
+}
+
+@keyframes ai-blob-thinking-pulse {
+    0%,
+    100% {
+        transform: scale(1, 1);
+    }
+
+    50% {
+        transform:
+            translateY(3px)
+            scale(1.035, 0.965);
+    }
+}
+
+@keyframes ai-blob-speaking-bob {
+    from {
+        transform:
+            translateY(0)
+            scale(1);
+    }
+
+    to {
+        transform:
+            translateY(-6px)
+            scale(1.025, 0.985);
+    }
+}
+
+@keyframes ai-blob-error-wobble {
+    0%,
+    100% {
+        transform:
+            translateX(0)
+            rotate(0deg);
+    }
+
+    25% {
+        transform:
+            translateX(-6px)
+            rotate(-2deg);
+    }
+
+    75% {
+        transform:
+            translateX(6px)
+            rotate(2deg);
+    }
+}

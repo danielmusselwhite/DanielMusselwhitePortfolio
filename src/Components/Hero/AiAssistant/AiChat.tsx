@@ -1,13 +1,20 @@
 import {
+    useEffect,
     useMemo,
     useRef,
     useState,
     type FormEvent,
 } from "react";
+import type { AiBlobState } from "./AiMascot";
+import { buildPortfolioContext } from "./portfolioContext";
 import "./AiChat.css";
 
 interface AiChatProps {
     isOpen: boolean;
+    assistantState: AiBlobState;
+    onAssistantStateChange: (
+        state: AiBlobState,
+    ) => void;
     onClose: () => void;
 }
 
@@ -15,6 +22,11 @@ interface ChatMessage {
     id: number;
     role: "user" | "assistant";
     content: string;
+}
+
+interface ChatApiResponse {
+    answer?: string;
+    error?: string;
 }
 
 const initialMessages: ChatMessage[] = [
@@ -26,65 +38,79 @@ const initialMessages: ChatMessage[] = [
     },
 ];
 
-function getFakeResponse(input: string) {
-    const normalized = input.toLowerCase();
-
-    if (
-        normalized.includes("c#") ||
-        normalized.includes("csharp") ||
-        normalized.includes(".net")
-    ) {
-        return "C# and .NET are part of Daniel's core stack. Soon I'll answer this using his actual portfolio data.";
-    }
-
-    if (
-        normalized.includes("azure") ||
-        normalized.includes("cloud")
-    ) {
-        return "Cloud-native systems are a major focus, with Azure forming an important part of the stack.";
-    }
-
-    if (
-        normalized.includes("project") ||
-        normalized.includes("built") ||
-        normalized.includes("portfolio")
-    ) {
-        return "Soon I'll be able to read Daniel's project JSON files and explain what he built, which technologies he used, and why.";
-    }
-
-    if (
-        normalized.includes("experience") ||
-        normalized.includes("years")
-    ) {
-        return "Once the backend is connected, I'll answer experience questions directly from Daniel's portfolio data rather than guessing.";
-    }
-
-    return "That's exactly the kind of question this assistant will answer once we connect the real AI backend.";
-}
+const stateLabels: Record<AiBlobState, string> = {
+    idle: "active",
+    listening: "listening",
+    thinking: "thinking",
+    speaking: "replying",
+    error: "error",
+};
 
 export default function AiChat({
     isOpen,
+    assistantState,
+    onAssistantStateChange,
     onClose,
 }: AiChatProps) {
     const [messages, setMessages] =
         useState<ChatMessage[]>(initialMessages);
     const [input, setInput] = useState("");
+    const [isSubmitting, setIsSubmitting] =
+        useState(false);
 
     const nextIdRef = useRef(2);
+    const messagesEndRef =
+        useRef<HTMLDivElement>(null);
+    const speakingTimerRef =
+        useRef<number | null>(null);
 
-    const canSubmit = useMemo(
-        () => input.trim().length > 0,
-        [input],
+    const portfolioContext = useMemo(
+        () => buildPortfolioContext(),
+        [],
     );
 
-    function handleSubmit(
+    const canSubmit =
+        input.trim().length > 0 && !isSubmitting;
+
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+        });
+    }, [messages, isSubmitting]);
+
+    useEffect(() => {
+        return () => {
+            if (speakingTimerRef.current !== null) {
+                window.clearTimeout(
+                    speakingTimerRef.current,
+                );
+            }
+        };
+    }, []);
+
+    function handleInputChange(value: string) {
+        setInput(value);
+
+        if (isSubmitting) {
+            return;
+        }
+
+        onAssistantStateChange(
+            value.trim().length > 0
+                ? "listening"
+                : "idle",
+        );
+    }
+
+    async function handleSubmit(
         event: FormEvent<HTMLFormElement>,
     ) {
         event.preventDefault();
 
         const trimmed = input.trim();
 
-        if (!trimmed) {
+        if (!trimmed || isSubmitting) {
             return;
         }
 
@@ -94,19 +120,97 @@ export default function AiChat({
             content: trimmed,
         };
 
-        const assistantMessage: ChatMessage = {
-            id: nextIdRef.current++,
-            role: "assistant",
-            content: getFakeResponse(trimmed),
-        };
+        const history = messages
+            .slice(-8)
+            .map(({ role, content }) => ({
+                role,
+                content,
+            }));
 
         setMessages((current) => [
             ...current,
             userMessage,
-            assistantMessage,
         ]);
-
         setInput("");
+        setIsSubmitting(true);
+        onAssistantStateChange("thinking");
+
+        try {
+            const response = await fetch(
+                "/api/portfolio-chat",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":
+                            "application/json",
+                    },
+                    body: JSON.stringify({
+                        message: trimmed,
+                        history,
+                        portfolioContext,
+                    }),
+                },
+            );
+
+            const data =
+                (await response.json()) as ChatApiResponse;
+
+            if (!response.ok || !data.answer) {
+                throw new Error(
+                    data.error ||
+                        "The assistant could not reply.",
+                );
+            }
+
+            setMessages((current) => [
+                ...current,
+                {
+                    id: nextIdRef.current++,
+                    role: "assistant",
+                    content: data.answer!,
+                },
+            ]);
+
+            onAssistantStateChange("speaking");
+
+            if (speakingTimerRef.current !== null) {
+                window.clearTimeout(
+                    speakingTimerRef.current,
+                );
+            }
+
+            speakingTimerRef.current =
+                window.setTimeout(() => {
+                    onAssistantStateChange("idle");
+                    speakingTimerRef.current = null;
+                }, 1100);
+        } catch (error) {
+            const message =
+                error instanceof Error
+                    ? error.message
+                    : "Something went wrong.";
+
+            setMessages((current) => [
+                ...current,
+                {
+                    id: nextIdRef.current++,
+                    role: "assistant",
+                    content:
+                        "I couldn't reach the assistant backend. " +
+                        message,
+                },
+            ]);
+
+            onAssistantStateChange("error");
+
+            speakingTimerRef.current =
+                window.setTimeout(() => {
+                    onAssistantStateChange("idle");
+                    speakingTimerRef.current = null;
+                }, 1600);
+        } finally {
+            setIsSubmitting(false);
+        }
     }
 
     if (!isOpen) {
@@ -115,7 +219,10 @@ export default function AiChat({
 
     return (
         <section
-            className="ai-chat"
+            className={[
+                "ai-chat",
+                `ai-chat--${assistantState}`,
+            ].join(" ")}
             aria-label="Portfolio assistant chat"
         >
             <div className="ai-chat__header">
@@ -129,7 +236,7 @@ export default function AiChat({
 
                 <div className="ai-chat__header-actions">
                     <span className="ai-chat__status-label">
-                        local
+                        {stateLabels[assistantState]}
                     </span>
 
                     <button
@@ -146,6 +253,7 @@ export default function AiChat({
             <div
                 className="ai-chat__messages"
                 aria-live="polite"
+                aria-busy={isSubmitting}
             >
                 {messages.map((message) => (
                     <div
@@ -164,6 +272,24 @@ export default function AiChat({
                         <p>{message.content}</p>
                     </div>
                 ))}
+
+                {isSubmitting && (
+                    <div className="ai-chat__message ai-chat__message--assistant ai-chat__message--thinking">
+                        <span className="ai-chat__message-prefix">
+                            bot
+                        </span>
+
+                        <p>
+                            <span className="ai-chat__thinking-dots">
+                                <span />
+                                <span />
+                                <span />
+                            </span>
+                        </p>
+                    </div>
+                )}
+
+                <div ref={messagesEndRef} />
             </div>
 
             <form
@@ -181,18 +307,26 @@ export default function AiChat({
                     type="text"
                     value={input}
                     onChange={(event) =>
-                        setInput(event.target.value)
+                        handleInputChange(
+                            event.target.value,
+                        )
                     }
-                    placeholder="ask about experience..."
+                    placeholder={
+                        isSubmitting
+                            ? "thinking..."
+                            : "ask about experience..."
+                    }
                     aria-label="Ask the portfolio assistant"
                     autoComplete="off"
+                    maxLength={500}
+                    disabled={isSubmitting}
                 />
 
                 <button
                     type="submit"
                     disabled={!canSubmit}
                 >
-                    send
+                    {isSubmitting ? "..." : "send"}
                 </button>
             </form>
 

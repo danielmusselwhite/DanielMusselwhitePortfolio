@@ -499,3 +499,91 @@
         margin-top: -62px;
     }
 }
+
+
+/* =========================================================
+   REAL CHAT STATES
+   ========================================================= */
+
+.ai-chat__status-dot {
+    transition:
+        background 220ms ease,
+        box-shadow 220ms ease;
+}
+
+.ai-chat--thinking .ai-chat__status-dot {
+    animation:
+        ai-chat-status-pulse 850ms
+        ease-in-out infinite;
+}
+
+.ai-chat--error .ai-chat__status-dot {
+    background: #f28d7d;
+    box-shadow:
+        0 0 0 4px rgba(242, 141, 125, 0.10),
+        0 0 13px rgba(242, 141, 125, 0.55);
+}
+
+.ai-chat--error .ai-chat__status-label {
+    color: #f2a092;
+}
+
+.ai-chat__composer input:disabled {
+    opacity: 0.62;
+    cursor: wait;
+}
+
+.ai-chat__message--thinking p {
+    min-width: 3.6rem;
+}
+
+.ai-chat__thinking-dots {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.28rem;
+    min-height: 1rem;
+}
+
+.ai-chat__thinking-dots span {
+    width: 0.32rem;
+    height: 0.32rem;
+    border-radius: 50%;
+    background: var(--chat-accent);
+    animation:
+        ai-chat-thinking-dot 900ms
+        ease-in-out infinite;
+}
+
+.ai-chat__thinking-dots span:nth-child(2) {
+    animation-delay: 120ms;
+}
+
+.ai-chat__thinking-dots span:nth-child(3) {
+    animation-delay: 240ms;
+}
+
+@keyframes ai-chat-thinking-dot {
+    0%,
+    100% {
+        opacity: 0.3;
+        transform: translateY(1px);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateY(-2px);
+    }
+}
+
+@keyframes ai-chat-status-pulse {
+    0%,
+    100% {
+        transform: scale(0.9);
+        opacity: 0.66;
+    }
+
+    50% {
+        transform: scale(1.15);
+        opacity: 1;
+    }
+}
