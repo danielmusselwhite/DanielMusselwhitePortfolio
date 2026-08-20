@@ -2398,3 +2398,32 @@
     transition: none;
   }
 }
+
+
+/* =========================
+   MOBILE NAVBAR ROW FIX
+   Keep DM + theme + menu on the same top row.
+   ========================= */
+
+@media (max-width: 720px) {
+  .navbar {
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto auto;
+  }
+
+  .navbar__brand {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .navbar__actions {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+  }
+
+  .navbar__links {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
