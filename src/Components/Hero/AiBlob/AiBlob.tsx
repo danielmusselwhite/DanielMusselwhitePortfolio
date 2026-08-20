@@ -5,6 +5,7 @@ import {
     type CSSProperties,
     type KeyboardEvent,
     type MouseEvent as ReactMouseEvent,
+    type PointerEvent as ReactPointerEvent,
 } from "react";
 import "./AiBlob.css";
 
@@ -17,16 +18,39 @@ interface AiBlobProps {
 type EyeMood = "neutral" | "curious" | "wide" | "squint";
 
 const TICKLE_DURATION = 720;
+const RAPID_CLICK_WINDOW = 1800;
+const ANNOYANCE_CLICK_COUNT = 6;
+const ANNOYED_DURATION = 2400;
+const DRAG_SOFT_LIMIT = 340;
+const SNAP_DURATION = 1050;
 
 export default function AiBlob({ state = "idle" }: AiBlobProps) {
     const rootRef = useRef<HTMLDivElement>(null);
+    const dragRef = useRef<SVGGElement>(null);
     const rafRef = useRef<number | null>(null);
+    const snapRafRef = useRef<number | null>(null);
     const tickleTimerRef = useRef<number | null>(null);
     const blinkTimerRef = useRef<number | null>(null);
     const expressionTimerRef = useRef<number | null>(null);
+    const annoyedTimerRef = useRef<number | null>(null);
+
+    const clickTimesRef = useRef<number[]>([]);
+    const dragStateRef = useRef({
+        active: false,
+        pointerId: -1,
+        startX: 0,
+        startY: 0,
+        dx: 0,
+        dy: 0,
+        moved: false,
+    });
 
     const [isBlinking, setIsBlinking] = useState(false);
     const [isTickled, setIsTickled] = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
+    const [isSnappingBack, setIsSnappingBack] = useState(false);
+    const [isAnnoyed, setIsAnnoyed] = useState(false);
+    const [isTantruming, setIsTantruming] = useState(false);
     const [eyeMood, setEyeMood] = useState<EyeMood>("neutral");
 
     useEffect(() => {
@@ -349,7 +373,205 @@ export default function AiBlob({ state = "idle" }: AiBlobProps) {
         };
     }, [state, isTickled, isBlinking]);
 
+    function applyDragTransform(dx: number, dy: number) {
+        const drag = dragRef.current;
+        const root = rootRef.current;
+
+        if (!drag || !root) {
+            return;
+        }
+
+        const distance = Math.hypot(dx, dy);
+
+        /*
+         * Almost-free drag with gentle resistance only at larger distances.
+         */
+        const over = Math.max(0, distance - DRAG_SOFT_LIMIT);
+        const resistedDistance =
+            distance <= DRAG_SOFT_LIMIT
+                ? distance
+                : DRAG_SOFT_LIMIT + over * 0.72;
+
+        const ratio =
+            distance === 0
+                ? 1
+                : resistedDistance / distance;
+
+        const draggedX = dx * ratio;
+        const draggedY = dy * ratio;
+
+        const strength = Math.min(
+            1,
+            resistedDistance / 520,
+        );
+
+        /*
+         * Stretch along the direction being pulled and compress slightly
+         * across it so the blob still feels jelly-like.
+         */
+        const horizontalBias =
+            Math.abs(draggedX) /
+            Math.max(
+                1,
+                Math.abs(draggedX) + Math.abs(draggedY),
+            );
+
+        const verticalBias = 1 - horizontalBias;
+
+        const scaleX =
+            1 +
+            horizontalBias * strength * 0.23 -
+            verticalBias * strength * 0.05;
+
+        const scaleY =
+            1 +
+            verticalBias * strength * 0.23 -
+            horizontalBias * strength * 0.05;
+
+        const rotate =
+            Math.max(
+                -12,
+                Math.min(12, draggedX / 24),
+            );
+
+        drag.style.transform = `
+            translate(${draggedX}px, ${draggedY}px)
+            rotate(${rotate}deg)
+            scale(${scaleX}, ${scaleY})
+        `;
+
+        /*
+         * Move the glow with him while dragging.
+         */
+        root.style.setProperty(
+            "--drag-x",
+            `${draggedX}px`,
+        );
+        root.style.setProperty(
+            "--drag-y",
+            `${draggedY}px`,
+        );
+        root.style.setProperty(
+            "--drag-strength",
+            `${strength}`,
+        );
+
+        dragStateRef.current.dx = draggedX;
+        dragStateRef.current.dy = draggedY;
+    }
+
+    function snapDragBack() {
+        if (snapRafRef.current !== null) {
+            window.cancelAnimationFrame(
+                snapRafRef.current,
+            );
+        }
+
+        const startX = dragStateRef.current.dx;
+        const startY = dragStateRef.current.dy;
+        const startTime = performance.now();
+
+        setIsSnappingBack(true);
+
+        function frame(now: number) {
+            const t = Math.min(
+                1,
+                (now - startTime) / SNAP_DURATION,
+            );
+
+            /*
+             * Damped spring: overshoots home several times before settling.
+             */
+            const decay = Math.pow(1 - t, 2.15);
+            const oscillation =
+                Math.cos(t * Math.PI * 5.4);
+            const factor = decay * oscillation;
+
+            applyDragTransform(
+                startX * factor,
+                startY * factor,
+            );
+
+            if (t < 1) {
+                snapRafRef.current =
+                    window.requestAnimationFrame(frame);
+                return;
+            }
+
+            applyDragTransform(0, 0);
+            setIsSnappingBack(false);
+            snapRafRef.current = null;
+        }
+
+        snapRafRef.current =
+            window.requestAnimationFrame(frame);
+    }
+
+    function triggerAnnoyance() {
+        if (isAnnoyed) {
+            return;
+        }
+
+        setIsBlinking(false);
+        setIsTickled(false);
+        setIsTantruming(true);
+        setIsAnnoyed(true);
+        setEyeMood("squint");
+
+        /*
+         * Eyes squeeze shut during the initial tantrum, then reopen angry.
+         */
+        window.setTimeout(() => {
+            setIsTantruming(false);
+        }, 650);
+
+        if (annoyedTimerRef.current !== null) {
+            window.clearTimeout(
+                annoyedTimerRef.current,
+            );
+        }
+
+        annoyedTimerRef.current = window.setTimeout(() => {
+            setIsAnnoyed(false);
+            setIsTantruming(false);
+            setEyeMood("neutral");
+            clickTimesRef.current = [];
+            annoyedTimerRef.current = null;
+        }, ANNOYED_DURATION);
+    }
+
+    function registerPoke() {
+        if (isAnnoyed || isSnappingBack) {
+            return;
+        }
+
+        const now = Date.now();
+
+        clickTimesRef.current = [
+            ...clickTimesRef.current.filter(
+                (time) =>
+                    now - time < RAPID_CLICK_WINDOW,
+            ),
+            now,
+        ];
+
+        if (
+            clickTimesRef.current.length >=
+            ANNOYANCE_CLICK_COUNT
+        ) {
+            clickTimesRef.current = [];
+            triggerAnnoyance();
+            return;
+        }
+
+        triggerTickle();
+    }
+
     function triggerTickle() {
+        if (isAnnoyed || isSnappingBack) {
+            return;
+        }
+
         if (
             window.matchMedia("(prefers-reduced-motion: reduce)").matches
         ) {
@@ -386,24 +608,125 @@ export default function AiBlob({ state = "idle" }: AiBlobProps) {
 
     function handleClick(event: ReactMouseEvent<HTMLDivElement>) {
         event.preventDefault();
-        triggerTickle();
+
+        /*
+         * Browsers emit click after pointer-up. Ignore the click produced by a
+         * real drag; otherwise register it as a normal poke.
+         */
+        if (dragStateRef.current.moved) {
+            dragStateRef.current.moved = false;
+            return;
+        }
+
+        registerPoke();
     }
 
     function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-        if (event.key === "Enter" || event.key === " ") {
+        if (
+            (event.key === "Enter" || event.key === " ") &&
+            !isAnnoyed &&
+            !isSnappingBack
+        ) {
             event.preventDefault();
-            triggerTickle();
+            registerPoke();
         }
     }
 
+    function handlePointerDown(
+        event: ReactPointerEvent<HTMLDivElement>,
+    ) {
+        if (
+            event.button !== 0 ||
+            isAnnoyed ||
+            isSnappingBack
+        ) {
+            return;
+        }
+
+        dragStateRef.current = {
+            active: true,
+            pointerId: event.pointerId,
+            startX: event.clientX,
+            startY: event.clientY,
+            dx: 0,
+            dy: 0,
+            moved: false,
+        };
+
+        event.currentTarget.setPointerCapture(
+            event.pointerId,
+        );
+
+        setIsDragging(true);
+    }
+
+    function handlePointerDrag(
+        event: ReactPointerEvent<HTMLDivElement>,
+    ) {
+        if (!dragStateRef.current.active) {
+            return;
+        }
+
+        const dx =
+            event.clientX -
+            dragStateRef.current.startX;
+        const dy =
+            event.clientY -
+            dragStateRef.current.startY;
+
+        if (Math.hypot(dx, dy) > 5) {
+            dragStateRef.current.moved = true;
+        }
+
+        applyDragTransform(dx, dy);
+    }
+
+    function finishDrag(
+        event: ReactPointerEvent<HTMLDivElement>,
+    ) {
+        if (!dragStateRef.current.active) {
+            return;
+        }
+
+        const wasMoved =
+            dragStateRef.current.moved;
+
+        dragStateRef.current.active = false;
+
+        if (
+            event.currentTarget.hasPointerCapture(
+                event.pointerId,
+            )
+        ) {
+            event.currentTarget.releasePointerCapture(
+                event.pointerId,
+            );
+        }
+
+        setIsDragging(false);
+
+        /*
+         * A plain press/release is still a click. Only start the spring when
+         * the pointer actually moved.
+         */
+        if (!wasMoved) {
+            applyDragTransform(0, 0);
+            return;
+        }
+
+        snapDragBack();
+    }
+
     const eyeOpen =
-        isBlinking || isTickled
+        isBlinking || isTickled || isTantruming
             ? "0.025"
-            : eyeMood === "wide"
-                ? "1.16"
-                : eyeMood === "squint"
-                    ? "0.62"
-                    : "1";
+            : isAnnoyed
+                ? "0.58"
+                : eyeMood === "wide"
+                    ? "1.16"
+                    : eyeMood === "squint"
+                        ? "0.62"
+                        : "1";
 
     const style = {
         "--eye-open": eyeOpen,
@@ -419,6 +742,22 @@ export default function AiBlob({ state = "idle" }: AiBlobProps) {
             eyeMood === "curious" ? "4deg" : "0deg",
     } as CSSProperties;
 
+    useEffect(() => {
+        return () => {
+            if (snapRafRef.current !== null) {
+                window.cancelAnimationFrame(
+                    snapRafRef.current,
+                );
+            }
+
+            if (annoyedTimerRef.current !== null) {
+                window.clearTimeout(
+                    annoyedTimerRef.current,
+                );
+            }
+        };
+    }, []);
+
     return (
         <div
             ref={rootRef}
@@ -428,12 +767,20 @@ export default function AiBlob({ state = "idle" }: AiBlobProps) {
                 `ai-blob--eyes-${eyeMood}`,
                 isBlinking ? "ai-blob--blinking" : "",
                 isTickled ? "ai-blob--tickled" : "",
+                isDragging ? "ai-blob--dragging" : "",
+                isSnappingBack ? "ai-blob--snapping" : "",
+                isAnnoyed ? "ai-blob--annoyed" : "",
+                isTantruming ? "ai-blob--tantrum" : "",
             ]
                 .filter(Boolean)
                 .join(" ")}
             style={style}
             onClick={handleClick}
             onKeyDown={handleKeyDown}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerDrag}
+            onPointerUp={finishDrag}
+            onPointerCancel={finishDrag}
             role="button"
             tabIndex={0}
             aria-label="Animated portfolio assistant"
@@ -524,82 +871,101 @@ export default function AiBlob({ state = "idle" }: AiBlobProps) {
                     </linearGradient>
                 </defs>
 
-                <g className="ai-blob__lean">
-                    <g className="ai-blob__tickle">
-                        <g className="ai-blob__floating">
-                            <path
-                                className="ai-blob__body ai-blob__body--back"
-                                d="M159 37C215 34 264 70 279 121C295 174 279 233 231 266C184 298 119 290 76 253C34 217 24 155 47 106C70 57 105 40 159 37Z"
-                            />
+                <g
+                    ref={dragRef}
+                    className="ai-blob__drag"
+                >
+                    <g className="ai-blob__lean">
+                        <g className="ai-blob__tickle">
+                            <g className="ai-blob__floating">
+                                <path
+                                    className="ai-blob__body ai-blob__body--back"
+                                    d="M159 37C215 34 264 70 279 121C295 174 279 233 231 266C184 298 119 290 76 253C34 217 24 155 47 106C70 57 105 40 159 37Z"
+                                />
 
-                            <path
-                                className="ai-blob__body"
-                                d="M159 37C215 34 264 70 279 121C295 174 279 233 231 266C184 298 119 290 76 253C34 217 24 155 47 106C70 57 105 40 159 37Z"
-                                fill="url(#ai-blob-fill)"
-                            />
+                                <path
+                                    className="ai-blob__body"
+                                    d="M159 37C215 34 264 70 279 121C295 174 279 233 231 266C184 298 119 290 76 253C34 217 24 155 47 106C70 57 105 40 159 37Z"
+                                    fill="url(#ai-blob-fill)"
+                                />
 
-                            <path
-                                className="ai-blob__shine"
-                                d="M159 37C215 34 264 70 279 121C295 174 279 233 231 266C184 298 119 290 76 253C34 217 24 155 47 106C70 57 105 40 159 37Z"
-                                fill="url(#ai-blob-shine)"
-                            />
+                                <path
+                                    className="ai-blob__shine"
+                                    d="M159 37C215 34 264 70 279 121C295 174 279 233 231 266C184 298 119 290 76 253C34 217 24 155 47 106C70 57 105 40 159 37Z"
+                                    fill="url(#ai-blob-shine)"
+                                />
 
-                            <path
-                                className="ai-blob__shimmer"
-                                d="M159 37C215 34 264 70 279 121C295 174 279 233 231 266C184 298 119 290 76 253C34 217 24 155 47 106C70 57 105 40 159 37Z"
-                                fill="url(#ai-blob-shimmer)"
-                            />
+                                <path
+                                    className="ai-blob__shimmer"
+                                    d="M159 37C215 34 264 70 279 121C295 174 279 233 231 266C184 298 119 290 76 253C34 217 24 155 47 106C70 57 105 40 159 37Z"
+                                    fill="url(#ai-blob-shimmer)"
+                                />
 
-                            <g className="ai-blob__eyes">
-                                <g className="ai-blob__eye ai-blob__eye--left">
-                                    <rect
-                                        className="ai-blob__sclera"
-                                        x="110"
-                                        y="111"
-                                        width="28"
-                                        height="76"
-                                        rx="14"
-                                    />
+                                <g className="ai-blob__eyes">
+                                    <g className="ai-blob__eye ai-blob__eye--left">
+                                        <rect
+                                            className="ai-blob__sclera"
+                                            x="110"
+                                            y="111"
+                                            width="28"
+                                            height="76"
+                                            rx="14"
+                                        />
 
-                                    <rect
-                                        className="ai-blob__pupil"
-                                        x="117"
-                                        y="130"
-                                        width="14"
-                                        height="38"
-                                        rx="7"
-                                    />
-                                </g>
+                                        <rect
+                                            className="ai-blob__pupil"
+                                            x="117"
+                                            y="130"
+                                            width="14"
+                                            height="38"
+                                            rx="7"
+                                        />
+                                    </g>
 
-                                <g className="ai-blob__eye ai-blob__eye--right">
-                                    <rect
-                                        className="ai-blob__sclera"
-                                        x="182"
-                                        y="111"
-                                        width="28"
-                                        height="76"
-                                        rx="14"
-                                    />
+                                    <g className="ai-blob__eye ai-blob__eye--right">
+                                        <rect
+                                            className="ai-blob__sclera"
+                                            x="182"
+                                            y="111"
+                                            width="28"
+                                            height="76"
+                                            rx="14"
+                                        />
 
-                                    <rect
-                                        className="ai-blob__pupil"
-                                        x="189"
-                                        y="130"
-                                        width="14"
-                                        height="38"
-                                        rx="7"
-                                    />
+                                        <rect
+                                            className="ai-blob__pupil"
+                                            x="189"
+                                            y="130"
+                                            width="14"
+                                            height="38"
+                                            rx="7"
+                                        />
+                                    </g>
+
+                                    <g className="ai-blob__angry-brows">
+                                        <rect
+                                            className="ai-blob__angry-brow ai-blob__angry-brow--left"
+                                            x="107"
+                                            y="101"
+                                            width="40"
+                                            height="8"
+                                            rx="4"
+                                        />
+                                        <rect
+                                            className="ai-blob__angry-brow ai-blob__angry-brow--right"
+                                            x="173"
+                                            y="101"
+                                            width="40"
+                                            height="8"
+                                            rx="4"
+                                        />
+                                    </g>
                                 </g>
                             </g>
                         </g>
                     </g>
                 </g>
             </svg>
-
-            <span
-                className="ai-blob__status-dot"
-                aria-hidden="true"
-            />
         </div>
     );
 }
