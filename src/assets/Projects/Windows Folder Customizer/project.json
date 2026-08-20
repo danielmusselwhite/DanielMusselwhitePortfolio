@@ -1,28 +1,32 @@
 {
   "title": "Windows Folder Customizer",
-  "shortDescription": "Windows Folder Customizer is a WPF desktop application for designing and applying custom Windows folder icons. Users can select a folder, choose a base folder style, recolour it, add custom imagery, and apply the finished design directly through Windows Explorer.",
-  "overview": "A Windows desktop utility that provides a visual editor for creating personalised folder icons and automatically handles the image rendering, icon conversion, and Windows shell configuration required to apply them.",
-  "problem": "Customising Windows folder icons normally requires manually creating an ICO file, placing it alongside the folder, configuring desktop.ini correctly, and setting the appropriate Windows file attributes. I wanted to make that process visual and accessible while also exploring WPF graphics, image manipulation, and lower-level Windows shell behaviour.",
-  "solution": "I built a WPF application with an interactive icon editor where users can select a target folder, choose between different base folder designs, recolour the folder, and overlay their own images. The application performs pixel-level colour transformation using a WriteableBitmap, renders the completed WPF canvas into an image, converts the result into an ICO file, and automatically configures the folder's desktop.ini and Windows file attributes so Explorer uses the generated icon.",
-  "outcome": "The project turns a normally manual Windows customisation process into a simple graphical workflow while demonstrating image processing, WPF rendering, filesystem manipulation, and integration with Windows Explorer.",
+  "shortDescription": "A WPF desktop utility for designing and applying custom Windows folder icons, combining image processing, WPF rendering, filesystem manipulation, and Windows shell integration.",
+  "overview": "Windows Folder Customizer is a desktop application that turns Windows folder icon customisation into a visual workflow. Users can select a folder, choose and recolour a base design, overlay custom imagery, and apply the finished icon without manually creating ICO files or configuring Windows shell metadata.",
+  "problem": "Changing a Windows folder icon manually involves creating an ICO file, placing it with the target folder, configuring desktop.ini correctly, and applying the required filesystem attributes. I wanted to automate that process behind a visual editor while exploring image manipulation, WPF rendering, and lower-level Windows shell behaviour.",
+  "solution": "I built an interactive WPF editor that allows users to compose folder icons from configurable base designs and custom images. Pixel-level recolouring is performed using WriteableBitmap and direct bitmap buffer manipulation. The completed WPF canvas is rendered to an image, converted into an ICO file, and written alongside the target folder. The application then generates the required desktop.ini configuration and applies the relevant Windows file attributes so Explorer displays the generated icon.",
+  "outcome": "The application reduces a multi-step Windows customisation process to a simple graphical workflow while demonstrating practical integration between WPF rendering, image processing, filesystem operations, and Windows Explorer.",
   "highlights": [
-    "Built an interactive WPF editor for composing custom folder icons from base designs and user-supplied images",
-    "Implemented pixel-level image recolouring using WriteableBitmap and direct bitmap buffer manipulation",
-    "Rendered dynamic WPF canvas content into PNG images and converted the result into Windows ICO files",
-    "Automated Windows folder icon configuration by generating desktop.ini and managing system and hidden file attributes",
-    "Integrated directly with Windows Explorer so customised folders are immediately surfaced after applying changes"
+    "Built an interactive WPF editor for composing custom folder icons from configurable designs and user-supplied imagery",
+    "Implemented pixel-level image recolouring with WriteableBitmap and direct bitmap buffer manipulation",
+    "Rendered dynamic WPF canvas content to image files and converted the result into Windows ICO format",
+    "Automated desktop.ini generation and the filesystem attributes required for Windows folder customisation",
+    "Integrated with Windows Explorer so generated icons are applied directly to the selected folder"
   ],
   "technologies": [
     "C#",
-    "WPF",
     ".NET",
+    "WPF",
     "XAML",
+    "WriteableBitmap",
     "Windows Shell",
-    "Image Processing",
-    "File System APIs"
+    "File System APIs",
+    "Image Processing"
   ],
-  "featured": true,
+  "prominence": "featured",
   "order": 3,
   "github": "https://github.com/danielmusselwhite/FolderCustomizer",
-  "demo": "https://www.youtube.com/watch?v=4Tca0lsZU-c"
+  "demo": {
+    "url": "https://www.youtube.com/watch?v=4Tca0lsZU-c",
+    "label": "Watch Demo"
+  }
 }

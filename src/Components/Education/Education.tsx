@@ -1,17 +1,23 @@
 const educationItems = [
     {
         institution: "University College London",
-        degree: "Master of Science - MSc",
-        subject: "Software Systems Engineering",
-        dates: "Sep 2021 - Sep 2022",
-        grade: "Distinction",
+        degree: "MSc Software Systems Engineering",
+        dates: "Sep 2021 — Sep 2022",
+        grade: "Distinction · 76%",
+        highlights: [
+            "Worked with Microsoft London on team projects involving requirements elicitation, system design, development, documentation, and validation within existing software projects.",
+            "Focused on practical software engineering, architecture, and the design and delivery of complex software systems.",
+        ],
     },
     {
         institution: "University of Nottingham",
-        degree: "Bachelor of Science - BSc",
-        subject: "Computer Science and Artificial Intelligence",
-        dates: "2018 - 2021",
-        grade: "First-Class Honours",
+        degree: "BSc (Hons) Computer Science & Artificial Intelligence",
+        dates: "2018 — 2021",
+        grade: "First-Class Honours · 81%",
+        highlights: [
+            "Graduated within the top 5% of the cohort and received the High Achievers Award.",
+            "Developed an energy forecasting model and novel hyperparameter optimisation algorithm for my dissertation, benchmarking it against established approaches.",
+        ],
     },
 ];
 
@@ -21,19 +27,26 @@ export default function Education() {
             <div className="section__content">
                 <div className="education__heading">
                     <p className="section__eyebrow">05 / Education</p>
-                    <h2>A foundation in software systems and intelligent computing.</h2>
+
+                    <h2>Strong foundations in software engineering and computer science.</h2>
+
                     <p>
-                        Academic work that shaped how I think about software
-                        design, engineering trade-offs, and the systems behind
-                        the applications I build.
+                        Academic experience spanning software systems
+                        engineering, artificial intelligence, collaborative
+                        development, and applied research.
                     </p>
                 </div>
 
                 <div className="education-list">
                     {educationItems.map((item, index) => (
-                        <article className="education-card" key={item.institution}>
+                        <article
+                            className="education-card"
+                            key={item.institution}
+                        >
                             <div className="education-card__marker">
-                                <span>{String(index + 1).padStart(2, "0")}</span>
+                                <span>
+                                    {String(index + 1).padStart(2, "0")}
+                                </span>
                             </div>
 
                             <div className="education-card__content">
@@ -42,17 +55,20 @@ export default function Education() {
                                         <h3>{item.institution}</h3>
                                         <p>{item.degree}</p>
                                     </div>
+
                                     <span>{item.dates}</span>
                                 </div>
-
-                                <p className="education-card__subject">
-                                    {item.subject}
-                                </p>
 
                                 <div className="education-card__grade">
                                     <span>Result</span>
                                     <strong>{item.grade}</strong>
                                 </div>
+
+                                <ul className="education-card__highlights">
+                                    {item.highlights.map((highlight) => (
+                                        <li key={highlight}>{highlight}</li>
+                                    ))}
+                                </ul>
                             </div>
                         </article>
                     ))}

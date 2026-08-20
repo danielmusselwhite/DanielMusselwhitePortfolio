@@ -1,30 +1,40 @@
 {
-  "title": "Commerce Fabric",
-  "shortDescription": "CommerceFabric is a portfolio project exploring distributed systems and microservice architecture using a production-inspired eCommerce domain. The goal is not just to build an online store, but to demonstrate architectural decision-making around service boundaries, data consistency, resilience, observability, and scalability.",
-  "overview": "A production-inspired microservices e-commerce platform designed to showcase service isolation, scalability, observability, and resilient event-driven integrations across distributed systems.",
-  "problem": "I wanted to model a realistic e-commerce system without creating tightly coupled services, while still proving how authentication, data ownership, caching, and asynchronous events work in a modern platform.",
-  "solution": "I split the platform into independent services for users, products, and orders, connected through REST APIs, message-based events, and Azure-native infrastructure. The frontend was delivered in Angular with authentication and routing handled through Azure API Management and Microsoft Entra ID.",
-  "outcome": "The project demonstrates a practical architecture for fault tolerance, asynchronous communication, and scalable service boundaries in a cloud-native environment.",
+  "title": "CommerceFabric",
+  "shortDescription": "A cloud-native e-commerce platform exploring production-style microservices, distributed communication, resilience, and Azure infrastructure.",
+  "overview": "CommerceFabric is a production-inspired distributed e-commerce platform built to explore the architectural trade-offs involved in designing and operating independently deployable microservices. It covers service boundaries, data ownership, synchronous and asynchronous communication, caching, resilience, identity, infrastructure as code, and automated deployment on Azure.",
+  "problem": "Design a realistic distributed system without allowing individual services to become tightly coupled, while handling cross-service workflows, independent data ownership, authentication, transient failures, and deployment as the platform grows.",
+  "solution": "I separated users, products, and orders into independently deployable ASP.NET Core services with database-per-service persistence. REST handles synchronous communication, while RabbitMQ and Azure Service Bus demonstrate asynchronous event-driven workflows. Redis reduces repeated cross-service lookups, Polly handles transient failures, Microsoft Entra ID provides identity, and traffic is routed through Azure API Management and Ocelot.",
+  "outcome": "The finished platform demonstrates the trade-offs involved in building a cloud-native distributed system: independently deployable services, eventual consistency, fault isolation, resilient communication, centralized API governance, and automated infrastructure and application delivery on Azure.",
   "highlights": [
-    "Built a distributed .NET microservice architecture with independent data ownership",
-    "Used Azure Service Bus and RabbitMQ to decouple domain events and improve resilience",
-    "Layered Redis caching and retry policies to reduce load and handle transient failures",
-    "Designed a production-inspired deployment model on AKS with API gateway and identity controls"
+    "Designed independently deployable services with clear ownership of business logic and persistence",
+    "Implemented asynchronous workflows with Azure Service Bus Topics, RabbitMQ, and dead-letter handling",
+    "Used Redis caching and Polly resilience policies to reduce coupling and tolerate transient failures",
+    "Provisioned Azure infrastructure with Bicep and deployed containerized services to AKS",
+    "Built GitHub Actions pipelines covering testing, containerization, ACR publishing, infrastructure deployment, and AKS releases",
+    "Integrated Microsoft Entra ID, Microsoft Graph, Azure API Management, and Ocelot for identity and API routing"
   ],
   "technologies": [
-    "ASP.NET",
     "C#",
-    "Azure",
-    "Kubernetes",
-    "RabbitMQ",
-    "RedisCache",
-    "AzureServiceBus",
-    "SQL",
+    "ASP.NET Core",
     "Angular",
-    "TypeScript"
+    "Azure",
+    "AKS",
+    "Docker",
+    "Kubernetes",
+    "Bicep",
+    "Azure Service Bus",
+    "RabbitMQ",
+    "Redis",
+    "Polly",
+    "PostgreSQL",
+    "MySQL",
+    "MongoDB"
   ],
-  "featured": true,
+  "prominence": "flagship",
   "order": 1,
   "github": "https://github.com/CommerceFabric",
-  "demo": "https://www.youtube.com/watch?v=e2fCbs92Rsk"
+  "demo": {
+    "url": "https://www.youtube.com/watch?v=e2fCbs92Rsk",
+    "label": "Watch Demo"
+  }
 }

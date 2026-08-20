@@ -5,10 +5,10 @@ const experienceItems = [
         dates: "Aug 2026 — Present",
         location: "Wickford, England · Hybrid",
         summary:
-            "Building dependable software for a specialist insurance platform, with a focus on maintainable systems and thoughtful delivery.",
+            "Developing and maintaining software for a specialist insurance platform within a mature commercial codebase.",
         highlights: [
-            "Designing and delivering features across a production software platform.",
-            "Working closely with the wider team to turn domain needs into practical technical solutions.",
+            "Delivering production features and improvements across an established insurance software platform.",
+            "Working with the wider engineering team to understand domain requirements and translate them into maintainable technical solutions.",
         ],
     },
     {
@@ -17,11 +17,12 @@ const experienceItems = [
         dates: "Dec 2024 — Jul 2026",
         location: "Stansted Mountfitchet, England · On-site",
         summary:
-            "Led development of the RDOC platform across desktop, web, APIs, data, testing, and deployment.",
+            "Led development of the RDOC platform, taking features from customer requirements and technical design through implementation, testing, deployment, and support.",
         highlights: [
-            "Led the design, development, deployment, and maintenance of a WPF application while working directly with customers.",
-            "Built .NET, Blazor, REST API, SQL, and Azure Blob Storage solutions with authentication and role-based access control.",
-            "Improved team delivery through automated testing, architecture discussions, engineering standards, and mentoring.",
+            "Led the design, development, deployment, and maintenance of RDOC, working directly with customers to elicit requirements and turn them into technical designs and delivered features.",
+            "Built full-stack .NET applications using WPF, Blazor, ASP.NET Core, EF Core, REST APIs, SQL, and Azure Blob Storage.",
+            "Implemented authentication and role-based access control using FusionAuth SSO, token-based API authorization, and custom permission attributes.",
+            "Improved engineering quality through xUnit and FlaUI test automation, UML-driven design, team standards, code review practices, and mentoring junior engineers.",
         ],
     },
     {
@@ -30,11 +31,12 @@ const experienceItems = [
         dates: "Sep 2022 — Dec 2024",
         location: "Basildon, England · Hybrid",
         summary:
-            "Delivered features and automation for large-scale financial software across development, testing, and CI/CD.",
+            "Developed features, engineering tools, automated tests, and CI/CD infrastructure for large-scale financial software.",
         highlights: [
-            "Created Python and PowerShell tools that improved team workflows and reduced repetitive work.",
-            "Built automated tests for backend services, SOAP APIs, and browser-based interfaces.",
-            "Configured Jenkins pipelines with Groovy to automate testing and deployment processes.",
+            "Designed, developed, and deployed production changes using Python, Java, JavaScript, and SQL within a large financial software platform.",
+            "Built internal Python and PowerShell tooling to automate repetitive engineering workflows, including a development environment for Drools-based files.",
+            "Created PyTest suites covering backend services and SOAP APIs alongside Selenium-based browser testing.",
+            "Configured Jenkins CI/CD pipelines using Groovy and Python to automate testing, promotion, and deployment workflows.",
         ],
     },
 ];
@@ -45,11 +47,14 @@ export default function Experience() {
             <div className="section__content">
                 <div className="experience__heading">
                     <p className="section__eyebrow">04 / Experience</p>
-                    <h2>A track record of building and improving systems.</h2>
+
+                    <h2>Engineering software from requirements to release.</h2>
+
                     <p>
-                        Roles spanning product development, architecture,
-                        automation, testing, and the engineering practices that
-                        help teams deliver with confidence.
+                        Commercial experience across system design, application
+                        development, testing, automation, deployment, and the
+                        engineering practices that keep software maintainable
+                        as it evolves.
                     </p>
                 </div>
 
@@ -57,7 +62,9 @@ export default function Experience() {
                     {experienceItems.map((item, index) => (
                         <article className="experience" key={item.company}>
                             <div className="experience__marker">
-                                <span>{String(index + 1).padStart(2, "0")}</span>
+                                <span>
+                                    {String(index + 1).padStart(2, "0")}
+                                </span>
                             </div>
 
                             <div className="experience__content">
@@ -70,8 +77,13 @@ export default function Experience() {
                                     <span>{item.dates}</span>
                                 </div>
 
-                                <p className="experience__meta">{item.location}</p>
-                                <p className="experience__summary">{item.summary}</p>
+                                <p className="experience__meta">
+                                    {item.location}
+                                </p>
+
+                                <p className="experience__summary">
+                                    {item.summary}
+                                </p>
 
                                 <ul className="experience__highlights">
                                     {item.highlights.map((highlight) => (

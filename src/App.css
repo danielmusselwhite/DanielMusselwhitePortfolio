@@ -724,6 +724,15 @@
   margin-left: auto;
 }
 
+/*
+ * Prominence affects presentation rather than layout.
+ * Only the flagship is wider when open; all projects still use the
+ * original width-based minimize / restore / maximize animation.
+ */
+.project-window--flagship:not(.project-window--minimized) {
+  width: 100%;
+}
+
 .project-window--expanded {
   width: 100%;
 }
@@ -2426,4 +2435,85 @@
     grid-column: 1 / -1;
     grid-row: 2;
   }
+}
+/* =========================
+   PROJECT PROMINENCE STATUS
+   Brighter + wider glow as importance increases.
+   ========================= */
+
+.project-window .status-label {
+  font-weight: 700;
+
+  transition:
+    color 0.25s ease,
+    text-shadow 0.25s ease;
+}
+
+/* STANDARD / PROJECT
+   Muted, almost no glow. */
+.project-window--standard .status-label {
+  color: #7fa9ad;
+
+  text-shadow:
+    0 0 3px rgba(127, 169, 173, 0.18);
+}
+
+/* FEATURED
+   Noticeably brighter with a medium cyan/teal glow. */
+.project-window--featured .status-label {
+  color: #55e8d4;
+
+  text-shadow:
+    0 0 2px rgba(210, 255, 249, 0.75),
+    0 0 7px rgba(85, 232, 212, 0.65),
+    0 0 16px rgba(85, 232, 212, 0.38),
+    0 0 28px rgba(56, 248, 232, 0.18);
+}
+
+/* FLAGSHIP
+   Very bright centre with a much larger bloom around it. */
+.project-window--flagship .status-label {
+  color: #5fffe0;
+
+  text-shadow:
+    0 0 2px rgba(235, 255, 252, 1),
+    0 0 5px rgba(140, 255, 238, 0.95),
+    0 0 11px rgba(65, 255, 220, 0.82),
+    0 0 22px rgba(0, 255, 191, 0.58),
+    0 0 38px rgba(0, 255, 213, 0.34),
+    0 0 58px rgba(0, 220, 255, 0.18);
+}
+
+
+/* =========================
+   LIGHT MODE
+   Stronger text colour, tighter bloom so it doesn't
+   disappear against the lighter background.
+   ========================= */
+
+.site-shell--light .project-window--standard .status-label {
+  color: #587b83;
+
+  text-shadow:
+    0 0 2px rgba(88, 123, 131, 0.12);
+}
+
+.site-shell--light .project-window--featured .status-label {
+  color: #008f9f;
+
+  text-shadow:
+    0 0 2px rgba(255, 255, 255, 0.9),
+    0 0 6px rgba(0, 180, 190, 0.35),
+    0 0 14px rgba(0, 170, 190, 0.2);
+}
+
+.site-shell--light .project-window--flagship .status-label {
+  color: #008c78;
+
+  text-shadow:
+    0 0 2px rgba(255, 255, 255, 1),
+    0 0 5px rgba(0, 210, 180, 0.5),
+    0 0 12px rgba(0, 190, 175, 0.32),
+    0 0 24px rgba(0, 180, 200, 0.18),
+    0 0 38px rgba(0, 170, 210, 0.1);
 }

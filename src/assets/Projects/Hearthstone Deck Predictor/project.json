@@ -1,25 +1,29 @@
 {
   "title": "Hearthstone Deck Predictor",
-  "shortDescription": "Hearthstone Deck Predictor is a WPF plugin for Hearthstone Deck Tracker that predicts an opponent's likely deck in real time. It combines live card-play events with current Standard meta data from HSReplay.net to help players identify opposing archetypes, anticipate likely cards, and understand matchup odds as a game develops.",
-  "overview": "A real-time Hearthstone opponent deck prediction tool that integrates with Hearthstone Deck Tracker, matches observed cards against current Standard meta decks, and surfaces likely deck lists, archetypes, and matchup information during play.",
-  "problem": "Returning Hearthstone players can struggle to keep up with a constantly changing meta, making it difficult to recognise opposing archetypes or know which cards they need to play around. Hearthstone Deck Tracker provides excellent information about your own deck, but does not inherently identify the opponent's complete deck from the limited information revealed during a match.",
-  "solution": "I built a WPF plugin that integrates with Hearthstone Deck Tracker's internal API and listens for opponent card-play events in real time. At the start of a game, the application retrieves current Standard deck data from HSReplay.net and stores it in an in-memory lookup structure for fast matching. As the opponent reveals cards, incompatible decks are progressively filtered out and the remaining candidates are ranked to identify the best-fitting archetype. The UI then surfaces likely cards, predicted deck information, and matchup odds against the player's own most likely archetype.",
-  "outcome": "The project provides players with continuously refined information about their opponent's likely strategy, helping returning or less experienced players understand the current meta, anticipate threats, and make more informed decisions during a match.",
+  "shortDescription": "A real-time WPF plugin that predicts an opponent's likely Hearthstone deck by combining live card-play events with current Standard meta data.",
+  "overview": "Hearthstone Deck Predictor is a plugin for Hearthstone Deck Tracker that identifies an opponent's likely deck archetype as a match develops. It combines live game events with current Standard meta deck data from HSReplay.net, progressively narrowing candidate decks as cards are revealed and surfacing likely remaining cards and matchup information to the player.",
+  "problem": "Hearthstone's meta changes frequently, making it difficult for returning or less experienced players to recognise opposing archetypes and know which threats they should anticipate. Only a small portion of the opponent's deck is visible during a match, so useful predictions need to be derived incrementally from the cards revealed during play.",
+  "solution": "I built a WPF plugin that integrates with Hearthstone Deck Tracker's internal API and reacts to opponent card-play events in real time. At the beginning of each game, the application retrieves current Standard deck data from HSReplay.net and builds in-memory lookup structures for efficient matching. As cards are revealed, incompatible decks are progressively eliminated and the remaining candidates are ranked to determine the most likely archetype. The interface then presents the predicted deck, likely remaining cards, and matchup information against the player's own likely archetype.",
+  "outcome": "The application continuously refines its prediction throughout a match, giving players useful context about an opponent's likely strategy and remaining threats while demonstrating real-time event processing, external data integration, and efficient in-memory filtering.",
   "highlights": [
-    "Integrated directly with Hearthstone Deck Tracker's internal API to react to live game and card-play events",
-    "Retrieved current Standard meta deck data from HSReplay.net at the beginning of each game",
-    "Used in-memory hash-based lookups and progressive filtering for fast real-time deck prediction",
-    "Continuously refined opponent archetype predictions as additional cards were revealed",
-    "Displayed likely remaining cards and archetype matchup odds to help players identify threats and play-around opportunities"
+    "Integrated with Hearthstone Deck Tracker's internal API to process live game and opponent card-play events",
+    "Retrieved current Standard meta deck data from HSReplay.net at the start of each match",
+    "Built hash-based in-memory lookup structures for efficient real-time candidate matching",
+    "Progressively eliminated incompatible decks and refined archetype predictions as cards were revealed",
+    "Surfaced likely remaining cards and matchup information to help players anticipate threats during play"
   ],
   "technologies": [
     "C#",
-    "WPF",
     ".NET",
+    "WPF",
+    "Hearthstone Deck Tracker API",
     "REST APIs"
   ],
-  "featured": true,
+  "prominence": "standard",
   "order": 5,
   "github": "https://github.com/danielmusselwhite/HSDeckTrackerOpponentGuesser",
-  "demo": "https://www.youtube.com/watch?v=E7a-nlvYjV0"
+  "demo": {
+    "url": "https://www.youtube.com/watch?v=E7a-nlvYjV0",
+    "label": "Watch Demo"
+  }
 }

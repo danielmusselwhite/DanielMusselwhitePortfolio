@@ -7,32 +7,69 @@ interface SkillGroup {
 const skillGroups: SkillGroup[] = [
     {
         title: "Languages",
-        description: "The tools I use to model ideas and build applications.",
-        skills: ["C#", "Python", "TypeScript"],
+        description: "Languages I use across application and systems development.",
+        skills: ["C#", "Python", "TypeScript", "Java", "SQL", "PowerShell"],
     },
     {
-        title: "Frontend",
-        description: "Interfaces that make complex workflows feel clear.",
-        skills: ["Blazor", "WPF", "React"],
+        title: "Application Development",
+        description: "Building web, desktop, and service-based applications.",
+        skills: ["ASP.NET Core", "WPF", "Blazor", "Angular", "React", "EF Core"],
     },
     {
-        title: "Backend",
-        description: "Services and APIs designed for reliable behaviour.",
-        skills: ["ASP.NET Core"],
+        title: "Distributed Systems",
+        description: "Connecting services while keeping boundaries and failures manageable.",
+        skills: [
+            "REST APIs",
+            "RabbitMQ",
+            "Azure Service Bus",
+            "Redis",
+            "Polly",
+            "Ocelot",
+        ],
     },
     {
-        title: "Databases",
-        description: "Choosing the right shape for data and its access patterns.",
-        skills: ["PostgreSQL", "MySQL", "SQLServer", "MongoDB"],
+        title: "Data",
+        description: "Working across relational and document-oriented persistence.",
+        skills: ["SQL Server", "PostgreSQL", "MySQL", "MongoDB"],
     },
     {
-        title: "Infrastructure & DevOps",
-        description: "The automation and cloud foundations behind the system.",
-        skills: ["Docker", "Kubernetes", "Azure", "Bicep", "GitHub Actions"],
+        title: "Cloud & DevOps",
+        description: "Infrastructure and delivery from source control to production.",
+        skills: [
+            "Azure",
+            "Docker",
+            "Kubernetes",
+            "Bicep",
+            "GitHub Actions",
+            "Azure DevOps Pipelines",
+        ],
+    },
+    {
+        title: "Testing",
+        description: "Building confidence into systems through testing.",
+        skills: [
+            "xUnit",
+            "NUnit",
+            "PyTest",
+            "FlaUI",
+            "Selenium",
+        ],
+    },
+    {
+        title: "Identity & Authorization",
+        description: "Managing identity and authorization in applications and systems.",
+        skills: [
+            "Microsoft Entra ID",
+            "ASP.NET Identity",
+            "FusionAuth",
+            "OAuth 2.0",
+            "OpenID Connect",
+            "JWT",
+        ],
     },
 ];
 
-const coreSkillGroups = skillGroups.slice(0, 3);
+const applicationSkillGroups = skillGroups.slice(0, 3);
 const platformSkillGroups = skillGroups.slice(3);
 
 function SkillGroupCard({ group, index }: { group: SkillGroup; index: number }) {
@@ -64,11 +101,14 @@ export default function Skills() {
             <div className="section__content">
                 <div className="skills__heading">
                     <p className="section__eyebrow">02 / Capabilities</p>
-                    <h2>A practical stack for building end to end.</h2>
+
+                    <h2>From application code to deployed systems.</h2>
+
                     <p>
-                        I work across the application boundary, from typed
-                        interfaces and APIs to data, deployment, and the cloud
-                        infrastructure that keeps everything running.
+                        I work across the software lifecycle, building
+                        applications and APIs, designing service integrations,
+                        working with data, and delivering systems through cloud
+                        infrastructure and automated pipelines.
                     </p>
                 </div>
 
@@ -76,11 +116,15 @@ export default function Skills() {
                     <div className="skills__band">
                         <div className="skills__band-heading">
                             <span>01</span>
-                            <h3>Core application</h3>
-                            <p>Where ideas become working software.</p>
+                            <h3>Applications &amp; architecture</h3>
+                            <p>
+                                The languages, frameworks, and patterns I use
+                                to build software.
+                            </p>
                         </div>
+
                         <div className="skills-grid skills-grid--core">
-                            {coreSkillGroups.map((group, index) => (
+                            {applicationSkillGroups.map((group, index) => (
                                 <SkillGroupCard
                                     key={group.title}
                                     group={group}
@@ -93,15 +137,19 @@ export default function Skills() {
                     <div className="skills__band">
                         <div className="skills__band-heading">
                             <span>02</span>
-                            <h3>Data &amp; delivery</h3>
-                            <p>How applications are stored, shipped, and run.</p>
+                            <h3>Data, cloud &amp; delivery</h3>
+                            <p>
+                                How I persist, test, secure, deploy, and
+                                operate software.
+                            </p>
                         </div>
+
                         <div className="skills-grid skills-grid--platform">
                             {platformSkillGroups.map((group, index) => (
                                 <SkillGroupCard
                                     key={group.title}
                                     group={group}
-                                    index={index + coreSkillGroups.length}
+                                    index={index + applicationSkillGroups.length}
                                 />
                             ))}
                         </div>

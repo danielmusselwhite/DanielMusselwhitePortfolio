@@ -50,8 +50,9 @@ export default function Hero() {
                     </h2>
 
                     <p className="hero__description">
-                        I build modern, performant applications with a focus on
-                        clean architecture, usability and maintainable code.
+                        I design and build reliable software end-to-end, from
+                        requirements and system architecture to .NET services,
+                        cloud infrastructure, testing and deployment.
                     </p>
 
                     <div className="hero__actions">
@@ -59,14 +60,14 @@ export default function Hero() {
                             href="#projects"
                             className="button button--primary"
                         >
-                            View my work
+                            Explore my work
                         </a>
 
                         <a
                             href="#contact"
                             className="button button--secondary"
                         >
-                            Contact me
+                            Get in touch
                         </a>
                     </div>
                 </div>

@@ -1,30 +1,31 @@
 {
   "title": "Activity Web App",
-  "shortDescription": "Activity Web App is a full-stack activity tracking application built with a React and TypeScript front end and an ASP.NET Core Web API backend. It explores authenticated CRUD workflows, RESTful API design, and persistent user-specific data using ASP.NET Core Identity and SQLite.",
-  "overview": "A full-stack web application that allows authenticated users to create, view, update, and manage activities through a React interface backed by an ASP.NET Core REST API and SQLite database.",
-  "problem": "I wanted to build a complete full-stack application that went beyond a standalone frontend or API, demonstrating how authentication, persistent data, client-server communication, and user-scoped CRUD operations fit together in a modern web application.",
-  "solution": "I developed a React and TypeScript frontend that communicates with an ASP.NET Core Web API through REST endpoints. ASP.NET Core Identity manages user registration and authentication, while application and user data are persisted with SQLite. The backend exposes authenticated CRUD operations so activity data can be securely created, retrieved, updated, and deleted through the frontend.",
-  "outcome": "The project demonstrates an end-to-end full-stack architecture, covering frontend state and user interaction, REST API development, authentication and authorization, relational data persistence, and secure communication between independently structured client and server applications.",
+  "shortDescription": "A full-stack activity tracking application built with React, TypeScript, and ASP.NET Core, featuring authenticated user-specific CRUD workflows and persistent relational data.",
+  "overview": "Activity Web App is a full-stack application built to demonstrate how a modern frontend, REST API, authentication, and persistent data work together as one system. Authenticated users can create, view, update, and manage their own activities through a React interface backed by an ASP.NET Core API and SQLite database.",
+  "problem": "I wanted to build a complete client-server application rather than an isolated frontend or API, with particular focus on authenticated workflows, persistent user-owned data, and clear separation between frontend and backend responsibilities.",
+  "solution": "I built the frontend with React and TypeScript and connected it to an ASP.NET Core REST API. ASP.NET Core Identity handles user registration and authentication, while the backend exposes protected CRUD endpoints for activity data. SQLite provides relational persistence for both application and identity data, with activity operations scoped to the authenticated user.",
+  "outcome": "The project demonstrates an end-to-end full-stack architecture covering frontend interaction, REST API design, authentication and authorization, user-scoped data access, relational persistence, and communication between independently structured client and server applications.",
   "highlights": [
-    "Built a full-stack application using React and TypeScript with an ASP.NET Core Web API backend",
+    "Built an end-to-end application with React and TypeScript backed by an ASP.NET Core REST API",
     "Implemented user registration and authentication with ASP.NET Core Identity",
-    "Designed RESTful endpoints supporting authenticated CRUD operations for activity data",
+    "Designed protected CRUD endpoints for user-specific activity data",
     "Persisted application and identity data using SQLite",
-    "Separated frontend and backend responsibilities through a client-server architecture"
+    "Separated frontend, API, authentication, and persistence concerns across a clear client-server architecture"
   ],
   "technologies": [
-    "React",
-    "TypeScript",
     "C#",
     "ASP.NET Core",
-    "ASP.NET Core Web API",
-    "ASP.NET Core Identity",
-    ".NET",
+    "ASP.NET Identity",
+    "React",
+    "TypeScript",
     "REST APIs",
     "SQLite"
   ],
-  "featured": true,
+  "prominence": "standard",
   "order": 4,
   "github": "https://github.com/danielmusselwhite/ActivityWebApp",
-  "demo": "https://youtube.com"
+  "demo": {
+    "url": "https://youtube.com",
+    "label": "Watch Demo"
+  }
 }

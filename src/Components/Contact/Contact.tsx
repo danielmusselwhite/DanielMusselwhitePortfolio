@@ -6,18 +6,19 @@ export default function Contact() {
                     <div className="contact__copy">
                         <p className="section__eyebrow">06 / Contact</p>
 
-                        <h2>Have a problem worth solving?</h2>
+                        <h2>Let&apos;s build something well.</h2>
 
                         <p>
-                            I'm open to thoughtful conversations about software
-                            engineering, development opportunities, and systems
-                            that need making clearer or more reliable.
+                            I&apos;m always happy to talk about software
+                            engineering, interesting technical challenges, and
+                            opportunities to build reliable, well-designed
+                            systems.
                         </p>
 
                         <p className="contact__note">
-                            The best way to reach me is by email. I usually reply
-                            with a few questions so we can understand the shape
-                            of the problem before talking solutions.
+                            If you&apos;d like to discuss a role, a project, or
+                            simply exchange ideas about software engineering,
+                            email is the best way to reach me.
                         </p>
                     </div>
 
@@ -44,7 +45,7 @@ export default function Contact() {
                                 rel="noreferrer"
                             >
                                 <span>GitHub</span>
-                                <small>View the code</small>
+                                <small>Explore my projects</small>
                             </a>
 
                             <a
@@ -53,7 +54,7 @@ export default function Contact() {
                                 rel="noreferrer"
                             >
                                 <span>LinkedIn</span>
-                                <small>Connect professionally</small>
+                                <small>View my professional profile</small>
                             </a>
                         </div>
                     </div>
