@@ -5,18 +5,14 @@ import {
     type FormEvent,
     type KeyboardEvent,
 } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import type { AiBlobState } from "./AiMascot";
 import "./AiChat.css";
 
 interface AiChatProps {
-    isOpen: boolean;
     assistantState: AiBlobState;
     onAssistantStateChange: (
         state: AiBlobState,
     ) => void;
-    onClose: () => void;
 }
 
 interface ChatMessage {
@@ -35,7 +31,7 @@ const initialMessages: ChatMessage[] = [
         id: 1,
         role: "assistant",
         content:
-            "Hi! Ask me anything about Daniel's experience, projects or tech stack.",
+            "Hi! Ask me anything about Daniel's experience, projects or tech stack. If you don't have a question, try typing /party 👀",
     },
 ];
 
@@ -47,6 +43,7 @@ const stateLabels: Record<AiBlobState, string> = {
     speaking: "replying",
     error: "error",
     angry: "angry",
+    party: "party",
 };
 
 interface AssistantCommand {
@@ -59,6 +56,11 @@ const debugCommands: Record<
     string,
     AssistantCommand
 > = {
+    "/party": {
+        state: "party",
+        reply: "Okay... PARTY MODE!",
+        description: "Maximum rainbow wiggle",
+    },
     "/idle": {
         state: "idle",
         reply: "Okay, I'll idle.",
@@ -94,11 +96,6 @@ const debugCommands: Record<
         reply: "You've made me angry.",
         description: "Don't say I didn't warn you",
     },
-    "/party": {
-        state: "party",
-        reply: "Okay... PARTY MODE!",
-        description: "Maximum rainbow wiggle",
-    },
 
 };
 
@@ -116,10 +113,8 @@ const commandEntries =
 
 
 export default function AiChat({
-    isOpen,
     assistantState,
     onAssistantStateChange,
-    onClose,
 }: AiChatProps) {
     const [messages, setMessages] =
         useState<ChatMessage[]>(initialMessages);
@@ -511,10 +506,6 @@ export default function AiChat({
         }
     }
 
-    if (!isOpen) {
-        return null;
-    }
-
     return (
         <section
             className={[
@@ -537,14 +528,6 @@ export default function AiChat({
                         {stateLabels[assistantState]}
                     </span>
 
-                    <button
-                        type="button"
-                        className="ai-chat__close"
-                        onClick={onClose}
-                        aria-label="Close assistant"
-                    >
-                        ×
-                    </button>
                 </div>
             </div>
 
@@ -567,28 +550,7 @@ export default function AiChat({
                                 : "bot"}
                         </span>
 
-                        <div className="ai-chat__message-content">
-                            {message.role === "assistant" ? (
-                                <ReactMarkdown
-                                    remarkPlugins={[remarkGfm]}
-                                    components={{
-                                        a: ({ children, ...props }) => (
-                                            <a
-                                                {...props}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                            >
-                                                {children}
-                                            </a>
-                                        ),
-                                    }}
-                                >
-                                    {message.content}
-                                </ReactMarkdown>
-                            ) : (
-                                <p>{message.content}</p>
-                            )}
-                        </div>
+                        <p>{message.content}</p>
                     </div>
                 ))}
 

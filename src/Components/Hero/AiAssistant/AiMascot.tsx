@@ -31,6 +31,7 @@ export default function AiMascot({
 }: AiMascotProps) {
     const rootRef = useRef<HTMLDivElement>(null);
     const dragRef = useRef<SVGGElement>(null);
+    const partyDragRef = useRef<HTMLDivElement>(null);
     const rafRef = useRef<number | null>(null);
     const snapRafRef = useRef<number | null>(null);
     const tickleTimerRef = useRef<number | null>(null);
@@ -501,9 +502,10 @@ export default function AiMascot({
 
     function applyDragTransform(dx: number, dy: number) {
         const drag = dragRef.current;
+        const partyDrag = partyDragRef.current;
         const root = rootRef.current;
 
-        if (!drag || !root) {
+        if (!drag || !partyDrag || !root) {
             return;
         }
 
@@ -560,11 +562,34 @@ export default function AiMascot({
                 Math.min(12, draggedX / 24),
             );
 
-        drag.style.transform = `
+        const dragTransform = `
             translate(${draggedX}px, ${draggedY}px)
             rotate(${rotate}deg)
             scale(${scaleX}, ${scaleY})
         `;
+
+        if (state === "party") {
+            /*
+             * Party mode moves the entire visual bundle together:
+             * mascot + dedicated aura + orbs.
+             *
+             * The inner SVG drag group stays neutral so the mascot is not
+             * translated twice.
+             */
+            partyDrag.style.transform = dragTransform;
+            drag.style.transform = `
+                translate(0px, 0px)
+                rotate(0deg)
+                scale(1)
+            `;
+        } else {
+            drag.style.transform = dragTransform;
+            partyDrag.style.transform = `
+                translate(0px, 0px)
+                rotate(0deg)
+                scale(1)
+            `;
+        }
 
         /*
          * Move the glow with him while dragging.
@@ -928,230 +953,254 @@ export default function AiMascot({
             aria-label="Open portfolio assistant"
             title="Poke me"
         >
-            <div className="ai-blob__glow" aria-hidden="true" />
-
-            <svg
-                className="ai-blob__svg"
-                viewBox="0 0 320 320"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
+            <div
+                ref={partyDragRef}
+                className="ai-blob__party-drag"
             >
-                <defs>
-                    <filter
-                        id="ai-blob-party-wobble"
-                        x="-25%"
-                        y="-25%"
-                        width="150%"
-                        height="150%"
+                <div className="ai-blob__party-stage">
+                    <div
+                        className="ai-blob__party-glow"
+                        aria-hidden="true"
+                    />
+
+                    <div
+                        className="ai-blob__party-orbs"
+                        aria-hidden="true"
                     >
-                        <feTurbulence
-                            type="fractalNoise"
-                            baseFrequency="0.018 0.026"
-                            numOctaves="2"
-                            seed="7"
-                            result="noise"
+                        <span className="ai-blob__party-orb ai-blob__party-orb--1" />
+                        <span className="ai-blob__party-orb ai-blob__party-orb--2" />
+                        <span className="ai-blob__party-orb ai-blob__party-orb--3" />
+                        <span className="ai-blob__party-orb ai-blob__party-orb--4" />
+                        <span className="ai-blob__party-orb ai-blob__party-orb--5" />
+                        <span className="ai-blob__party-orb ai-blob__party-orb--6" />
+                    </div>
+
+                    <div className="ai-blob__glow" aria-hidden="true" />
+
+                    <svg
+                        className="ai-blob__svg"
+                        viewBox="0 0 320 320"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
+                    >
+                        <defs>
+                            <filter
+                                id="ai-blob-party-wobble"
+                                x="-25%"
+                                y="-25%"
+                                width="150%"
+                                height="150%"
+                            >
+                                <feTurbulence
+                                    type="fractalNoise"
+                                    baseFrequency="0.018 0.026"
+                                    numOctaves="2"
+                                    seed="7"
+                                    result="noise"
+                                >
+                                    <animate
+                                        attributeName="baseFrequency"
+                                        dur="0.42s"
+                                        values="0.018 0.026;0.034 0.018;0.022 0.038;0.018 0.026"
+                                        repeatCount="indefinite"
+                                    />
+                                    <animate
+                                        attributeName="seed"
+                                        dur="1.2s"
+                                        values="7;11;17;23;7"
+                                        repeatCount="indefinite"
+                                    />
+                                </feTurbulence>
+
+                                <feDisplacementMap
+                                    in="SourceGraphic"
+                                    in2="noise"
+                                    scale="20"
+                                    xChannelSelector="R"
+                                    yChannelSelector="G"
+                                >
+                                    <animate
+                                        attributeName="scale"
+                                        dur="0.34s"
+                                        values="12;24;16;28;12"
+                                        repeatCount="indefinite"
+                                    />
+                                </feDisplacementMap>
+                            </filter>
+
+                            <linearGradient
+                                id="ai-blob-fill"
+                                x1="72"
+                                y1="58"
+                                x2="252"
+                                y2="270"
+                                gradientUnits="userSpaceOnUse"
+                            >
+                                <stop
+                                    offset="0%"
+                                    stopColor="var(--blob-highlight)"
+                                />
+                                <stop
+                                    offset="52%"
+                                    stopColor="var(--blob-main)"
+                                />
+                                <stop
+                                    offset="100%"
+                                    stopColor="var(--blob-shadow)"
+                                />
+                            </linearGradient>
+
+                            <radialGradient
+                                id="ai-blob-shine"
+                                cx="0"
+                                cy="0"
+                                r="1"
+                                gradientUnits="userSpaceOnUse"
+                                gradientTransform="translate(113 93) rotate(52) scale(118 108)"
+                            >
+                                <stop
+                                    stopColor="white"
+                                    stopOpacity="0.34"
+                                />
+                                <stop
+                                    offset="1"
+                                    stopColor="white"
+                                    stopOpacity="0"
+                                />
+                            </radialGradient>
+
+                            <linearGradient
+                                id="ai-blob-shimmer"
+                                x1="55"
+                                y1="70"
+                                x2="265"
+                                y2="250"
+                            >
+                                <stop
+                                    offset="0%"
+                                    stopColor="white"
+                                    stopOpacity="0"
+                                />
+                                <stop
+                                    offset="44%"
+                                    stopColor="white"
+                                    stopOpacity="0"
+                                />
+                                <stop
+                                    offset="52%"
+                                    stopColor="white"
+                                    stopOpacity="0.22"
+                                />
+                                <stop
+                                    offset="60%"
+                                    stopColor="white"
+                                    stopOpacity="0"
+                                />
+                                <stop
+                                    offset="100%"
+                                    stopColor="white"
+                                    stopOpacity="0"
+                                />
+                            </linearGradient>
+                        </defs>
+
+                        <g
+                            ref={dragRef}
+                            className="ai-blob__drag"
                         >
-                            <animate
-                                attributeName="baseFrequency"
-                                dur="0.42s"
-                                values="0.018 0.026;0.034 0.018;0.022 0.038;0.018 0.026"
-                                repeatCount="indefinite"
-                            />
-                            <animate
-                                attributeName="seed"
-                                dur="1.2s"
-                                values="7;11;17;23;7"
-                                repeatCount="indefinite"
-                            />
-                        </feTurbulence>
-
-                        <feDisplacementMap
-                            in="SourceGraphic"
-                            in2="noise"
-                            scale="20"
-                            xChannelSelector="R"
-                            yChannelSelector="G"
-                        >
-                            <animate
-                                attributeName="scale"
-                                dur="0.34s"
-                                values="12;24;16;28;12"
-                                repeatCount="indefinite"
-                            />
-                        </feDisplacementMap>
-                    </filter>
-
-                    <linearGradient
-                        id="ai-blob-fill"
-                        x1="72"
-                        y1="58"
-                        x2="252"
-                        y2="270"
-                        gradientUnits="userSpaceOnUse"
-                    >
-                        <stop
-                            offset="0%"
-                            stopColor="var(--blob-highlight)"
-                        />
-                        <stop
-                            offset="52%"
-                            stopColor="var(--blob-main)"
-                        />
-                        <stop
-                            offset="100%"
-                            stopColor="var(--blob-shadow)"
-                        />
-                    </linearGradient>
-
-                    <radialGradient
-                        id="ai-blob-shine"
-                        cx="0"
-                        cy="0"
-                        r="1"
-                        gradientUnits="userSpaceOnUse"
-                        gradientTransform="translate(113 93) rotate(52) scale(118 108)"
-                    >
-                        <stop
-                            stopColor="white"
-                            stopOpacity="0.34"
-                        />
-                        <stop
-                            offset="1"
-                            stopColor="white"
-                            stopOpacity="0"
-                        />
-                    </radialGradient>
-
-                    <linearGradient
-                        id="ai-blob-shimmer"
-                        x1="55"
-                        y1="70"
-                        x2="265"
-                        y2="250"
-                    >
-                        <stop
-                            offset="0%"
-                            stopColor="white"
-                            stopOpacity="0"
-                        />
-                        <stop
-                            offset="44%"
-                            stopColor="white"
-                            stopOpacity="0"
-                        />
-                        <stop
-                            offset="52%"
-                            stopColor="white"
-                            stopOpacity="0.22"
-                        />
-                        <stop
-                            offset="60%"
-                            stopColor="white"
-                            stopOpacity="0"
-                        />
-                        <stop
-                            offset="100%"
-                            stopColor="white"
-                            stopOpacity="0"
-                        />
-                    </linearGradient>
-                </defs>
-
-                <g
-                    ref={dragRef}
-                    className="ai-blob__drag"
-                >
-                    <g className="ai-blob__lean">
-                        <g className="ai-blob__tickle">
-                            <g className="ai-blob__floating">
-                                <path
-                                    className="ai-blob__body ai-blob__body--back"
-                                    d="M159 37C215 34 264 70 279 121C295 174 279 233 231 266C184 298 119 290 76 253C34 217 24 155 47 106C70 57 105 40 159 37Z"
-                                />
-
-                                <path
-                                    className="ai-blob__body"
-                                    d="M159 37C215 34 264 70 279 121C295 174 279 233 231 266C184 298 119 290 76 253C34 217 24 155 47 106C70 57 105 40 159 37Z"
-                                    fill="url(#ai-blob-fill)"
-                                />
-
-                                <path
-                                    className="ai-blob__shine"
-                                    d="M159 37C215 34 264 70 279 121C295 174 279 233 231 266C184 298 119 290 76 253C34 217 24 155 47 106C70 57 105 40 159 37Z"
-                                    fill="url(#ai-blob-shine)"
-                                />
-
-                                <path
-                                    className="ai-blob__shimmer"
-                                    d="M159 37C215 34 264 70 279 121C295 174 279 233 231 266C184 298 119 290 76 253C34 217 24 155 47 106C70 57 105 40 159 37Z"
-                                    fill="url(#ai-blob-shimmer)"
-                                />
-
-                                <g className="ai-blob__eyes">
-                                    <g className="ai-blob__eye ai-blob__eye--left">
-                                        <rect
-                                            className="ai-blob__sclera"
-                                            x="110"
-                                            y="111"
-                                            width="28"
-                                            height="76"
-                                            rx="14"
+                            <g className="ai-blob__lean">
+                                <g className="ai-blob__tickle">
+                                    <g className="ai-blob__floating">
+                                        <path
+                                            className="ai-blob__body ai-blob__body--back"
+                                            d="M159 37C215 34 264 70 279 121C295 174 279 233 231 266C184 298 119 290 76 253C34 217 24 155 47 106C70 57 105 40 159 37Z"
                                         />
 
-                                        <rect
-                                            className="ai-blob__pupil"
-                                            x="117"
-                                            y="130"
-                                            width="14"
-                                            height="38"
-                                            rx="7"
-                                        />
-                                    </g>
-
-                                    <g className="ai-blob__eye ai-blob__eye--right">
-                                        <rect
-                                            className="ai-blob__sclera"
-                                            x="182"
-                                            y="111"
-                                            width="28"
-                                            height="76"
-                                            rx="14"
+                                        <path
+                                            className="ai-blob__body"
+                                            d="M159 37C215 34 264 70 279 121C295 174 279 233 231 266C184 298 119 290 76 253C34 217 24 155 47 106C70 57 105 40 159 37Z"
+                                            fill="url(#ai-blob-fill)"
                                         />
 
-                                        <rect
-                                            className="ai-blob__pupil"
-                                            x="189"
-                                            y="130"
-                                            width="14"
-                                            height="38"
-                                            rx="7"
+                                        <path
+                                            className="ai-blob__shine"
+                                            d="M159 37C215 34 264 70 279 121C295 174 279 233 231 266C184 298 119 290 76 253C34 217 24 155 47 106C70 57 105 40 159 37Z"
+                                            fill="url(#ai-blob-shine)"
                                         />
-                                    </g>
 
-                                    <g className="ai-blob__angry-brows">
-                                        <rect
-                                            className="ai-blob__angry-brow ai-blob__angry-brow--left"
-                                            x="107"
-                                            y="101"
-                                            width="40"
-                                            height="8"
-                                            rx="4"
+                                        <path
+                                            className="ai-blob__shimmer"
+                                            d="M159 37C215 34 264 70 279 121C295 174 279 233 231 266C184 298 119 290 76 253C34 217 24 155 47 106C70 57 105 40 159 37Z"
+                                            fill="url(#ai-blob-shimmer)"
                                         />
-                                        <rect
-                                            className="ai-blob__angry-brow ai-blob__angry-brow--right"
-                                            x="173"
-                                            y="101"
-                                            width="40"
-                                            height="8"
-                                            rx="4"
-                                        />
+
+                                        <g className="ai-blob__eyes">
+                                            <g className="ai-blob__eye ai-blob__eye--left">
+                                                <rect
+                                                    className="ai-blob__sclera"
+                                                    x="110"
+                                                    y="111"
+                                                    width="28"
+                                                    height="76"
+                                                    rx="14"
+                                                />
+
+                                                <rect
+                                                    className="ai-blob__pupil"
+                                                    x="117"
+                                                    y="130"
+                                                    width="14"
+                                                    height="38"
+                                                    rx="7"
+                                                />
+                                            </g>
+
+                                            <g className="ai-blob__eye ai-blob__eye--right">
+                                                <rect
+                                                    className="ai-blob__sclera"
+                                                    x="182"
+                                                    y="111"
+                                                    width="28"
+                                                    height="76"
+                                                    rx="14"
+                                                />
+
+                                                <rect
+                                                    className="ai-blob__pupil"
+                                                    x="189"
+                                                    y="130"
+                                                    width="14"
+                                                    height="38"
+                                                    rx="7"
+                                                />
+                                            </g>
+
+                                            <g className="ai-blob__angry-brows">
+                                                <rect
+                                                    className="ai-blob__angry-brow ai-blob__angry-brow--left"
+                                                    x="107"
+                                                    y="101"
+                                                    width="40"
+                                                    height="8"
+                                                    rx="4"
+                                                />
+                                                <rect
+                                                    className="ai-blob__angry-brow ai-blob__angry-brow--right"
+                                                    x="173"
+                                                    y="101"
+                                                    width="40"
+                                                    height="8"
+                                                    rx="4"
+                                                />
+                                            </g>
+                                        </g>
                                     </g>
                                 </g>
                             </g>
                         </g>
-                    </g>
-                </g>
-            </svg>
+                    </svg>
+                </div>
+            </div>
         </div>
     );
 }
