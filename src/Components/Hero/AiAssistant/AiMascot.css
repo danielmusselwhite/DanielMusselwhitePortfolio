@@ -1,0 +1,3200 @@
+.ai-blob {
+    --blob-main: #56e0d0;
+    --blob-highlight: #c8fff9;
+    --blob-shadow: #238b94;
+
+    /* Eyes are explicitly pure white. */
+    --eye-white: #ffffff;
+    --pupil: #075f68;
+
+    --look-x: 0;
+    --look-y: 0;
+    --look-distance: 0;
+
+    --eyes-shift-x: 0px;
+    --eyes-shift-y: 0px;
+
+    --left-eye-scale-x: 1;
+    --right-eye-scale-x: 1;
+    --cursor-eye-scale-y: 1;
+
+    --left-eye-rotate: 0deg;
+    --right-eye-rotate: 0deg;
+
+    --pupil-x: 0px;
+    --pupil-y: 0px;
+
+    --lean-x: 0px;
+    --lean-y: 0px;
+    --lean-rotate: 0deg;
+
+    --eye-open: 1;
+    --mood-eye-scale: 1;
+    --mood-left-rotate: 0deg;
+    --mood-right-rotate: 0deg;
+
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: min(100%, 330px);
+    aspect-ratio: 1;
+    isolation: isolate;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.ai-blob:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 8px;
+    border-radius: 50%;
+}
+
+.ai-blob__glow {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background:
+        radial-gradient(
+            circle,
+            rgba(var(--accent-rgb), 0.64) 0%,
+            rgba(var(--accent-rgb), 0.38) 33%,
+            rgba(var(--accent-rgb), 0.17) 58%,
+            transparent 80%
+        );
+    filter: blur(34px);
+    opacity: 1;
+    transform:
+        translate(
+            calc(var(--lean-x) * 0.25),
+            calc(var(--lean-y) * 0.25)
+        );
+    pointer-events: none;
+    z-index: -1;
+}
+
+.ai-blob::before {
+    content: "";
+    position: absolute;
+    inset: 17%;
+    border-radius: 50%;
+    background: rgba(var(--accent-rgb), 0.36);
+    filter: blur(27px);
+    opacity: 0.95;
+    animation: ai-blob-core-pulse 4.4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.ai-blob__svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    filter:
+        drop-shadow(0 0 17px rgba(var(--accent-rgb), 0.46))
+        drop-shadow(0 0 42px rgba(var(--accent-rgb), 0.25))
+        drop-shadow(0 24px 34px rgba(2, 6, 23, 0.3));
+}
+
+.ai-blob__lean {
+    transform-origin: 160px 160px;
+    transform:
+        translate(var(--lean-x), var(--lean-y))
+        rotate(var(--lean-rotate));
+    will-change: transform;
+}
+
+.ai-blob__tickle {
+    transform-origin: 160px 160px;
+}
+
+.ai-blob__floating {
+    transform-origin: 160px 160px;
+    animation:
+        ai-blob-float 5.2s ease-in-out infinite,
+        ai-blob-organic-wobble 7.1s ease-in-out infinite;
+}
+
+.ai-blob__body,
+.ai-blob__shine,
+.ai-blob__shimmer {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: ai-blob-morph 6.5s ease-in-out infinite;
+}
+
+.ai-blob__body--back {
+    fill: rgba(var(--accent-rgb), 0.26);
+    filter: blur(13px);
+    opacity: 0.96;
+}
+
+.ai-blob__shine {
+    pointer-events: none;
+}
+
+.ai-blob__shimmer {
+    opacity: 0.58;
+    mix-blend-mode: screen;
+    animation:
+        ai-blob-morph 6.5s ease-in-out infinite,
+        ai-blob-shimmer 4.5s ease-in-out infinite;
+    pointer-events: none;
+}
+
+/* ---------------------------------
+   EYES
+   --------------------------------- */
+
+/*
+ * The whole pair moves farther toward the cursor as cursor distance grows.
+ * That gives the impression that the face itself is turning.
+ */
+.ai-blob__eyes {
+    transform:
+        translate(
+            var(--eyes-shift-x),
+            var(--eyes-shift-y)
+        );
+    transform-origin: 160px 149px;
+    will-change: transform;
+}
+
+/*
+ * Each eye is a heavily-rounded skinny rectangle.
+ * The entire eye opens/closes vertically for blinking/tickling.
+ */
+.ai-blob__eye {
+    transform-box: fill-box;
+    transform-origin: center;
+    will-change: transform;
+    transition:
+        transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ai-blob__eye--left {
+    transform:
+        scale(
+            calc(
+                var(--left-eye-scale-x) *
+                var(--mood-eye-scale)
+            ),
+            calc(
+                var(--cursor-eye-scale-y) *
+                var(--eye-open)
+            )
+        )
+        rotate(
+            calc(
+                var(--left-eye-rotate) +
+                var(--mood-left-rotate)
+            )
+        );
+}
+
+.ai-blob__eye--right {
+    transform:
+        scale(
+            calc(
+                var(--right-eye-scale-x) *
+                var(--mood-eye-scale)
+            ),
+            calc(
+                var(--cursor-eye-scale-y) *
+                var(--eye-open)
+            )
+        )
+        rotate(
+            calc(
+                var(--right-eye-rotate) +
+                var(--mood-right-rotate)
+            )
+        );
+}
+
+.ai-blob__sclera {
+    fill: var(--eye-white);
+    filter:
+        drop-shadow(0 0 4px rgba(255, 255, 255, 0.14))
+        drop-shadow(0 0 8px rgba(255, 255, 255, 0.06));
+}
+
+/*
+ * Pupil is exactly the same visual language as the eye:
+ * another rounded skinny rectangle at roughly 50% of the eye dimensions.
+ *
+ * No clipping is used. At extreme gaze the pupil can intentionally poke
+ * slightly outside the white eye to exaggerate direction.
+ */
+.ai-blob__pupil {
+    fill: var(--pupil);
+    transform:
+        translate(
+            var(--pupil-x),
+            var(--pupil-y)
+        );
+    transform-box: fill-box;
+    transform-origin: center;
+    will-change: transform;
+}
+
+/* A curious expression tilts each eye in opposite directions. */
+.ai-blob--eyes-curious .ai-blob__eyes {
+    translate: 0 -2px;
+}
+
+.ai-blob--eyes-wide {
+    --mood-eye-scale: 1.06;
+}
+
+/*
+ * Blink closes both the white eye and its pupil together.
+ */
+.ai-blob--blinking {
+    --eye-open: 0.035;
+}
+
+.ai-blob--blinking .ai-blob__eye {
+    transition:
+        transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/*
+ * Tickle = eyes squeezed shut for the duration of the wiggle.
+ */
+.ai-blob--tickled {
+    --eye-open: 0.025;
+}
+
+.ai-blob--tickled .ai-blob__eye {
+    transition:
+        transform 120ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ai-blob--tickled .ai-blob__tickle {
+    animation:
+        ai-blob-tickle 720ms
+        cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+/* Future AI states */
+.ai-blob--thinking {
+    --eye-open: 0.64;
+}
+
+
+.ai-blob--speaking {
+    --mood-eye-scale: 1.06;
+}
+
+.ai-blob--error {
+    --blob-main: #f28d7d;
+    --blob-highlight: #ffd7d1;
+    --blob-shadow: #b85f62;
+    --eye-open: 0.58;
+}
+
+/* ---------------------------------
+   STATUS
+   --------------------------------- */
+
+
+
+/* ---------------------------------
+   ORGANIC BODY MOTION
+   --------------------------------- */
+
+@keyframes ai-blob-float {
+    0%,
+    100% {
+        translate: 0 0;
+    }
+
+    50% {
+        translate: 0 -8px;
+    }
+}
+
+@keyframes ai-blob-organic-wobble {
+    0%,
+    100% {
+        scale: 1 1;
+        rotate: 0deg;
+    }
+
+    20% {
+        scale: 1.022 0.982;
+        rotate: -0.8deg;
+    }
+
+    42% {
+        scale: 0.988 1.025;
+        rotate: 0.7deg;
+    }
+
+    66% {
+        scale: 1.025 0.99;
+        rotate: -0.5deg;
+    }
+
+    82% {
+        scale: 0.994 1.014;
+        rotate: 0.45deg;
+    }
+}
+
+@keyframes ai-blob-morph {
+    0%,
+    100% {
+        transform:
+            scale(1)
+            skew(0deg, 0deg);
+    }
+
+    18% {
+        transform:
+            scale(1.038, 0.974)
+            skew(1deg, -0.5deg);
+    }
+
+    39% {
+        transform:
+            scale(0.974, 1.038)
+            skew(-0.8deg, 0.6deg);
+    }
+
+    61% {
+        transform:
+            scale(1.03, 0.985)
+            skew(0.5deg, 0.9deg);
+    }
+
+    82% {
+        transform:
+            scale(0.984, 1.027)
+            skew(-0.45deg, -0.6deg);
+    }
+}
+
+@keyframes ai-blob-shimmer {
+    0%,
+    100% {
+        opacity: 0.14;
+        translate: -10px 0;
+        rotate: -4deg;
+        scale: 1.02;
+    }
+
+    45% {
+        opacity: 0.62;
+    }
+
+    56% {
+        opacity: 0.76;
+        translate: 10px 0;
+        rotate: 3deg;
+        scale: 1.028;
+    }
+
+    72% {
+        opacity: 0.24;
+    }
+}
+
+@keyframes ai-blob-core-pulse {
+    0%,
+    100% {
+        transform: scale(0.94);
+        opacity: 0.78;
+    }
+
+    50% {
+        transform: scale(1.07);
+        opacity: 1;
+    }
+}
+
+/* ---------------------------------
+   TICKLE
+   --------------------------------- */
+
+@keyframes ai-blob-tickle {
+    0% {
+        transform:
+            translateX(0)
+            rotate(0deg)
+            scale(1);
+    }
+
+    12% {
+        transform:
+            translateX(-10px)
+            rotate(-5.5deg)
+            scale(1.035, 0.965);
+    }
+
+    24% {
+        transform:
+            translateX(11px)
+            rotate(6deg)
+            scale(0.975, 1.035);
+    }
+
+    37% {
+        transform:
+            translateX(-9px)
+            rotate(-4.5deg)
+            scale(1.03, 0.975);
+    }
+
+    51% {
+        transform:
+            translateX(7px)
+            rotate(3.5deg)
+            scale(0.985, 1.025);
+    }
+
+    65% {
+        transform:
+            translateX(-5px)
+            rotate(-2.6deg)
+            scale(1.018, 0.99);
+    }
+
+    79% {
+        transform:
+            translateX(3px)
+            rotate(1.6deg)
+            scale(0.995, 1.01);
+    }
+
+    100% {
+        transform:
+            translateX(0)
+            rotate(0deg)
+            scale(1);
+    }
+}
+
+
+/* ---------------------------------
+   RESPONSIVE
+   --------------------------------- */
+
+@media (max-width: 720px) {
+    .ai-blob {
+        width: min(72vw, 260px);
+    }
+}
+
+/* ---------------------------------
+   REDUCED MOTION
+   --------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+    .ai-blob::before,
+    .ai-blob__floating,
+    .ai-blob__body,
+    .ai-blob__shine,
+    .ai-blob__shimmer,
+    .ai-blob__tickle {
+        animation: none;
+    }
+
+    .ai-blob__lean,
+    .ai-blob__eyes,
+    .ai-blob__pupil {
+        transform: none;
+    }
+}
+
+/* =========================================================
+   DRAG + ANNOYANCE
+   These are intentionally additive to the original blob.
+   ========================================================= */
+
+.ai-blob {
+    --drag-x: 0px;
+    --drag-y: 0px;
+    --drag-strength: 0;
+
+    touch-action: none;
+    overflow: visible;
+}
+
+.ai-blob__drag {
+    transform-origin: 160px 160px;
+    transform:
+        translate(0px, 0px)
+        rotate(0deg)
+        scale(1);
+    will-change: transform;
+}
+
+.ai-blob--dragging,
+.ai-blob--snapping {
+    z-index: 50;
+}
+
+/*
+ * Pause the normal float/morph while physically dragging or springing home,
+ * otherwise the two transforms visually fight each other.
+ */
+.ai-blob--dragging .ai-blob__floating,
+.ai-blob--snapping .ai-blob__floating,
+.ai-blob--dragging .ai-blob__body,
+.ai-blob--dragging .ai-blob__shine,
+.ai-blob--dragging .ai-blob__shimmer,
+.ai-blob--snapping .ai-blob__body,
+.ai-blob--snapping .ai-blob__shine,
+.ai-blob--snapping .ai-blob__shimmer {
+    animation-play-state: paused;
+}
+
+/*
+ * Glow follows the dragged creature.
+ */
+.ai-blob--dragging .ai-blob__glow,
+.ai-blob--snapping .ai-blob__glow {
+    transform:
+        translate(
+            var(--drag-x),
+            var(--drag-y)
+        )
+        scale(
+            calc(1 + var(--drag-strength) * 0.08)
+        );
+    transform-origin: center;
+    will-change: transform;
+}
+
+.ai-blob--dragging::before,
+.ai-blob--snapping::before {
+    transform:
+        translate(
+            var(--drag-x),
+            var(--drag-y)
+        );
+    animation-play-state: paused;
+}
+
+/* -------------------------
+   Annoyance
+   ------------------------- */
+
+/*
+ * Smoothly change the normal cyan palette into red.
+ */
+.ai-blob__body {
+    transition:
+        fill 560ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ai-blob--annoyed {
+    --blob-main: #ef5b62;
+    --blob-highlight: #ffc3bd;
+    --blob-shadow: #a72e42;
+    --pupil: #c92539;
+}
+
+/*
+ * Keep the red transition visible on the outer glow too.
+ */
+.ai-blob--annoyed .ai-blob__glow {
+    background:
+        radial-gradient(
+            circle,
+            rgba(239, 91, 98, 0.56) 0%,
+            rgba(239, 91, 98, 0.30) 36%,
+            rgba(167, 46, 66, 0.14) 62%,
+            transparent 80%
+        );
+    transition:
+        background 560ms ease,
+        filter 560ms ease;
+}
+
+.ai-blob__pupil {
+    transition:
+        fill 520ms cubic-bezier(0.22, 1, 0.36, 1),
+        transform 120ms ease-out;
+}
+
+/*
+ * White eyebrows appear only while annoyed.
+ */
+.ai-blob__angry-brows {
+    opacity: 0;
+    pointer-events: none;
+    transform-origin: 160px 106px;
+    transition:
+        opacity 260ms ease,
+        transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ai-blob__angry-brow {
+    fill: #ffffff;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.ai-blob__angry-brow--left {
+    transform: rotate(18deg);
+}
+
+.ai-blob__angry-brow--right {
+    transform: rotate(-18deg);
+}
+
+.ai-blob--annoyed .ai-blob__angry-brows,
+.ai-blob--tantrum .ai-blob__angry-brows {
+    opacity: 1;
+}
+
+/*
+ * Don't rotate the actual eyes when angry — the eyebrows provide the emotion.
+ */
+.ai-blob--annoyed .ai-blob__eye--left,
+.ai-blob--tantrum .ai-blob__eye--left {
+    transform:
+        scale(
+            var(--left-eye-scale-x),
+            calc(
+                var(--cursor-eye-scale-y) *
+                var(--eye-open)
+            )
+        )
+        rotate(0deg);
+}
+
+.ai-blob--annoyed .ai-blob__eye--right,
+.ai-blob--tantrum .ai-blob__eye--right {
+    transform:
+        scale(
+            var(--right-eye-scale-x),
+            calc(
+                var(--cursor-eye-scale-y) *
+                var(--eye-open)
+            )
+        )
+        rotate(0deg);
+}
+
+/*
+ * Initial tantrum: eyes shut + a quick exaggerated head shake.
+ */
+.ai-blob--tantrum .ai-blob__lean {
+    animation:
+        ai-blob-annoyed-tantrum 650ms
+        cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+@keyframes ai-blob-annoyed-tantrum {
+    0%,
+    100% {
+        transform:
+            translate(var(--lean-x), var(--lean-y))
+            rotate(var(--lean-rotate));
+    }
+
+    12% {
+        transform:
+            translate(-19px, var(--lean-y))
+            rotate(-10deg);
+    }
+
+    24% {
+        transform:
+            translate(21px, var(--lean-y))
+            rotate(11deg);
+    }
+
+    36% {
+        transform:
+            translate(-22px, var(--lean-y))
+            rotate(-12deg);
+    }
+
+    48% {
+        transform:
+            translate(20px, var(--lean-y))
+            rotate(10deg);
+    }
+
+    62% {
+        transform:
+            translate(-14px, var(--lean-y))
+            rotate(-7deg);
+    }
+
+    76% {
+        transform:
+            translate(10px, var(--lean-y))
+            rotate(5deg);
+    }
+
+    90% {
+        transform:
+            translate(-4px, var(--lean-y))
+            rotate(-2deg);
+    }
+}
+
+/*
+ * Keep the same cursor everywhere. Annoyance simply ignores interaction.
+ */
+.ai-blob,
+.ai-blob:active,
+.ai-blob--dragging,
+.ai-blob--snapping,
+.ai-blob--annoyed {
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   GLOW COLOUR / LIGHT-MODE GLOW ONLY
+   ========================================================= */
+
+/*
+ * When annoyed, the aura follows the red angry palette too.
+ * This intentionally overrides the normal cyan glow.
+ */
+.ai-blob--annoyed .ai-blob__glow,
+.ai-blob--tantrum .ai-blob__glow {
+    background:
+        radial-gradient(
+            circle,
+            rgba(255, 92, 100, 0.78) 0%,
+            rgba(239, 68, 78, 0.52) 34%,
+            rgba(205, 38, 58, 0.26) 61%,
+            transparent 82%
+        ) !important;
+    filter:
+        blur(30px)
+        saturate(1.18)
+        brightness(1.08);
+}
+
+/*
+ * Light mode changes ONLY the glow treatment.
+ * The creature's body, eyes, pupils and normal palette remain identical.
+ */
+.site-shell--light .ai-blob__glow {
+    opacity: 0.98;
+    filter:
+        blur(28px)
+        saturate(1.18)
+        brightness(1.34);
+}
+
+.site-shell--light .ai-blob::before {
+    opacity: 0.82;
+    filter:
+        blur(18px)
+        brightness(1.42);
+}
+
+/*
+ * Angry + light mode: keep the glow red, but make it brighter so it remains
+ * visible against the lighter hero background.
+ */
+.site-shell--light .ai-blob--annoyed .ai-blob__glow,
+.site-shell--light .ai-blob--tantrum .ai-blob__glow {
+    background:
+        radial-gradient(
+            circle,
+            rgba(255, 105, 112, 0.92) 0%,
+            rgba(246, 70, 82, 0.66) 35%,
+            rgba(211, 39, 59, 0.34) 62%,
+            transparent 83%
+        ) !important;
+    opacity: 1;
+    filter:
+        blur(27px)
+        saturate(1.24)
+        brightness(1.32);
+}
+
+/*
+ * Preserve drag/snap positioning while applying the brighter glow filters.
+ */
+.site-shell--light .ai-blob--dragging .ai-blob__glow,
+.site-shell--light .ai-blob--snapping .ai-blob__glow {
+    filter:
+        blur(28px)
+        saturate(1.18)
+        brightness(1.34);
+}
+
+.site-shell--light .ai-blob--annoyed.ai-blob--dragging .ai-blob__glow,
+.site-shell--light .ai-blob--annoyed.ai-blob--snapping .ai-blob__glow,
+.site-shell--light .ai-blob--tantrum.ai-blob--dragging .ai-blob__glow,
+.site-shell--light .ai-blob--tantrum.ai-blob--snapping .ai-blob__glow {
+    filter:
+        blur(27px)
+        saturate(1.24)
+        brightness(1.32);
+}
+
+
+/* =========================================================
+   DRAG — GLOW FOLLOWS BLOB
+   ========================================================= */
+
+/*
+ * The SVG blob is translated by the drag transform, while the glow lives
+ * outside that SVG group. Mirror the exact drag coordinates onto the glow
+ * so the aura remains centred on him throughout drag and snap-back.
+ */
+.ai-blob.ai-blob--dragging .ai-blob__glow,
+.ai-blob.ai-blob--snapping .ai-blob__glow {
+    transform:
+        translate3d(
+            var(--drag-x),
+            var(--drag-y),
+            0
+        )
+        scale(
+            calc(1 + var(--drag-strength) * 0.08)
+        ) !important;
+    transform-origin: center center;
+    will-change: transform;
+}
+
+/*
+ * Keep the same positioning in light mode; light mode only changes how
+ * bright the glow is, not where it sits.
+ */
+.site-shell--light .ai-blob.ai-blob--dragging .ai-blob__glow,
+.site-shell--light .ai-blob.ai-blob--snapping .ai-blob__glow {
+    transform:
+        translate3d(
+            var(--drag-x),
+            var(--drag-y),
+            0
+        )
+        scale(
+            calc(1 + var(--drag-strength) * 0.08)
+        ) !important;
+}
+
+/*
+ * Same for angry red glow, including while the spring reverberates home.
+ */
+.ai-blob.ai-blob--annoyed.ai-blob--dragging .ai-blob__glow,
+.ai-blob.ai-blob--annoyed.ai-blob--snapping .ai-blob__glow,
+.ai-blob.ai-blob--tantrum.ai-blob--dragging .ai-blob__glow,
+.ai-blob.ai-blob--tantrum.ai-blob--snapping .ai-blob__glow {
+    transform:
+        translate3d(
+            var(--drag-x),
+            var(--drag-y),
+            0
+        )
+        scale(
+            calc(1 + var(--drag-strength) * 0.08)
+        ) !important;
+}
+
+
+/* =========================================================
+   FINAL GLOW SYSTEM
+   Fixes:
+   - glow follows drag/snap
+   - angry glow is actually red
+   - light-mode glow is visibly brighter
+   - all glow layers are kept in sync
+   ========================================================= */
+
+/* Default glow variables */
+.ai-blob {
+    --glow-r: 86;
+    --glow-g: 224;
+    --glow-b: 208;
+
+    --glow-opacity: 1;
+    --glow-brightness: 1;
+    --glow-blur: 34px;
+
+    --core-glow-opacity: 0.95;
+    --core-glow-brightness: 1;
+    --core-glow-blur: 27px;
+
+    --svg-glow-1: rgba(86, 224, 208, 0.46);
+    --svg-glow-2: rgba(86, 224, 208, 0.25);
+}
+
+/* ---------------------------------------------------------
+   OUTER GLOW
+   --------------------------------------------------------- */
+
+.ai-blob .ai-blob__glow {
+    background:
+        radial-gradient(
+            circle,
+            rgba(
+                var(--glow-r),
+                var(--glow-g),
+                var(--glow-b),
+                0.68
+            ) 0%,
+            rgba(
+                var(--glow-r),
+                var(--glow-g),
+                var(--glow-b),
+                0.40
+            ) 34%,
+            rgba(
+                var(--glow-r),
+                var(--glow-g),
+                var(--glow-b),
+                0.18
+            ) 60%,
+            transparent 81%
+        ) !important;
+
+    opacity: var(--glow-opacity) !important;
+
+    filter:
+        blur(var(--glow-blur))
+        brightness(var(--glow-brightness))
+        saturate(1.1) !important;
+
+    /*
+     * Always use drag vars.
+     * At rest they are 0px, so no separate selector is needed.
+     */
+    transform:
+        translate3d(
+            var(--drag-x, 0px),
+            var(--drag-y, 0px),
+            0
+        )
+        scale(
+            calc(1 + var(--drag-strength, 0) * 0.08)
+        ) !important;
+
+    transform-origin: center center !important;
+    will-change: transform, filter, opacity;
+    transition:
+        background 560ms ease,
+        filter 560ms ease,
+        opacity 560ms ease;
+}
+
+/* ---------------------------------------------------------
+   INNER / CORE GLOW
+   --------------------------------------------------------- */
+
+.ai-blob::before {
+    background:
+        rgba(
+            var(--glow-r),
+            var(--glow-g),
+            var(--glow-b),
+            0.36
+        ) !important;
+
+    opacity: var(--core-glow-opacity) !important;
+
+    filter:
+        blur(var(--core-glow-blur))
+        brightness(var(--core-glow-brightness)) !important;
+
+    transform:
+        translate3d(
+            var(--drag-x, 0px),
+            var(--drag-y, 0px),
+            0
+        )
+        scale(
+            calc(1 + var(--drag-strength, 0) * 0.05)
+        ) !important;
+
+    transform-origin: center center !important;
+    will-change: transform, filter, opacity;
+    transition:
+        background 560ms ease,
+        filter 560ms ease,
+        opacity 560ms ease;
+}
+
+/* ---------------------------------------------------------
+   SVG DROP-SHADOW GLOW
+   --------------------------------------------------------- */
+
+.ai-blob .ai-blob__svg {
+    filter:
+        drop-shadow(0 0 17px var(--svg-glow-1))
+        drop-shadow(0 0 42px var(--svg-glow-2))
+        drop-shadow(0 24px 34px rgba(2, 6, 23, 0.30)) !important;
+
+    transition:
+        filter 560ms ease;
+}
+
+/* ---------------------------------------------------------
+   ANGRY / TANTRUM = RED GLOW EVERYWHERE
+   --------------------------------------------------------- */
+
+.ai-blob--annoyed,
+.ai-blob--tantrum {
+    --glow-r: 239;
+    --glow-g: 68;
+    --glow-b: 78;
+
+    --svg-glow-1: rgba(239, 68, 78, 0.58);
+    --svg-glow-2: rgba(205, 38, 58, 0.34);
+
+    --glow-brightness: 1.08;
+    --core-glow-brightness: 1.05;
+}
+
+/* ---------------------------------------------------------
+   LIGHT MODE = GLOW ONLY gets brighter
+   Supports several common light-theme wrappers.
+   Body colours remain unchanged.
+   --------------------------------------------------------- */
+
+.site-shell--light .ai-blob,
+[data-theme="light"] .ai-blob,
+.theme-light .ai-blob,
+.light .ai-blob {
+    --glow-opacity: 1;
+    --glow-brightness: 1.42;
+    --glow-blur: 29px;
+
+    --core-glow-opacity: 1;
+    --core-glow-brightness: 1.48;
+    --core-glow-blur: 22px;
+
+    --svg-glow-1: rgba(86, 224, 208, 0.62);
+    --svg-glow-2: rgba(86, 224, 208, 0.38);
+}
+
+/* Angry + light mode: brighter RED, not cyan */
+.site-shell--light .ai-blob--annoyed,
+.site-shell--light .ai-blob--tantrum,
+[data-theme="light"] .ai-blob--annoyed,
+[data-theme="light"] .ai-blob--tantrum,
+.theme-light .ai-blob--annoyed,
+.theme-light .ai-blob--tantrum,
+.light .ai-blob--annoyed,
+.light .ai-blob--tantrum {
+    --glow-r: 255;
+    --glow-g: 82;
+    --glow-b: 92;
+
+    --glow-brightness: 1.48;
+    --core-glow-brightness: 1.52;
+
+    --svg-glow-1: rgba(255, 82, 92, 0.72);
+    --svg-glow-2: rgba(226, 42, 62, 0.44);
+}
+
+/* ---------------------------------------------------------
+   During drag/snap, pause core pulse so its own animation
+   cannot overwrite the translated transform.
+   --------------------------------------------------------- */
+
+.ai-blob--dragging::before,
+.ai-blob--snapping::before {
+    animation-play-state: paused !important;
+}
+
+
+/* =========================================================
+   CHAT-DRIVEN MASCOT STATES
+   ========================================================= */
+
+/* Typing: alert, open eyes and a subtly perked-up body. */
+.ai-blob--listening {
+    --mood-eye-scale: 1.08;
+}
+
+.ai-blob--listening .ai-blob__floating {
+    animation-duration: 4.4s, 6.2s;
+}
+
+/* Thinking: slow soft compression while the eyes squint. */
+.ai-blob--thinking .ai-blob__tickle {
+    animation:
+        ai-blob-thinking-pulse 1.25s
+        ease-in-out infinite;
+}
+
+/* Replying: small friendly bob while the response appears. */
+.ai-blob--speaking .ai-blob__tickle {
+    animation:
+        ai-blob-speaking-bob 520ms
+        ease-in-out infinite alternate;
+}
+
+/* Error: brief uncertain wobble; eye angles are set in TSX. */
+.ai-blob--error .ai-blob__tickle {
+    animation:
+        ai-blob-error-wobble 420ms
+        ease-in-out 2;
+}
+
+@keyframes ai-blob-thinking-pulse {
+    0%,
+    100% {
+        transform: scale(1, 1);
+    }
+
+    50% {
+        transform:
+            translateY(3px)
+            scale(1.035, 0.965);
+    }
+}
+
+@keyframes ai-blob-speaking-bob {
+    from {
+        transform:
+            translateY(0)
+            scale(1);
+    }
+
+    to {
+        transform:
+            translateY(-6px)
+            scale(1.025, 0.985);
+    }
+}
+
+@keyframes ai-blob-error-wobble {
+    0%,
+    100% {
+        transform:
+            translateX(0)
+            rotate(0deg);
+    }
+
+    25% {
+        transform:
+            translateX(-6px)
+            rotate(-2deg);
+    }
+
+    75% {
+        transform:
+            translateX(6px)
+            rotate(2deg);
+    }
+}
+
+
+/* =========================================================
+   CHAT STATE PALETTES
+   ========================================================= */
+
+/* Idle stays the original cyan. */
+.ai-blob--idle {
+    --blob-main: #56e0d0;
+    --blob-highlight: #c8fff9;
+    --blob-shadow: #238b94;
+    --pupil: #075f68;
+}
+
+/* Listening: brighter aqua, like he's perked up. */
+.ai-blob--listening {
+    --blob-main: #61f0e7;
+    --blob-highlight: #e0fffc;
+    --blob-shadow: #2aa3a8;
+    --pupil: #08727b;
+}
+
+/* Thinking: violet/indigo. */
+.ai-blob--thinking {
+    --blob-main: #8d7cf3;
+    --blob-highlight: #ded8ff;
+    --blob-shadow: #4e46a8;
+    --pupil: #342b83;
+}
+
+/* Busy: deeper electric purple-blue. */
+.ai-blob--busy {
+    --blob-main: #6f74ff;
+    --blob-highlight: #cfd3ff;
+    --blob-shadow: #3d3eae;
+    --pupil: #24276f;
+}
+
+/* Speaking: green/teal so replies feel positive. */
+.ai-blob--speaking {
+    --blob-main: #61e69a;
+    --blob-highlight: #d7ffe7;
+    --blob-shadow: #2c9a65;
+    --pupil: #17613f;
+}
+
+/* Error remains warm coral/red. */
+.ai-blob--error {
+    --blob-main: #f28d7d;
+    --blob-highlight: #ffd7d1;
+    --blob-shadow: #b85f62;
+    --pupil: #8c3d46;
+}
+
+/*
+ * Smooth the palette changes between states.
+ * SVG gradient stops update from these CSS variables.
+ */
+.ai-blob__body,
+.ai-blob__pupil,
+.ai-blob__body--back {
+    transition:
+        fill 520ms cubic-bezier(0.22, 1, 0.36, 1),
+        filter 520ms ease,
+        opacity 520ms ease;
+}
+
+/* =========================================================
+   LONG-WAIT "BUSY" SHOWCASE
+   ========================================================= */
+
+/*
+ * A more expressive fluid orbit/stretch sequence after the backend
+ * has been thinking for a while.
+ */
+.ai-blob--busy .ai-blob__tickle {
+    animation:
+        ai-blob-busy-fluid 1.7s
+        cubic-bezier(0.45, 0, 0.2, 1)
+        infinite;
+}
+
+.ai-blob--busy .ai-blob__eyes {
+    animation:
+        ai-blob-busy-eyes 1.7s
+        ease-in-out infinite;
+}
+
+.ai-blob--busy .ai-blob__glow {
+    animation:
+        ai-blob-busy-glow 1.7s
+        ease-in-out infinite;
+}
+
+@keyframes ai-blob-busy-fluid {
+    0%,
+    100% {
+        transform:
+            translate(0, 0)
+            rotate(0deg)
+            scale(1, 1);
+    }
+
+    18% {
+        transform:
+            translate(-12px, -5px)
+            rotate(-4deg)
+            scale(1.10, 0.92);
+    }
+
+    38% {
+        transform:
+            translate(10px, -12px)
+            rotate(5deg)
+            scale(0.92, 1.12);
+    }
+
+    58% {
+        transform:
+            translate(15px, 4px)
+            rotate(4deg)
+            scale(1.08, 0.94);
+    }
+
+    78% {
+        transform:
+            translate(-9px, 8px)
+            rotate(-3deg)
+            scale(0.95, 1.08);
+    }
+}
+
+@keyframes ai-blob-busy-eyes {
+    0%,
+    100% {
+        transform:
+            translate(
+                var(--eyes-shift-x),
+                var(--eyes-shift-y)
+            )
+            scale(1);
+    }
+
+    25% {
+        transform:
+            translate(
+                calc(var(--eyes-shift-x) - 5px),
+                calc(var(--eyes-shift-y) - 3px)
+            )
+            scale(1.08, 0.88);
+    }
+
+    55% {
+        transform:
+            translate(
+                calc(var(--eyes-shift-x) + 5px),
+                calc(var(--eyes-shift-y) + 2px)
+            )
+            scale(0.96, 1.08);
+    }
+}
+
+@keyframes ai-blob-busy-glow {
+    0%,
+    100% {
+        filter:
+            blur(34px)
+            brightness(1);
+    }
+
+    50% {
+        filter:
+            blur(26px)
+            brightness(1.35);
+    }
+}
+
+/* External /angry command: preserve the established angry face. */
+.ai-blob--angry .ai-blob__angry-brows,
+.ai-blob--angry.ai-blob--annoyed .ai-blob__angry-brows {
+    opacity: 1;
+}
+
+
+/* =========================================================
+   PARTY MODE
+   Organic high-energy wiggle + smooth rainbow sweep.
+   The SVG displacement filter warps the actual silhouette,
+   rather than simply scaling/rotating the whole mascot.
+   ========================================================= */
+
+.ai-blob--party {
+    --party-speed: 2.8s;
+}
+
+.ai-blob--party .ai-blob__floating {
+    animation:
+        ai-blob-party-jelly 420ms ease-in-out infinite alternate,
+        ai-blob-party-rainbow var(--party-speed) linear infinite;
+    transform-origin: 50% 52%;
+}
+
+.ai-blob--party .ai-blob__body,
+.ai-blob--party .ai-blob__shine,
+.ai-blob--party .ai-blob__shimmer {
+    filter: url(#ai-blob-party-wobble);
+}
+
+.ai-blob--party .ai-blob__glow {
+    animation:
+        ai-blob-party-glow var(--party-speed) linear infinite,
+        ai-blob-party-glow-pulse 520ms ease-in-out infinite alternate;
+}
+
+.ai-blob--party .ai-blob__eyes {
+    animation:
+        ai-blob-party-eyes 360ms ease-in-out infinite alternate;
+    transform-origin: center;
+}
+
+@keyframes ai-blob-party-jelly {
+    0% {
+        transform:
+            rotate(-2.4deg)
+            scaleX(0.96)
+            scaleY(1.045);
+    }
+
+    35% {
+        transform:
+            rotate(1.7deg)
+            scaleX(1.055)
+            scaleY(0.955);
+    }
+
+    70% {
+        transform:
+            rotate(-1deg)
+            scaleX(0.98)
+            scaleY(1.035);
+    }
+
+    100% {
+        transform:
+            rotate(2.6deg)
+            scaleX(1.04)
+            scaleY(0.97);
+    }
+}
+
+@keyframes ai-blob-party-rainbow {
+    from {
+        filter: hue-rotate(0deg) saturate(1.2);
+    }
+
+    to {
+        filter: hue-rotate(360deg) saturate(1.2);
+    }
+}
+
+@keyframes ai-blob-party-glow {
+    from {
+        filter:
+            hue-rotate(0deg)
+            saturate(1.55)
+            brightness(1.14);
+    }
+
+    to {
+        filter:
+            hue-rotate(360deg)
+            saturate(1.55)
+            brightness(1.14);
+    }
+}
+
+@keyframes ai-blob-party-glow-pulse {
+    from {
+        opacity: 0.58;
+        transform: scale(0.94);
+    }
+
+    to {
+        opacity: 0.92;
+        transform: scale(1.13);
+    }
+}
+
+@keyframes ai-blob-party-eyes {
+    from {
+        transform:
+            translateY(-1px)
+            scaleY(1.04);
+    }
+
+    to {
+        transform:
+            translateY(2px)
+            scaleY(0.92);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ai-blob--party .ai-blob__floating,
+    .ai-blob--party .ai-blob__glow,
+    .ai-blob--party .ai-blob__eyes {
+        animation: none;
+    }
+
+    .ai-blob--party .ai-blob__body,
+    .ai-blob--party .ai-blob__shine,
+    .ai-blob--party .ai-blob__shimmer {
+        filter: none;
+    }
+}
+
+
+/* =========================================================
+   FINAL ANGRY PALETTE
+   Applies identically to repeated-click annoyance and /angry.
+   ========================================================= */
+
+.ai-blob--annoyed,
+.ai-blob--angry,
+.ai-blob--angry.ai-blob--annoyed {
+    --blob-main: #ef5b62 !important;
+    --blob-highlight: #ffc3bd !important;
+    --blob-shadow: #a72e42 !important;
+    --pupil: #c92539 !important;
+}
+
+/*
+ * Force every visible angry glow layer to red so later state palettes
+ * cannot accidentally leave a cyan aura behind.
+ */
+.ai-blob--annoyed .ai-blob__glow,
+.ai-blob--angry .ai-blob__glow,
+.ai-blob--angry.ai-blob--annoyed .ai-blob__glow {
+    background:
+        radial-gradient(
+            circle,
+            rgba(255, 92, 100, 0.82) 0%,
+            rgba(239, 68, 78, 0.54) 34%,
+            rgba(205, 38, 58, 0.27) 61%,
+            transparent 82%
+        ) !important;
+
+    filter:
+        blur(30px)
+        saturate(1.2)
+        brightness(1.12) !important;
+}
+
+/*
+ * Keep the angry pupils red whether anger came from clicking or /angry.
+ */
+.ai-blob--annoyed .ai-blob__pupil,
+.ai-blob--angry .ai-blob__pupil {
+    fill: #c92539 !important;
+    filter: none !important;
+}
+
+
+/* =========================================================
+   PARTY MODE — DANCE + ULTRA RAINBOW GLOW
+   ========================================================= */
+
+.ai-blob--party {
+    /*
+     * Body and glow share this exact duration, keeping their hue sweep synced.
+     */
+    --party-speed: 3.2s;
+}
+
+/*
+ * Make the whole creature visibly dance up/down while the existing organic
+ * silhouette warp and jelly squash/stretch continue inside it.
+ */
+.ai-blob--party .ai-blob__drag {
+    animation:
+        ai-blob-party-dance-bob 720ms
+        cubic-bezier(0.45, 0, 0.35, 1)
+        infinite alternate !important;
+}
+
+/*
+ * Preserve the high-frequency jelly wobble/rainbow treatment on the body.
+ */
+.ai-blob--party .ai-blob__floating {
+    animation:
+        ai-blob-party-jelly 420ms
+        ease-in-out infinite alternate,
+        ai-blob-party-rainbow var(--party-speed)
+        linear infinite !important;
+}
+
+/*
+ * Extremely bright aura. Hue rotation uses the same --party-speed as the body,
+ * so the glow colour follows the rainbow rather than staying cyan.
+ */
+.ai-blob--party .ai-blob__glow {
+    opacity: 1 !important;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(86, 224, 208, 0.98) 0%,
+            rgba(86, 224, 208, 0.78) 30%,
+            rgba(86, 224, 208, 0.42) 56%,
+            rgba(86, 224, 208, 0.16) 72%,
+            transparent 86%
+        ) !important;
+
+    animation:
+        ai-blob-party-glow-rainbow var(--party-speed)
+        linear infinite,
+        ai-blob-party-glow-superpulse 520ms
+        ease-in-out infinite alternate !important;
+
+    will-change:
+        transform,
+        filter,
+        opacity;
+}
+
+/*
+ * Inner/core glow follows the same rainbow cycle and gets dramatically brighter.
+ */
+.ai-blob--party::before {
+    opacity: 1 !important;
+
+    background:
+        rgba(86, 224, 208, 0.72) !important;
+
+    animation:
+        ai-blob-party-core-rainbow var(--party-speed)
+        linear infinite,
+        ai-blob-party-core-pulse 520ms
+        ease-in-out infinite alternate !important;
+}
+
+/*
+ * SVG drop-shadow gets an additional rainbow sweep too, making the colour
+ * surround the actual silhouette rather than existing only as a background haze.
+ */
+.ai-blob--party .ai-blob__svg {
+    animation:
+        ai-blob-party-svg-rainbow var(--party-speed)
+        linear infinite !important;
+}
+
+@keyframes ai-blob-party-dance-bob {
+    0% {
+        transform:
+            translateY(4px)
+            rotate(-1.2deg);
+    }
+
+    45% {
+        transform:
+            translateY(-13px)
+            rotate(1deg);
+    }
+
+    100% {
+        transform:
+            translateY(-22px)
+            rotate(-1deg);
+    }
+}
+
+@keyframes ai-blob-party-glow-rainbow {
+    from {
+        filter:
+            hue-rotate(0deg)
+            saturate(2.15)
+            brightness(1.75)
+            blur(25px);
+    }
+
+    to {
+        filter:
+            hue-rotate(360deg)
+            saturate(2.15)
+            brightness(1.75)
+            blur(25px);
+    }
+}
+
+@keyframes ai-blob-party-glow-superpulse {
+    from {
+        transform:
+            scale(0.98);
+    }
+
+    to {
+        transform:
+            scale(1.25);
+    }
+}
+
+@keyframes ai-blob-party-core-rainbow {
+    from {
+        filter:
+            hue-rotate(0deg)
+            saturate(2)
+            brightness(1.9)
+            blur(18px);
+    }
+
+    to {
+        filter:
+            hue-rotate(360deg)
+            saturate(2)
+            brightness(1.9)
+            blur(18px);
+    }
+}
+
+@keyframes ai-blob-party-core-pulse {
+    from {
+        transform: scale(0.96);
+    }
+
+    to {
+        transform: scale(1.16);
+    }
+}
+
+@keyframes ai-blob-party-svg-rainbow {
+    from {
+        filter:
+            hue-rotate(0deg)
+            saturate(1.65)
+            drop-shadow(
+                0 0 18px
+                rgba(86, 224, 208, 0.72)
+            )
+            drop-shadow(
+                0 0 44px
+                rgba(86, 224, 208, 0.46)
+            );
+    }
+
+    to {
+        filter:
+            hue-rotate(360deg)
+            saturate(1.65)
+            drop-shadow(
+                0 0 18px
+                rgba(86, 224, 208, 0.72)
+            )
+            drop-shadow(
+                0 0 44px
+                rgba(86, 224, 208, 0.46)
+            );
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ai-blob--party .ai-blob__drag,
+    .ai-blob--party .ai-blob__floating,
+    .ai-blob--party .ai-blob__glow,
+    .ai-blob--party::before,
+    .ai-blob--party .ai-blob__svg {
+        animation: none !important;
+    }
+}
+
+
+/* =========================================================
+   FINAL PARTY OVERRIDES
+   30-second state timer lives in AiChat.tsx.
+   ========================================================= */
+
+.ai-blob--party {
+    --party-speed: 3.2s;
+}
+
+/*
+ * Wide, playful dancing movement.
+ * This outer layer handles the large body travel while the inner
+ * floating layer continues doing the spikey/wavy jelly deformation.
+ */
+.ai-blob--party .ai-blob__drag {
+    animation:
+        ai-blob-party-big-dance 1.05s
+        cubic-bezier(0.45, 0, 0.3, 1)
+        infinite !important;
+
+    transform-origin: 160px 160px;
+}
+
+/*
+ * Preserve the fast jelly deformation independently from the large dance.
+ */
+.ai-blob--party .ai-blob__floating {
+    animation:
+        ai-blob-party-jelly 380ms
+        ease-in-out infinite alternate,
+        ai-blob-party-rainbow var(--party-speed)
+        linear infinite !important;
+}
+
+/*
+ * Make the outer aura MUCH larger.
+ * Scale is deliberately substantial because the party state is an Easter egg.
+ */
+.ai-blob--party .ai-blob__glow {
+    width: 155% !important;
+    height: 155% !important;
+
+    left: 50% !important;
+    top: 50% !important;
+
+    opacity: 1 !important;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(86, 224, 208, 1) 0%,
+            rgba(86, 224, 208, 0.94) 22%,
+            rgba(86, 224, 208, 0.70) 40%,
+            rgba(86, 224, 208, 0.38) 60%,
+            rgba(86, 224, 208, 0.14) 74%,
+            transparent 90%
+        ) !important;
+
+    animation:
+        ai-blob-party-huge-glow-rainbow
+            var(--party-speed)
+            linear infinite,
+        ai-blob-party-huge-glow-pulse
+            620ms
+            ease-in-out infinite alternate
+            !important;
+
+    transform-origin: center center !important;
+}
+
+/*
+ * Core light gets brighter too, so the rainbow appears to come from him
+ * rather than only from a haze behind him.
+ */
+.ai-blob--party::before {
+    width: 120% !important;
+    height: 120% !important;
+
+    opacity: 1 !important;
+
+    background:
+        rgba(86, 224, 208, 0.92)
+        !important;
+
+    animation:
+        ai-blob-party-core-rainbow
+            var(--party-speed)
+            linear infinite,
+        ai-blob-party-core-superpulse
+            540ms
+            ease-in-out infinite alternate
+            !important;
+}
+
+/*
+ * Strong silhouette halo follows the same hue cycle as the body.
+ */
+.ai-blob--party .ai-blob__svg {
+    animation:
+        ai-blob-party-svg-rainbow-strong
+        var(--party-speed)
+        linear infinite !important;
+}
+
+@keyframes ai-blob-party-big-dance {
+    0% {
+        transform:
+            translate(-24px, 5px)
+            rotate(-6deg)
+            scale(1.02, 0.98);
+    }
+
+    18% {
+        transform:
+            translate(-34px, -16px)
+            rotate(-9deg)
+            scale(0.96, 1.06);
+    }
+
+    36% {
+        transform:
+            translate(0, -28px)
+            rotate(2deg)
+            scale(1.08, 0.94);
+    }
+
+    54% {
+        transform:
+            translate(35px, -15px)
+            rotate(9deg)
+            scale(0.97, 1.05);
+    }
+
+    72% {
+        transform:
+            translate(25px, 7px)
+            rotate(6deg)
+            scale(1.05, 0.96);
+    }
+
+    88% {
+        transform:
+            translate(-5px, -10px)
+            rotate(-2deg)
+            scale(0.98, 1.04);
+    }
+
+    100% {
+        transform:
+            translate(-24px, 5px)
+            rotate(-6deg)
+            scale(1.02, 0.98);
+    }
+}
+
+@keyframes ai-blob-party-huge-glow-rainbow {
+    from {
+        filter:
+            hue-rotate(0deg)
+            saturate(2.5)
+            brightness(2.25)
+            blur(23px);
+    }
+
+    to {
+        filter:
+            hue-rotate(360deg)
+            saturate(2.5)
+            brightness(2.25)
+            blur(23px);
+    }
+}
+
+@keyframes ai-blob-party-huge-glow-pulse {
+    from {
+        transform:
+            translate(-50%, -50%)
+            scale(0.94);
+    }
+
+    to {
+        transform:
+            translate(-50%, -50%)
+            scale(1.18);
+    }
+}
+
+@keyframes ai-blob-party-core-superpulse {
+    from {
+        transform:
+            translate(-50%, -50%)
+            scale(0.94);
+    }
+
+    to {
+        transform:
+            translate(-50%, -50%)
+            scale(1.13);
+    }
+}
+
+@keyframes ai-blob-party-svg-rainbow-strong {
+    from {
+        filter:
+            hue-rotate(0deg)
+            saturate(1.85)
+            brightness(1.08)
+            drop-shadow(
+                0 0 22px
+                rgba(86, 224, 208, 0.90)
+            )
+            drop-shadow(
+                0 0 58px
+                rgba(86, 224, 208, 0.66)
+            );
+    }
+
+    to {
+        filter:
+            hue-rotate(360deg)
+            saturate(1.85)
+            brightness(1.08)
+            drop-shadow(
+                0 0 22px
+                rgba(86, 224, 208, 0.90)
+            )
+            drop-shadow(
+                0 0 58px
+                rgba(86, 224, 208, 0.66)
+            );
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ai-blob--party .ai-blob__drag,
+    .ai-blob--party .ai-blob__floating,
+    .ai-blob--party .ai-blob__glow,
+    .ai-blob--party::before,
+    .ai-blob--party .ai-blob__svg {
+        animation: none !important;
+    }
+}
+
+
+/* =========================================================
+   PARTY GLOW — TRUE RAINBOW + CENTRED
+   ========================================================= */
+
+/*
+ * Re-anchor the outer glow to the mascot's actual centre.
+ * The glow element is absolutely positioned, so use 50%/50% plus
+ * translate(-50%, -50%) as the stable base transform.
+ */
+.ai-blob--party .ai-blob__glow {
+    left: 50% !important;
+    top: 50% !important;
+
+    width: 175% !important;
+    height: 175% !important;
+
+    transform-origin: center center !important;
+
+    /*
+     * Keep the base colour cyan and rotate the entire glow through hue space.
+     * This guarantees the aura itself cycles through the rainbow.
+     */
+    background:
+        radial-gradient(
+            circle,
+            rgba(86, 224, 208, 1) 0%,
+            rgba(86, 224, 208, 0.95) 20%,
+            rgba(86, 224, 208, 0.72) 38%,
+            rgba(86, 224, 208, 0.44) 57%,
+            rgba(86, 224, 208, 0.20) 72%,
+            rgba(86, 224, 208, 0.06) 84%,
+            transparent 94%
+        ) !important;
+
+    opacity: 1 !important;
+
+    animation:
+        ai-blob-party-centered-rainbow-glow
+            var(--party-speed)
+            linear infinite,
+        ai-blob-party-centered-glow-pulse
+            620ms
+            ease-in-out infinite alternate
+            !important;
+
+    will-change:
+        transform,
+        filter,
+        opacity;
+}
+
+/*
+ * Core glow is also centred and hue-cycled so there isn't a static cyan
+ * hotspot sitting underneath the rainbow outer aura.
+ */
+.ai-blob--party::before {
+    left: 50% !important;
+    top: 50% !important;
+
+    width: 128% !important;
+    height: 128% !important;
+
+    transform-origin: center center !important;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(86, 224, 208, 0.95) 0%,
+            rgba(86, 224, 208, 0.54) 45%,
+            transparent 78%
+        ) !important;
+
+    opacity: 1 !important;
+
+    animation:
+        ai-blob-party-centered-core-rainbow
+            var(--party-speed)
+            linear infinite,
+        ai-blob-party-centered-core-pulse
+            540ms
+            ease-in-out infinite alternate
+            !important;
+}
+
+@keyframes ai-blob-party-centered-rainbow-glow {
+    from {
+        filter:
+            hue-rotate(0deg)
+            saturate(2.6)
+            brightness(2.5)
+            blur(22px);
+    }
+
+    to {
+        filter:
+            hue-rotate(360deg)
+            saturate(2.6)
+            brightness(2.5)
+            blur(22px);
+    }
+}
+
+@keyframes ai-blob-party-centered-glow-pulse {
+    from {
+        transform:
+            translate(-50%, -50%)
+            scale(0.96);
+    }
+
+    to {
+        transform:
+            translate(-50%, -50%)
+            scale(1.22);
+    }
+}
+
+@keyframes ai-blob-party-centered-core-rainbow {
+    from {
+        filter:
+            hue-rotate(0deg)
+            saturate(2.35)
+            brightness(2.25)
+            blur(16px);
+    }
+
+    to {
+        filter:
+            hue-rotate(360deg)
+            saturate(2.35)
+            brightness(2.25)
+            blur(16px);
+    }
+}
+
+@keyframes ai-blob-party-centered-core-pulse {
+    from {
+        transform:
+            translate(-50%, -50%)
+            scale(0.97);
+    }
+
+    to {
+        transform:
+            translate(-50%, -50%)
+            scale(1.15);
+    }
+}
+
+/*
+ * Ensure the SVG halo also follows the same hue timing.
+ */
+.ai-blob--party .ai-blob__svg {
+    animation:
+        ai-blob-party-svg-rainbow-strong
+        var(--party-speed)
+        linear infinite !important;
+}
+
+
+/* =========================================================
+   PARTY GLOW — FINAL CLEAN VERSION
+   1) always behind mascot
+   2) same rainbow hue cycle as mascot
+   3) subtle size + intensity breathing
+   ========================================================= */
+
+.ai-blob {
+    position: relative;
+    isolation: isolate;
+}
+
+/*
+ * Keep the visible mascot above the glow.
+ */
+.ai-blob__svg {
+    position: relative;
+    z-index: 2;
+}
+
+/*
+ * Dedicated party aura.
+ * This is deliberately behind the SVG and does not move independently.
+ */
+.ai-blob--party .ai-blob__glow {
+    position: absolute !important;
+    z-index: 0 !important;
+
+    left: 50% !important;
+    top: 50% !important;
+
+    width: 150% !important;
+    height: 150% !important;
+
+    pointer-events: none;
+
+    transform-origin: center center !important;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(86, 224, 208, 0.95) 0%,
+            rgba(86, 224, 208, 0.72) 30%,
+            rgba(86, 224, 208, 0.38) 56%,
+            rgba(86, 224, 208, 0.12) 72%,
+            transparent 88%
+        ) !important;
+
+    opacity: 0.9 !important;
+
+    animation:
+        ai-blob-party-aura-rainbow
+            var(--party-speed)
+            linear infinite,
+        ai-blob-party-aura-breathe
+            1.25s
+            ease-in-out infinite alternate
+            !important;
+
+    will-change:
+        transform,
+        filter,
+        opacity;
+}
+
+/*
+ * Keep the old core glow from competing with the dedicated party aura.
+ */
+.ai-blob--party::before {
+    opacity: 0.18 !important;
+    animation: none !important;
+    filter: blur(18px) !important;
+    transform:
+        translate(-50%, -50%)
+        scale(1) !important;
+}
+
+/*
+ * Match the mascot's hue cycle exactly.
+ * Since the body also uses hue-rotate(0deg -> 360deg) on --party-speed,
+ * both layers stay synchronised.
+ */
+@keyframes ai-blob-party-aura-rainbow {
+    from {
+        filter:
+            hue-rotate(0deg)
+            saturate(2.1)
+            brightness(1.7)
+            blur(24px);
+    }
+
+    to {
+        filter:
+            hue-rotate(360deg)
+            saturate(2.1)
+            brightness(1.7)
+            blur(24px);
+    }
+}
+
+/*
+ * Gentle breathing only — small size and intensity change.
+ */
+@keyframes ai-blob-party-aura-breathe {
+    from {
+        transform:
+            translate(-50%, -50%)
+            scale(0.96);
+
+        opacity: 0.72;
+    }
+
+    to {
+        transform:
+            translate(-50%, -50%)
+            scale(1.07);
+
+        opacity: 1;
+    }
+}
+
+/*
+ * Ensure the party aura remains behind the mascot even while dragging/dancing.
+ */
+.ai-blob--party .ai-blob__drag {
+    position: relative;
+    z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ai-blob--party .ai-blob__glow {
+        animation: none !important;
+
+        transform:
+            translate(-50%, -50%)
+            scale(1) !important;
+
+        filter:
+            saturate(1.5)
+            brightness(1.4)
+            blur(24px) !important;
+    }
+}
+
+
+/* =========================================================
+   PARTY AURA — DEDICATED LAYER
+   ---------------------------------------------------------
+   This intentionally does NOT reuse .ai-blob__glow.
+   Older glow rules can therefore no longer fight the party aura.
+   ========================================================= */
+
+.ai-blob {
+    position: relative !important;
+    isolation: isolate !important;
+}
+
+/*
+ * Dedicated aura exists as a sibling immediately before the normal glow/SVG.
+ * At rest it is fully hidden.
+ */
+.ai-blob__party-glow {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    z-index: 0;
+
+    width: 165%;
+    height: 165%;
+
+    border-radius: 50%;
+
+    pointer-events: none;
+
+    opacity: 0;
+
+    transform:
+        translate(-50%, -50%)
+        scale(0.98);
+
+    transform-origin: 50% 50%;
+
+    /*
+     * Cyan is the base colour because the body party animation also starts
+     * from the normal cyan palette. hue-rotate then moves both through the
+     * same 360-degree cycle.
+     */
+    background:
+        radial-gradient(
+            ellipse at center,
+            rgba(86, 224, 208, 0.98) 0%,
+            rgba(86, 224, 208, 0.82) 18%,
+            rgba(86, 224, 208, 0.58) 36%,
+            rgba(86, 224, 208, 0.30) 55%,
+            rgba(86, 224, 208, 0.12) 70%,
+            rgba(86, 224, 208, 0.03) 82%,
+            transparent 92%
+        );
+
+    filter:
+        blur(24px)
+        saturate(2.25)
+        brightness(1.9);
+
+    will-change:
+        transform,
+        opacity,
+        filter;
+}
+
+/*
+ * Explicit stacking:
+ * party aura -> normal glow -> mascot SVG.
+ */
+.ai-blob .ai-blob__glow {
+    z-index: 1;
+}
+
+.ai-blob .ai-blob__svg {
+    position: relative;
+    z-index: 2;
+}
+
+/* ---------------------------------------------------------
+   PARTY ACTIVE
+   --------------------------------------------------------- */
+
+.ai-blob--party {
+    --party-speed: 3.2s;
+}
+
+/*
+ * Hide ALL normal glow sources during party mode.
+ * This is crucial: otherwise a static cyan glow remains visible under the
+ * rainbow aura and makes it appear as if the aura itself is not changing.
+ */
+.ai-blob--party .ai-blob__glow {
+    opacity: 0 !important;
+    animation: none !important;
+}
+
+.ai-blob--party::before {
+    opacity: 0 !important;
+    animation: none !important;
+}
+
+/*
+ * The dedicated aura is now the ONLY background glow.
+ *
+ * Animation #1 owns FILTER only -> rainbow.
+ * Animation #2 owns TRANSFORM + OPACITY only -> breathing.
+ *
+ * Because the two animations modify different properties, they cannot
+ * overwrite one another.
+ */
+.ai-blob--party .ai-blob__party-glow {
+    opacity: 0.88;
+
+    animation:
+        ai-blob-party-aura-colour
+            var(--party-speed)
+            linear
+            infinite,
+        ai-blob-party-aura-breathe
+            1.35s
+            ease-in-out
+            infinite
+            alternate !important;
+}
+
+@keyframes ai-blob-party-aura-colour {
+    0% {
+        filter:
+            hue-rotate(0deg)
+            blur(24px)
+            saturate(2.35)
+            brightness(1.85);
+    }
+
+    25% {
+        filter:
+            hue-rotate(90deg)
+            blur(25px)
+            saturate(2.45)
+            brightness(2.00);
+    }
+
+    50% {
+        filter:
+            hue-rotate(180deg)
+            blur(24px)
+            saturate(2.35)
+            brightness(1.90);
+    }
+
+    75% {
+        filter:
+            hue-rotate(270deg)
+            blur(25px)
+            saturate(2.45)
+            brightness(2.05);
+    }
+
+    100% {
+        filter:
+            hue-rotate(360deg)
+            blur(24px)
+            saturate(2.35)
+            brightness(1.85);
+    }
+}
+
+@keyframes ai-blob-party-aura-breathe {
+    0% {
+        opacity: 0.72;
+
+        transform:
+            translate(-50%, -50%)
+            scale(0.94);
+    }
+
+    50% {
+        opacity: 0.94;
+
+        transform:
+            translate(-50%, -50%)
+            scale(1.035);
+    }
+
+    100% {
+        opacity: 0.82;
+
+        transform:
+            translate(-50%, -50%)
+            scale(1.09);
+    }
+}
+
+/*
+ * Keep the aura anchored to the mascot's component box while the SVG itself
+ * dances inside. It remains centred behind the character instead of inheriting
+ * the dance/drag transforms.
+ */
+.ai-blob--party .ai-blob__party-glow {
+    left: 50% !important;
+    top: 50% !important;
+}
+
+/*
+ * Light mode gets a slightly stronger aura because pale backgrounds wash
+ * coloured blur out more easily.
+ */
+.site-shell--light .ai-blob--party .ai-blob__party-glow,
+[data-theme="light"] .ai-blob--party .ai-blob__party-glow,
+.theme-light .ai-blob--party .ai-blob__party-glow,
+.light .ai-blob--party .ai-blob__party-glow {
+    background:
+        radial-gradient(
+            ellipse at center,
+            rgba(86, 224, 208, 1) 0%,
+            rgba(86, 224, 208, 0.90) 18%,
+            rgba(86, 224, 208, 0.66) 36%,
+            rgba(86, 224, 208, 0.38) 56%,
+            rgba(86, 224, 208, 0.16) 72%,
+            rgba(86, 224, 208, 0.04) 84%,
+            transparent 94%
+        );
+}
+
+/*
+ * Reduced-motion users still get a bright, centred party aura, but without
+ * the hue/breathing animation.
+ */
+@media (prefers-reduced-motion: reduce) {
+    .ai-blob--party .ai-blob__party-glow {
+        opacity: 0.88 !important;
+
+        animation: none !important;
+
+        transform:
+            translate(-50%, -50%)
+            scale(1) !important;
+
+        filter:
+            blur(24px)
+            saturate(1.8)
+            brightness(1.7) !important;
+    }
+}
+
+
+/* =========================================================
+   PARTY STAGE + FLOATING ORBS
+   ---------------------------------------------------------
+   The mascot SVG, party aura and orbs now live in ONE stage.
+   The stage owns the large dance movement, so all three move together.
+   ========================================================= */
+
+.ai-blob__party-stage {
+    position: relative;
+    z-index: 1;
+
+    width: 100%;
+    height: 100%;
+
+    transform-origin: 50% 50%;
+}
+
+/*
+ * Previous party CSS animated the SVG's internal drag group.
+ * Stop doing that: the shared stage now owns the party dance, leaving
+ * ai-blob__drag available for real pointer dragging.
+ */
+.ai-blob--party .ai-blob__drag {
+    animation: none !important;
+}
+
+/*
+ * Move the entire stage — mascot + aura + particles — as one object.
+ */
+.ai-blob--party .ai-blob__party-stage {
+    animation:
+        ai-blob-party-stage-dance 1.05s
+        cubic-bezier(0.45, 0, 0.3, 1)
+        infinite !important;
+
+    will-change: transform;
+}
+
+@keyframes ai-blob-party-stage-dance {
+    0% {
+        transform:
+            translate(-24px, 5px)
+            rotate(-6deg);
+    }
+
+    18% {
+        transform:
+            translate(-34px, -16px)
+            rotate(-9deg);
+    }
+
+    36% {
+        transform:
+            translate(0, -28px)
+            rotate(2deg);
+    }
+
+    54% {
+        transform:
+            translate(35px, -15px)
+            rotate(9deg);
+    }
+
+    72% {
+        transform:
+            translate(25px, 7px)
+            rotate(6deg);
+    }
+
+    88% {
+        transform:
+            translate(-5px, -10px)
+            rotate(-2deg);
+    }
+
+    100% {
+        transform:
+            translate(-24px, 5px)
+            rotate(-6deg);
+    }
+}
+
+/* ---------------------------------------------------------
+   PARTY AURA INSIDE THE SHARED STAGE
+   --------------------------------------------------------- */
+
+.ai-blob__party-stage .ai-blob__party-glow {
+    z-index: 0;
+}
+
+.ai-blob__party-stage .ai-blob__party-orbs {
+    z-index: 1;
+}
+
+.ai-blob__party-stage .ai-blob__glow {
+    z-index: 1;
+}
+
+.ai-blob__party-stage .ai-blob__svg {
+    position: relative;
+    z-index: 3;
+}
+
+/*
+ * The stage itself is 100% of the mascot box, so 50/50 is now the exact
+ * moving mascot centre. No independent dance transform is applied to aura.
+ */
+.ai-blob--party .ai-blob__party-glow {
+    left: 50% !important;
+    top: 50% !important;
+
+    width: 165% !important;
+    height: 165% !important;
+}
+
+/* ---------------------------------------------------------
+   FLOATING PARTY ORBS
+   ---------------------------------------------------------
+   Six deliberately subtle energy particles. They share the same hue cycle
+   as the mascot/aura, but each has its own orbit so it does not look like
+   confetti.
+   --------------------------------------------------------- */
+
+.ai-blob__party-orbs {
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    opacity: 0;
+}
+
+.ai-blob--party .ai-blob__party-orbs {
+    opacity: 1;
+
+    animation:
+        ai-blob-party-orbs-rainbow
+        var(--party-speed)
+        linear infinite;
+}
+
+.ai-blob__party-orb {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 9px;
+    height: 9px;
+
+    border-radius: 999px;
+
+    background: rgb(86, 224, 208);
+
+    box-shadow:
+        0 0 8px rgba(86, 224, 208, 0.95),
+        0 0 18px rgba(86, 224, 208, 0.72),
+        0 0 32px rgba(86, 224, 208, 0.35);
+
+    opacity: 0;
+
+    transform-origin: center;
+}
+
+.ai-blob--party .ai-blob__party-orb {
+    opacity: 0.9;
+}
+
+.ai-blob__party-orb--1 {
+    width: 8px;
+    height: 8px;
+
+    animation:
+        ai-blob-party-orb-1 2.8s
+        ease-in-out infinite;
+}
+
+.ai-blob__party-orb--2 {
+    width: 12px;
+    height: 12px;
+
+    animation:
+        ai-blob-party-orb-2 3.35s
+        ease-in-out infinite -0.8s;
+}
+
+.ai-blob__party-orb--3 {
+    width: 6px;
+    height: 6px;
+
+    animation:
+        ai-blob-party-orb-3 2.45s
+        ease-in-out infinite -1.2s;
+}
+
+.ai-blob__party-orb--4 {
+    width: 10px;
+    height: 10px;
+
+    animation:
+        ai-blob-party-orb-4 3.7s
+        ease-in-out infinite -0.45s;
+}
+
+.ai-blob__party-orb--5 {
+    width: 7px;
+    height: 7px;
+
+    animation:
+        ai-blob-party-orb-5 3.05s
+        ease-in-out infinite -1.65s;
+}
+
+.ai-blob__party-orb--6 {
+    width: 5px;
+    height: 5px;
+
+    animation:
+        ai-blob-party-orb-6 2.65s
+        ease-in-out infinite -0.25s;
+}
+
+/*
+ * The whole particle field hue-rotates on the exact same party clock as the
+ * body and aura. Individual orb animations only own transform/opacity.
+ */
+@keyframes ai-blob-party-orbs-rainbow {
+    from {
+        filter:
+            hue-rotate(0deg)
+            saturate(2)
+            brightness(1.25);
+    }
+
+    to {
+        filter:
+            hue-rotate(360deg)
+            saturate(2)
+            brightness(1.25);
+    }
+}
+
+@keyframes ai-blob-party-orb-1 {
+    0%, 100% {
+        transform: translate(-116px, -20px) scale(0.72);
+        opacity: 0.25;
+    }
+
+    45% {
+        transform: translate(-140px, -82px) scale(1.08);
+        opacity: 0.95;
+    }
+
+    72% {
+        transform: translate(-106px, -116px) scale(0.84);
+        opacity: 0.58;
+    }
+}
+
+@keyframes ai-blob-party-orb-2 {
+    0%, 100% {
+        transform: translate(104px, 14px) scale(0.76);
+        opacity: 0.28;
+    }
+
+    38% {
+        transform: translate(136px, -64px) scale(1.06);
+        opacity: 0.88;
+    }
+
+    70% {
+        transform: translate(94px, -112px) scale(0.9);
+        opacity: 0.56;
+    }
+}
+
+@keyframes ai-blob-party-orb-3 {
+    0%, 100% {
+        transform: translate(-74px, 106px) scale(0.65);
+        opacity: 0.22;
+    }
+
+    48% {
+        transform: translate(-118px, 58px) scale(1.15);
+        opacity: 0.88;
+    }
+}
+
+@keyframes ai-blob-party-orb-4 {
+    0%, 100% {
+        transform: translate(82px, 102px) scale(0.7);
+        opacity: 0.24;
+    }
+
+    42% {
+        transform: translate(126px, 48px) scale(1.08);
+        opacity: 0.92;
+    }
+
+    72% {
+        transform: translate(112px, -4px) scale(0.82);
+        opacity: 0.52;
+    }
+}
+
+@keyframes ai-blob-party-orb-5 {
+    0%, 100% {
+        transform: translate(-24px, -126px) scale(0.64);
+        opacity: 0.2;
+    }
+
+    46% {
+        transform: translate(22px, -150px) scale(1.05);
+        opacity: 0.82;
+    }
+}
+
+@keyframes ai-blob-party-orb-6 {
+    0%, 100% {
+        transform: translate(126px, -26px) scale(0.6);
+        opacity: 0.18;
+    }
+
+    50% {
+        transform: translate(150px, 30px) scale(1.18);
+        opacity: 0.76;
+    }
+}
+
+/*
+ * Keep party extras restrained for reduced-motion visitors.
+ */
+@media (prefers-reduced-motion: reduce) {
+    .ai-blob--party .ai-blob__party-stage {
+        animation: none !important;
+    }
+
+    .ai-blob--party .ai-blob__party-orbs {
+        animation: none !important;
+        opacity: 0.5;
+    }
+
+    .ai-blob--party .ai-blob__party-orb {
+        animation: none !important;
+        opacity: 0.35;
+    }
+}
+
+
+/* =========================================================
+   PARTY DRAG FOLLOW
+   The mascot's pointer-drag system already writes:
+   --drag-x / --drag-y
+   onto .ai-blob.
+   Party aura + particles now consume those exact coordinates.
+   ========================================================= */
+
+/*
+ * Glow breathing still works, but its centre is offset by the current
+ * pointer-drag position. During snap-back these variables animate back
+ * with the mascot, so the aura reverberates home with him too.
+ */
+@keyframes ai-blob-party-aura-breathe {
+    0% {
+        opacity: 0.72;
+
+        transform:
+            translate(
+                calc(-50% + var(--drag-x, 0px)),
+                calc(-50% + var(--drag-y, 0px))
+            )
+            scale(0.94);
+    }
+
+    50% {
+        opacity: 0.94;
+
+        transform:
+            translate(
+                calc(-50% + var(--drag-x, 0px)),
+                calc(-50% + var(--drag-y, 0px))
+            )
+            scale(1.035);
+    }
+
+    100% {
+        opacity: 0.82;
+
+        transform:
+            translate(
+                calc(-50% + var(--drag-x, 0px)),
+                calc(-50% + var(--drag-y, 0px))
+            )
+            scale(1.09);
+    }
+}
+
+/*
+ * The entire orb field gets the same drag translation.
+ * Individual orb keyframes remain local to this translated field.
+ */
+.ai-blob--party .ai-blob__party-orbs {
+    transform:
+        translate(
+            var(--drag-x, 0px),
+            var(--drag-y, 0px)
+        ) !important;
+
+    transform-origin: 50% 50%;
+    will-change: transform, filter, opacity;
+}
+
+/*
+ * Make sure drag/snap-specific legacy rules cannot pull the dedicated
+ * party aura back to the component's original centre.
+ */
+.ai-blob--party.ai-blob--dragging .ai-blob__party-glow,
+.ai-blob--party.ai-blob--snapping .ai-blob__party-glow {
+    left: 50% !important;
+    top: 50% !important;
+}
+
+.ai-blob--party.ai-blob--dragging .ai-blob__party-orbs,
+.ai-blob--party.ai-blob--snapping .ai-blob__party-orbs {
+    transform:
+        translate(
+            var(--drag-x, 0px),
+            var(--drag-y, 0px)
+        ) !important;
+}
+
+/*
+ * Reduced-motion still follows dragging even though the breathing animation
+ * is disabled.
+ */
+@media (prefers-reduced-motion: reduce) {
+    .ai-blob--party .ai-blob__party-glow {
+        transform:
+            translate(
+                calc(-50% + var(--drag-x, 0px)),
+                calc(-50% + var(--drag-y, 0px))
+            )
+            scale(1) !important;
+    }
+}
+
+
+/* =========================================================
+   PARTY DRAG — STRUCTURAL FINAL FIX
+   ---------------------------------------------------------
+   .ai-blob__party-drag owns pointer dragging.
+   .ai-blob__party-stage owns the dance.
+   This keeps mascot + aura + particles physically together.
+   ========================================================= */
+
+.ai-blob__party-drag {
+    position: relative;
+    z-index: 1;
+
+    width: 100%;
+    height: 100%;
+
+    transform:
+        translate(0px, 0px)
+        rotate(0deg)
+        scale(1);
+
+    transform-origin: 50% 50%;
+    will-change: transform;
+}
+
+/*
+ * Party stage remains the dancing layer inside the drag wrapper.
+ */
+.ai-blob--party .ai-blob__party-stage {
+    animation:
+        ai-blob-party-stage-dance 1.05s
+        cubic-bezier(0.45, 0, 0.3, 1)
+        infinite !important;
+}
+
+/*
+ * During party mode the internal SVG drag group must remain neutral.
+ * Dragging is handled by .ai-blob__party-drag instead.
+ */
+.ai-blob--party .ai-blob__drag {
+    transform:
+        translate(0px, 0px)
+        rotate(0deg)
+        scale(1) !important;
+}
+
+/* =========================================================
+   PARTY GLOW — SINGLE SOURCE OF TRUTH
+   ---------------------------------------------------------
+   Suppress every legacy glow source while party is active.
+   Only .ai-blob__party-glow is allowed to render an aura.
+   ========================================================= */
+
+.ai-blob--party .ai-blob__glow {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    animation: none !important;
+    filter: none !important;
+    transform: none !important;
+}
+
+.ai-blob--party::before {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    animation: none !important;
+    filter: none !important;
+}
+
+/*
+ * Remove the legacy SVG drop-shadow too. The dedicated party aura supplies
+ * all glow during party mode, preventing the brief stray halo beside chat.
+ */
+.ai-blob--party .ai-blob__svg {
+    filter: none !important;
+}
+
+/*
+ * Dedicated party aura remains behind the mascot and follows the party drag
+ * wrapper automatically because both are descendants of that same wrapper.
+ */
+.ai-blob--party .ai-blob__party-glow {
+    display: block !important;
+    visibility: visible !important;
+
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+
+    z-index: 0 !important;
+
+    width: 165% !important;
+    height: 165% !important;
+
+    border-radius: 50%;
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            rgba(86, 224, 208, 0.98) 0%,
+            rgba(86, 224, 208, 0.82) 18%,
+            rgba(86, 224, 208, 0.58) 36%,
+            rgba(86, 224, 208, 0.30) 55%,
+            rgba(86, 224, 208, 0.12) 70%,
+            rgba(86, 224, 208, 0.03) 82%,
+            transparent 92%
+        ) !important;
+
+    animation:
+        ai-blob-party-aura-colour
+            var(--party-speed)
+            linear infinite,
+        ai-blob-party-aura-breathe-clean
+            1.35s
+            ease-in-out infinite alternate
+            !important;
+
+    transform-origin: 50% 50% !important;
+    will-change: transform, filter, opacity;
+}
+
+/*
+ * No drag offset is needed here anymore. The parent party-drag wrapper
+ * physically moves the aura with the mascot.
+ */
+@keyframes ai-blob-party-aura-breathe-clean {
+    0% {
+        opacity: 0.72;
+        transform:
+            translate(-50%, -50%)
+            scale(0.94);
+    }
+
+    50% {
+        opacity: 0.94;
+        transform:
+            translate(-50%, -50%)
+            scale(1.035);
+    }
+
+    100% {
+        opacity: 0.82;
+        transform:
+            translate(-50%, -50%)
+            scale(1.09);
+    }
+}
+
+/*
+ * Orb field also stays local to the same party-drag wrapper.
+ * Remove the previous manual --drag-x / --drag-y compensation.
+ */
+.ai-blob--party .ai-blob__party-orbs,
+.ai-blob--party.ai-blob--dragging .ai-blob__party-orbs,
+.ai-blob--party.ai-blob--snapping .ai-blob__party-orbs {
+    transform: none !important;
+}
+
+/*
+ * Ensure stacking order inside the shared stage.
+ */
+.ai-blob__party-stage {
+    position: relative;
+    isolation: isolate;
+}
+
+.ai-blob__party-glow {
+    z-index: 0 !important;
+}
+
+.ai-blob__party-orbs {
+    z-index: 1 !important;
+}
+
+.ai-blob__svg {
+    position: relative;
+    z-index: 2 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ai-blob--party .ai-blob__party-stage {
+        animation: none !important;
+    }
+
+    .ai-blob--party .ai-blob__party-glow {
+        animation: none !important;
+        opacity: 0.86 !important;
+
+        transform:
+            translate(-50%, -50%)
+            scale(1) !important;
+
+        filter:
+            blur(24px)
+            saturate(1.8)
+            brightness(1.7) !important;
+    }
+}

@@ -1,0 +1,34 @@
+.ai-assistant {
+    position: relative;
+
+    /*
+     * Mascot + chat are now one real layout unit.
+     * No fake padding and no absolutely-positioned chat.
+     */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 0;
+
+    overflow: visible;
+    isolation: isolate;
+}
+
+.ai-assistant__mascot {
+    position: relative;
+    z-index: 1;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    min-width: 0;
+}
+
+@media (max-width: 980px) {
+    .ai-assistant {
+        width: 100%;
+    }
+}
