@@ -513,7 +513,7 @@ export default function AiChat({
                         className="ai-chat__status-dot"
                         aria-hidden="true"
                     />
-                    <span>developer.assistant</span>
+                    <span>bloop.chat</span>
                 </div>
 
                 <div className="ai-chat__header-actions">
