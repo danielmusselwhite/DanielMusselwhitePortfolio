@@ -724,14 +724,6 @@
   margin-left: auto;
 }
 
-/*
- * Prominence affects presentation rather than layout.
- * Only the flagship is wider when open; all projects still use the
- * original width-based minimize / restore / maximize animation.
- */
-.project-window--flagship:not(.project-window--minimized) {
-  width: 100%;
-}
 
 .project-window--expanded {
   width: 100%;
@@ -1248,6 +1240,7 @@
   background: rgba(244, 250, 249, 0.9);
   box-shadow: 0 18px 40px rgba(36, 81, 88, 0.1);
 }
+
 
 .site-shell--light .skill-group:hover,
 .site-shell--light .experience:hover,
@@ -2436,10 +2429,12 @@
     grid-row: 2;
   }
 }
+
 /* =========================
    PROJECT PROMINENCE STATUS
    Brighter + wider glow as importance increases.
    ========================= */
+============ */
 
 .project-window .status-label {
   font-weight: 700;
