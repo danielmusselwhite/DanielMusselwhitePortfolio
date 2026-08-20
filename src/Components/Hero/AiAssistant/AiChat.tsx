@@ -545,26 +545,33 @@ export default function AiChat({
                                 : "bot"}
                         </span>
 
-                        {message.role === "assistant" ? (
-                            <ReactMarkdown
-                                remarkPlugins={[remarkGfm]}
-                                components={{
-                                    a: ({ children, ...props }) => (
-                                        <a
-                                            {...props}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            {children}
-                                        </a>
-                                    ),
-                                }}
-                            >
-                                {message.content}
-                            </ReactMarkdown>
-                        ) : (
-                            <p>{message.content}</p>
-                        )}
+                        <div className="ai-chat__message-content">
+                            {message.role === "assistant" ? (
+                                <div className="ai-chat__markdown">
+                                    <ReactMarkdown
+                                        remarkPlugins={[remarkGfm]}
+                                        components={{
+                                            a: ({
+                                                children,
+                                                ...props
+                                            }) => (
+                                                <a
+                                                    {...props}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    {children}
+                                                </a>
+                                            ),
+                                        }}
+                                    >
+                                        {message.content}
+                                    </ReactMarkdown>
+                                </div>
+                            ) : (
+                                <p>{message.content}</p>
+                            )}
+                        </div>
                     </div>
                 ))}
 

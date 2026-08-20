@@ -1092,3 +1092,179 @@
 
     opacity: 0.86;
 }
+
+/* =========================================================
+   CHAT MARKDOWN
+   Compact terminal-style formatting for assistant responses.
+   ========================================================= */
+
+.ai-chat__message-content {
+    min-width: 0;
+    width: 100%;
+}
+
+.ai-chat__markdown {
+    min-width: 0;
+    color: inherit;
+    line-height: 1.55;
+}
+
+.ai-chat__markdown > :first-child {
+    margin-top: 0;
+}
+
+.ai-chat__markdown > :last-child {
+    margin-bottom: 0;
+}
+
+.ai-chat__markdown p {
+    margin: 0 0 0.55rem;
+}
+
+.ai-chat__markdown p:last-child {
+    margin-bottom: 0;
+}
+
+.ai-chat__markdown strong {
+    color: #ecfdf5;
+    font-weight: 700;
+}
+
+.ai-chat__markdown em {
+    color: inherit;
+    font-style: italic;
+    opacity: 0.92;
+}
+
+.ai-chat__markdown ul,
+.ai-chat__markdown ol {
+    margin: 0.45rem 0 0.6rem;
+    padding-left: 1.15rem;
+}
+
+.ai-chat__markdown li {
+    margin: 0.18rem 0;
+    padding-left: 0.08rem;
+}
+
+.ai-chat__markdown li::marker {
+    color: var(--accent);
+}
+
+.ai-chat__markdown :not(pre) > code {
+    padding: 0.08rem 0.28rem;
+    border: 1px solid rgba(var(--accent-rgb), 0.16);
+    border-radius: 0.32rem;
+    background: rgba(var(--accent-rgb), 0.08);
+    color: #9ff4e8;
+    font-family: var(--mono);
+    font-size: 0.9em;
+}
+
+.ai-chat__markdown pre {
+    max-width: 100%;
+    margin: 0.55rem 0;
+    padding: 0.7rem 0.8rem;
+    overflow-x: auto;
+    border: 1px solid rgba(var(--accent-rgb), 0.14);
+    border-radius: 0.55rem;
+    background: rgba(2, 6, 23, 0.38);
+}
+
+.ai-chat__markdown pre code {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #dffdf8;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+.ai-chat__markdown a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-color: rgba(var(--accent-rgb), 0.5);
+    text-underline-offset: 0.16em;
+}
+
+.ai-chat__markdown a:hover {
+    text-decoration-color: currentColor;
+}
+
+.ai-chat__markdown blockquote {
+    margin: 0.55rem 0;
+    padding: 0.05rem 0 0.05rem 0.7rem;
+    border-left: 2px solid rgba(var(--accent-rgb), 0.5);
+    color: #a9bec7;
+}
+
+.ai-chat__markdown h1,
+.ai-chat__markdown h2,
+.ai-chat__markdown h3,
+.ai-chat__markdown h4 {
+    margin: 0.7rem 0 0.35rem;
+    color: #ecfdf5;
+    font-size: 0.95rem;
+    line-height: 1.35;
+    letter-spacing: 0;
+}
+
+.ai-chat__markdown hr {
+    margin: 0.7rem 0;
+    border: 0;
+    border-top: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.ai-chat__markdown table {
+    display: block;
+    max-width: 100%;
+    margin: 0.55rem 0;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+}
+
+.ai-chat__markdown th,
+.ai-chat__markdown td {
+    padding: 0.35rem 0.45rem;
+    border: 1px solid rgba(148, 163, 184, 0.14);
+    text-align: left;
+}
+
+.ai-chat__markdown th {
+    color: #ecfdf5;
+    background: rgba(var(--accent-rgb), 0.06);
+}
+
+.site-shell--light .ai-chat__markdown strong,
+.site-shell--light .ai-chat__markdown h1,
+.site-shell--light .ai-chat__markdown h2,
+.site-shell--light .ai-chat__markdown h3,
+.site-shell--light .ai-chat__markdown h4 {
+    color: #17343c;
+}
+
+.site-shell--light .ai-chat__markdown :not(pre) > code {
+    border-color: rgba(31, 146, 132, 0.18);
+    background: rgba(45, 190, 169, 0.09);
+    color: #17655f;
+}
+
+.site-shell--light .ai-chat__markdown pre {
+    border-color: rgba(36, 81, 88, 0.14);
+    background: rgba(226, 240, 239, 0.78);
+}
+
+.site-shell--light .ai-chat__markdown pre code {
+    color: #17343c;
+}
+
+.site-shell--light .ai-chat__markdown blockquote {
+    color: #5d7880;
+}
+
+.site-shell--light .ai-chat__markdown th {
+    color: #17343c;
+    background: rgba(45, 190, 169, 0.08);
+}
