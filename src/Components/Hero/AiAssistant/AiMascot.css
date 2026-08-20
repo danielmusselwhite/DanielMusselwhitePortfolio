@@ -1186,3 +1186,265 @@
             rotate(2deg);
     }
 }
+
+
+/* =========================================================
+   CHAT STATE PALETTES
+   ========================================================= */
+
+/* Idle stays the original cyan. */
+.ai-blob--idle {
+    --blob-main: #56e0d0;
+    --blob-highlight: #c8fff9;
+    --blob-shadow: #238b94;
+    --pupil: #075f68;
+}
+
+/* Listening: brighter aqua, like he's perked up. */
+.ai-blob--listening {
+    --blob-main: #61f0e7;
+    --blob-highlight: #e0fffc;
+    --blob-shadow: #2aa3a8;
+    --pupil: #08727b;
+}
+
+/* Thinking: violet/indigo. */
+.ai-blob--thinking {
+    --blob-main: #8d7cf3;
+    --blob-highlight: #ded8ff;
+    --blob-shadow: #4e46a8;
+    --pupil: #342b83;
+}
+
+/* Busy: deeper electric purple-blue. */
+.ai-blob--busy {
+    --blob-main: #6f74ff;
+    --blob-highlight: #cfd3ff;
+    --blob-shadow: #3d3eae;
+    --pupil: #24276f;
+}
+
+/* Speaking: green/teal so replies feel positive. */
+.ai-blob--speaking {
+    --blob-main: #61e69a;
+    --blob-highlight: #d7ffe7;
+    --blob-shadow: #2c9a65;
+    --pupil: #17613f;
+}
+
+/* Error remains warm coral/red. */
+.ai-blob--error {
+    --blob-main: #f28d7d;
+    --blob-highlight: #ffd7d1;
+    --blob-shadow: #b85f62;
+    --pupil: #8c3d46;
+}
+
+/*
+ * Smooth the palette changes between states.
+ * SVG gradient stops update from these CSS variables.
+ */
+.ai-blob__body,
+.ai-blob__pupil,
+.ai-blob__body--back {
+    transition:
+        fill 520ms cubic-bezier(0.22, 1, 0.36, 1),
+        filter 520ms ease,
+        opacity 520ms ease;
+}
+
+/* =========================================================
+   LONG-WAIT "BUSY" SHOWCASE
+   ========================================================= */
+
+/*
+ * A more expressive fluid orbit/stretch sequence after the backend
+ * has been thinking for a while.
+ */
+.ai-blob--busy .ai-blob__tickle {
+    animation:
+        ai-blob-busy-fluid 1.7s
+        cubic-bezier(0.45, 0, 0.2, 1)
+        infinite;
+}
+
+.ai-blob--busy .ai-blob__eyes {
+    animation:
+        ai-blob-busy-eyes 1.7s
+        ease-in-out infinite;
+}
+
+.ai-blob--busy .ai-blob__glow {
+    animation:
+        ai-blob-busy-glow 1.7s
+        ease-in-out infinite;
+}
+
+@keyframes ai-blob-busy-fluid {
+    0%,
+    100% {
+        transform:
+            translate(0, 0)
+            rotate(0deg)
+            scale(1, 1);
+    }
+
+    18% {
+        transform:
+            translate(-12px, -5px)
+            rotate(-4deg)
+            scale(1.10, 0.92);
+    }
+
+    38% {
+        transform:
+            translate(10px, -12px)
+            rotate(5deg)
+            scale(0.92, 1.12);
+    }
+
+    58% {
+        transform:
+            translate(15px, 4px)
+            rotate(4deg)
+            scale(1.08, 0.94);
+    }
+
+    78% {
+        transform:
+            translate(-9px, 8px)
+            rotate(-3deg)
+            scale(0.95, 1.08);
+    }
+}
+
+@keyframes ai-blob-busy-eyes {
+    0%,
+    100% {
+        transform:
+            translate(
+                var(--eyes-shift-x),
+                var(--eyes-shift-y)
+            )
+            scale(1);
+    }
+
+    25% {
+        transform:
+            translate(
+                calc(var(--eyes-shift-x) - 5px),
+                calc(var(--eyes-shift-y) - 3px)
+            )
+            scale(1.08, 0.88);
+    }
+
+    55% {
+        transform:
+            translate(
+                calc(var(--eyes-shift-x) + 5px),
+                calc(var(--eyes-shift-y) + 2px)
+            )
+            scale(0.96, 1.08);
+    }
+}
+
+@keyframes ai-blob-busy-glow {
+    0%,
+    100% {
+        filter:
+            blur(34px)
+            brightness(1);
+    }
+
+    50% {
+        filter:
+            blur(26px)
+            brightness(1.35);
+    }
+}
+
+/* External /angry command: preserve the established angry face. */
+.ai-blob--angry .ai-blob__angry-brows,
+.ai-blob--angry.ai-blob--annoyed .ai-blob__angry-brows {
+    opacity: 1;
+}
+
+
+/* =========================================================
+   STRONGER LISTENING STATE
+   ========================================================= */
+
+/*
+ * Listening should be immediately readable:
+ * brighter cyan, more open eyes and a gentle "lean in" motion.
+ */
+.ai-blob--listening {
+    --blob-main: #73f7ec;
+    --blob-highlight: #effffd;
+    --blob-shadow: #2eb6b8;
+    --pupil: #075f68;
+
+    --mood-eye-scale: 1.13;
+    --eye-open: 1.12;
+}
+
+.ai-blob--listening .ai-blob__tickle {
+    animation:
+        ai-blob-listening-perk 1.6s
+        ease-in-out infinite;
+}
+
+.ai-blob--listening .ai-blob__pupil {
+    transform:
+        translate(
+            var(--pupil-x),
+            var(--pupil-y)
+        )
+        scale(0.92, 1.12);
+
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.ai-blob--listening .ai-blob__glow {
+    filter:
+        blur(30px)
+        brightness(1.18)
+        saturate(1.16);
+}
+
+@keyframes ai-blob-listening-perk {
+    0%,
+    100% {
+        transform:
+            translateY(0)
+            scale(1, 1);
+    }
+
+    50% {
+        transform:
+            translateY(-4px)
+            scale(1.035, 0.975);
+    }
+}
+
+/* =========================================================
+   ANGRY COLOUR — BOTH CHAT STATE + CLICK ANNOYANCE
+   ========================================================= */
+
+.ai-blob--angry,
+.ai-blob--annoyed {
+    --blob-main: #ef655f;
+    --blob-highlight: #ffaaa0;
+    --blob-shadow: #9f3038;
+    --pupil: #8f2028;
+}
+
+/* Make the glow red too */
+.ai-blob--angry .ai-blob__glow,
+.ai-blob--annoyed .ai-blob__glow {
+    filter:
+        blur(30px)
+        brightness(1.08)
+        saturate(1.2);
+}

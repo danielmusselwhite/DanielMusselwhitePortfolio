@@ -9,7 +9,7 @@ import {
 } from "react";
 import "./AiMascot.css";
 
-export type AiBlobState = "idle" | "listening" | "thinking" | "speaking" | "error";
+export type AiBlobState = "idle" | "listening" | "thinking" | "busy" | "speaking" | "error" | "angry";
 
 interface AiMascotProps {
     state?: AiBlobState;
@@ -280,8 +280,10 @@ export default function AiMascot({
             idle: "neutral",
             listening: "wide",
             thinking: "squint",
+            busy: "wide",
             speaking: "wide",
             error: "squint",
+            angry: "squint",
         };
 
         setEyeMood(stateMood[state]);
@@ -727,13 +729,13 @@ export default function AiMascot({
     const eyeOpen =
         isBlinking || isTickled || isTantruming
             ? "0.025"
-            : isAnnoyed
+            : isAnnoyed || state === "angry"
                 ? "0.58"
                 : eyeMood === "wide"
-                ? "1.16"
-                : eyeMood === "squint"
-                    ? "0.62"
-                    : "1";
+                    ? "1.16"
+                    : eyeMood === "squint"
+                        ? "0.62"
+                        : "1";
 
     const style = {
         "--eye-open": eyeOpen,
@@ -746,15 +748,19 @@ export default function AiMascot({
         "--mood-left-rotate":
             state === "error"
                 ? "-7deg"
-                : eyeMood === "curious"
-                  ? "-4deg"
-                  : "0deg",
+                : state === "angry"
+                    ? "0deg"
+                    : eyeMood === "curious"
+                        ? "-4deg"
+                        : "0deg",
         "--mood-right-rotate":
             state === "error"
                 ? "7deg"
-                : eyeMood === "curious"
-                  ? "4deg"
-                  : "0deg",
+                : state === "angry"
+                    ? "0deg"
+                    : eyeMood === "curious"
+                        ? "4deg"
+                        : "0deg",
     } as CSSProperties;
 
     useEffect(() => {
@@ -784,7 +790,9 @@ export default function AiMascot({
                 isTickled ? "ai-blob--tickled" : "",
                 isDragging ? "ai-blob--dragging" : "",
                 isSnappingBack ? "ai-blob--snapping" : "",
-                isAnnoyed ? "ai-blob--annoyed" : "",
+                isAnnoyed || state === "angry"
+                    ? "ai-blob--annoyed"
+                    : "",
                 isTantruming ? "ai-blob--tantrum" : "",
             ]
                 .filter(Boolean)
@@ -892,91 +900,91 @@ export default function AiMascot({
                 >
                     <g className="ai-blob__lean">
                         <g className="ai-blob__tickle">
-                        <g className="ai-blob__floating">
-                            <path
-                                className="ai-blob__body ai-blob__body--back"
-                                d="M159 37C215 34 264 70 279 121C295 174 279 233 231 266C184 298 119 290 76 253C34 217 24 155 47 106C70 57 105 40 159 37Z"
-                            />
+                            <g className="ai-blob__floating">
+                                <path
+                                    className="ai-blob__body ai-blob__body--back"
+                                    d="M159 37C215 34 264 70 279 121C295 174 279 233 231 266C184 298 119 290 76 253C34 217 24 155 47 106C70 57 105 40 159 37Z"
+                                />
 
-                            <path
-                                className="ai-blob__body"
-                                d="M159 37C215 34 264 70 279 121C295 174 279 233 231 266C184 298 119 290 76 253C34 217 24 155 47 106C70 57 105 40 159 37Z"
-                                fill="url(#ai-blob-fill)"
-                            />
+                                <path
+                                    className="ai-blob__body"
+                                    d="M159 37C215 34 264 70 279 121C295 174 279 233 231 266C184 298 119 290 76 253C34 217 24 155 47 106C70 57 105 40 159 37Z"
+                                    fill="url(#ai-blob-fill)"
+                                />
 
-                            <path
-                                className="ai-blob__shine"
-                                d="M159 37C215 34 264 70 279 121C295 174 279 233 231 266C184 298 119 290 76 253C34 217 24 155 47 106C70 57 105 40 159 37Z"
-                                fill="url(#ai-blob-shine)"
-                            />
+                                <path
+                                    className="ai-blob__shine"
+                                    d="M159 37C215 34 264 70 279 121C295 174 279 233 231 266C184 298 119 290 76 253C34 217 24 155 47 106C70 57 105 40 159 37Z"
+                                    fill="url(#ai-blob-shine)"
+                                />
 
-                            <path
-                                className="ai-blob__shimmer"
-                                d="M159 37C215 34 264 70 279 121C295 174 279 233 231 266C184 298 119 290 76 253C34 217 24 155 47 106C70 57 105 40 159 37Z"
-                                fill="url(#ai-blob-shimmer)"
-                            />
+                                <path
+                                    className="ai-blob__shimmer"
+                                    d="M159 37C215 34 264 70 279 121C295 174 279 233 231 266C184 298 119 290 76 253C34 217 24 155 47 106C70 57 105 40 159 37Z"
+                                    fill="url(#ai-blob-shimmer)"
+                                />
 
-                            <g className="ai-blob__eyes">
-                                <g className="ai-blob__eye ai-blob__eye--left">
-                                    <rect
-                                        className="ai-blob__sclera"
-                                        x="110"
-                                        y="111"
-                                        width="28"
-                                        height="76"
-                                        rx="14"
-                                    />
+                                <g className="ai-blob__eyes">
+                                    <g className="ai-blob__eye ai-blob__eye--left">
+                                        <rect
+                                            className="ai-blob__sclera"
+                                            x="110"
+                                            y="111"
+                                            width="28"
+                                            height="76"
+                                            rx="14"
+                                        />
 
-                                    <rect
-                                        className="ai-blob__pupil"
-                                        x="117"
-                                        y="130"
-                                        width="14"
-                                        height="38"
-                                        rx="7"
-                                    />
-                                </g>
+                                        <rect
+                                            className="ai-blob__pupil"
+                                            x="117"
+                                            y="130"
+                                            width="14"
+                                            height="38"
+                                            rx="7"
+                                        />
+                                    </g>
 
-                                <g className="ai-blob__eye ai-blob__eye--right">
-                                    <rect
-                                        className="ai-blob__sclera"
-                                        x="182"
-                                        y="111"
-                                        width="28"
-                                        height="76"
-                                        rx="14"
-                                    />
+                                    <g className="ai-blob__eye ai-blob__eye--right">
+                                        <rect
+                                            className="ai-blob__sclera"
+                                            x="182"
+                                            y="111"
+                                            width="28"
+                                            height="76"
+                                            rx="14"
+                                        />
 
-                                    <rect
-                                        className="ai-blob__pupil"
-                                        x="189"
-                                        y="130"
-                                        width="14"
-                                        height="38"
-                                        rx="7"
-                                    />
-                                </g>
+                                        <rect
+                                            className="ai-blob__pupil"
+                                            x="189"
+                                            y="130"
+                                            width="14"
+                                            height="38"
+                                            rx="7"
+                                        />
+                                    </g>
 
-                                <g className="ai-blob__angry-brows">
-                                    <rect
-                                        className="ai-blob__angry-brow ai-blob__angry-brow--left"
-                                        x="107"
-                                        y="101"
-                                        width="40"
-                                        height="8"
-                                        rx="4"
-                                    />
-                                    <rect
-                                        className="ai-blob__angry-brow ai-blob__angry-brow--right"
-                                        x="173"
-                                        y="101"
-                                        width="40"
-                                        height="8"
-                                        rx="4"
-                                    />
+                                    <g className="ai-blob__angry-brows">
+                                        <rect
+                                            className="ai-blob__angry-brow ai-blob__angry-brow--left"
+                                            x="107"
+                                            y="101"
+                                            width="40"
+                                            height="8"
+                                            rx="4"
+                                        />
+                                        <rect
+                                            className="ai-blob__angry-brow ai-blob__angry-brow--right"
+                                            x="173"
+                                            y="101"
+                                            width="40"
+                                            height="8"
+                                            rx="4"
+                                        />
+                                    </g>
                                 </g>
                             </g>
-                        </g>
                         </g>
                     </g>
                 </g>

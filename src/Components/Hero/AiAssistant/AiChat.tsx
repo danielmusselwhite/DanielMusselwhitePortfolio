@@ -42,8 +42,20 @@ const stateLabels: Record<AiBlobState, string> = {
     idle: "active",
     listening: "listening",
     thinking: "thinking",
+    busy: "busy",
     speaking: "replying",
     error: "error",
+    angry: "angry",
+};
+
+const debugCommands: Record<string, AiBlobState> = {
+    "/idle": "idle",
+    "/listening": "listening",
+    "/thinking": "thinking",
+    "/busy": "busy",
+    "/speaking": "speaking",
+    "/error": "error",
+    "/angry": "angry",
 };
 
 export default function AiChat({
@@ -62,6 +74,8 @@ export default function AiChat({
     const messagesEndRef =
         useRef<HTMLDivElement>(null);
     const speakingTimerRef =
+        useRef<number | null>(null);
+    const busyTimerRef =
         useRef<number | null>(null);
 
     const portfolioContext = useMemo(
@@ -86,6 +100,12 @@ export default function AiChat({
                     speakingTimerRef.current,
                 );
             }
+
+            if (busyTimerRef.current !== null) {
+                window.clearTimeout(
+                    busyTimerRef.current,
+                );
+            }
         };
     }, []);
 
@@ -103,6 +123,62 @@ export default function AiChat({
         );
     }
 
+    function runDebugCommand(command: string) {
+        const state =
+            debugCommands[command.toLowerCase()];
+
+        if (!state) {
+            return false;
+        }
+
+        if (busyTimerRef.current !== null) {
+            window.clearTimeout(
+                busyTimerRef.current,
+            );
+            busyTimerRef.current = null;
+        }
+
+        if (speakingTimerRef.current !== null) {
+            window.clearTimeout(
+                speakingTimerRef.current,
+            );
+            speakingTimerRef.current = null;
+        }
+
+        onAssistantStateChange(state);
+
+        setMessages((current) => [
+            ...current,
+            {
+                id: nextIdRef.current++,
+                role: "user",
+                content: command,
+            },
+            {
+                id: nextIdRef.current++,
+                role: "assistant",
+                content:
+                    `Debug animation forced: ${state}. ` +
+                    "No API request was made.",
+            },
+        ]);
+
+        setInput("");
+
+        /*
+         * Keep idle persistent; other showcase states reset automatically.
+         */
+        if (state !== "idle") {
+            speakingTimerRef.current =
+                window.setTimeout(() => {
+                    onAssistantStateChange("idle");
+                    speakingTimerRef.current = null;
+                }, state === "angry" ? 2800 : 2200);
+        }
+
+        return true;
+    }
+
     async function handleSubmit(
         event: FormEvent<HTMLFormElement>,
     ) {
@@ -111,6 +187,14 @@ export default function AiChat({
         const trimmed = input.trim();
 
         if (!trimmed || isSubmitting) {
+            return;
+        }
+
+        /*
+         * Secret local-only showcase commands.
+         * These never call the Netlify/OpenAI endpoint.
+         */
+        if (runDebugCommand(trimmed)) {
             return;
         }
 
@@ -135,6 +219,22 @@ export default function AiChat({
         setIsSubmitting(true);
         onAssistantStateChange("thinking");
 
+        /*
+         * If the backend takes a while, transition into a more expressive
+         * fluid "busy" animation rather than looping the basic think state.
+         */
+        if (busyTimerRef.current !== null) {
+            window.clearTimeout(
+                busyTimerRef.current,
+            );
+        }
+
+        busyTimerRef.current =
+            window.setTimeout(() => {
+                onAssistantStateChange("busy");
+                busyTimerRef.current = null;
+            }, 2200);
+
         try {
             const response = await fetch(
                 "/api/portfolio-chat",
@@ -158,8 +258,15 @@ export default function AiChat({
             if (!response.ok || !data.answer) {
                 throw new Error(
                     data.error ||
-                        "The assistant could not reply.",
+                    "The assistant could not reply.",
                 );
+            }
+
+            if (busyTimerRef.current !== null) {
+                window.clearTimeout(
+                    busyTimerRef.current,
+                );
+                busyTimerRef.current = null;
             }
 
             setMessages((current) => [
@@ -185,6 +292,13 @@ export default function AiChat({
                     speakingTimerRef.current = null;
                 }, 1100);
         } catch (error) {
+            if (busyTimerRef.current !== null) {
+                window.clearTimeout(
+                    busyTimerRef.current,
+                );
+                busyTimerRef.current = null;
+            }
+
             const message =
                 error instanceof Error
                     ? error.message
@@ -238,15 +352,6 @@ export default function AiChat({
                     <span className="ai-chat__status-label">
                         {stateLabels[assistantState]}
                     </span>
-
-                    <button
-                        type="button"
-                        className="ai-chat__close"
-                        onClick={onClose}
-                        aria-label="Close assistant"
-                    >
-                        ×
-                    </button>
                 </div>
             </div>
 

@@ -587,3 +587,174 @@
         opacity: 1;
     }
 }
+
+
+/* =========================================================
+   CHAT STATE ACCENTS
+   ========================================================= */
+
+.ai-chat--listening {
+    --chat-accent: #61f0e7;
+    --chat-accent-rgb: 97, 240, 231;
+}
+
+.ai-chat--thinking {
+    --chat-accent: #9a8cff;
+    --chat-accent-rgb: 154, 140, 255;
+}
+
+.ai-chat--busy {
+    --chat-accent: #7378ff;
+    --chat-accent-rgb: 115, 120, 255;
+}
+
+.ai-chat--speaking {
+    --chat-accent: #61e69a;
+    --chat-accent-rgb: 97, 230, 154;
+}
+
+.ai-chat--error,
+.ai-chat--angry {
+    --chat-accent: #f28d7d;
+    --chat-accent-rgb: 242, 141, 125;
+}
+
+
+/* =========================================================
+   LIGHT MODE
+   ========================================================= */
+
+.site-shell--light .ai-chat,
+[data-theme="light"] .ai-chat,
+.theme-light .ai-chat,
+.light .ai-chat {
+    --chat-accent: #159f98;
+    --chat-accent-rgb: 21, 159, 152;
+
+    color: #173332;
+
+    border-color:
+        rgba(var(--chat-accent-rgb), 0.24);
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(247, 253, 252, 0.98) 0%,
+            rgba(238, 248, 247, 0.97) 100%
+        );
+
+    box-shadow:
+        0 24px 70px rgba(24, 66, 64, 0.16),
+        0 0 0 1px rgba(255, 255, 255, 0.72) inset,
+        0 0 30px rgba(var(--chat-accent-rgb), 0.08);
+}
+
+.site-shell--light .ai-chat__header,
+[data-theme="light"] .ai-chat__header,
+.theme-light .ai-chat__header,
+.light .ai-chat__header {
+    border-bottom-color:
+        rgba(var(--chat-accent-rgb), 0.16);
+
+    background:
+        rgba(var(--chat-accent-rgb), 0.035);
+}
+
+.site-shell--light .ai-chat__header-title,
+[data-theme="light"] .ai-chat__header-title,
+.theme-light .ai-chat__header-title,
+.light .ai-chat__header-title {
+    color: #173332;
+}
+
+.site-shell--light .ai-chat__close,
+[data-theme="light"] .ai-chat__close,
+.theme-light .ai-chat__close,
+.light .ai-chat__close {
+    color: #214744;
+
+    border-color:
+        rgba(var(--chat-accent-rgb), 0.16);
+
+    background:
+        rgba(var(--chat-accent-rgb), 0.055);
+}
+
+.site-shell--light .ai-chat__close:hover,
+[data-theme="light"] .ai-chat__close:hover,
+.theme-light .ai-chat__close:hover,
+.light .ai-chat__close:hover {
+    background:
+        rgba(var(--chat-accent-rgb), 0.11);
+
+    border-color:
+        rgba(var(--chat-accent-rgb), 0.26);
+}
+
+.site-shell--light .ai-chat__message p,
+[data-theme="light"] .ai-chat__message p,
+.theme-light .ai-chat__message p,
+.light .ai-chat__message p {
+    color: #244b48;
+
+    border-color:
+        rgba(var(--chat-accent-rgb), 0.12);
+
+    background:
+        rgba(var(--chat-accent-rgb), 0.035);
+}
+
+.site-shell--light .ai-chat__message--user p,
+[data-theme="light"] .ai-chat__message--user p,
+.theme-light .ai-chat__message--user p,
+.light .ai-chat__message--user p {
+    color: #153d39;
+
+    border-color:
+        rgba(var(--chat-accent-rgb), 0.24);
+
+    background:
+        rgba(var(--chat-accent-rgb), 0.08);
+}
+
+.site-shell--light .ai-chat__message--user .ai-chat__message-prefix,
+[data-theme="light"] .ai-chat__message--user .ai-chat__message-prefix,
+.theme-light .ai-chat__message--user .ai-chat__message-prefix,
+.light .ai-chat__message--user .ai-chat__message-prefix {
+    color: #557773;
+}
+
+.site-shell--light .ai-chat__composer,
+[data-theme="light"] .ai-chat__composer,
+.theme-light .ai-chat__composer,
+.light .ai-chat__composer {
+    border-color:
+        rgba(var(--chat-accent-rgb), 0.20);
+
+    background:
+        rgba(var(--chat-accent-rgb), 0.045);
+
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.65) inset;
+}
+
+.site-shell--light .ai-chat__composer input,
+[data-theme="light"] .ai-chat__composer input,
+.theme-light .ai-chat__composer input,
+.light .ai-chat__composer input {
+    color: #173332;
+}
+
+.site-shell--light .ai-chat__composer input::placeholder,
+[data-theme="light"] .ai-chat__composer input::placeholder,
+.theme-light .ai-chat__composer input::placeholder,
+.light .ai-chat__composer input::placeholder {
+    color: #6f8f8b;
+}
+
+.site-shell--light .ai-chat__footer,
+[data-theme="light"] .ai-chat__footer,
+.theme-light .ai-chat__footer,
+.light .ai-chat__footer {
+    color: #6c8986;
+}
