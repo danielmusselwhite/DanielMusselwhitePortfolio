@@ -1,0 +1,583 @@
+.ai-blob {
+    --blob-main: #56e0d0;
+    --blob-highlight: #c8fff9;
+    --blob-shadow: #238b94;
+
+    /* Eyes are explicitly pure white. */
+    --eye-white: #ffffff;
+    --pupil: #075f68;
+
+    --look-x: 0;
+    --look-y: 0;
+    --look-distance: 0;
+
+    --eyes-shift-x: 0px;
+    --eyes-shift-y: 0px;
+
+    --left-eye-scale-x: 1;
+    --right-eye-scale-x: 1;
+    --cursor-eye-scale-y: 1;
+
+    --left-eye-rotate: 0deg;
+    --right-eye-rotate: 0deg;
+
+    --pupil-x: 0px;
+    --pupil-y: 0px;
+
+    --lean-x: 0px;
+    --lean-y: 0px;
+    --lean-rotate: 0deg;
+
+    --eye-open: 1;
+    --mood-eye-scale: 1;
+    --mood-left-rotate: 0deg;
+    --mood-right-rotate: 0deg;
+
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: min(100%, 330px);
+    aspect-ratio: 1;
+    isolation: isolate;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.ai-blob:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 8px;
+    border-radius: 50%;
+}
+
+.ai-blob__glow {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background:
+        radial-gradient(
+            circle,
+            rgba(var(--accent-rgb), 0.64) 0%,
+            rgba(var(--accent-rgb), 0.38) 33%,
+            rgba(var(--accent-rgb), 0.17) 58%,
+            transparent 80%
+        );
+    filter: blur(34px);
+    opacity: 1;
+    transform:
+        translate(
+            calc(var(--lean-x) * 0.25),
+            calc(var(--lean-y) * 0.25)
+        );
+    pointer-events: none;
+    z-index: -1;
+}
+
+.ai-blob::before {
+    content: "";
+    position: absolute;
+    inset: 17%;
+    border-radius: 50%;
+    background: rgba(var(--accent-rgb), 0.36);
+    filter: blur(27px);
+    opacity: 0.95;
+    animation: ai-blob-core-pulse 4.4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.ai-blob__svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    filter:
+        drop-shadow(0 0 17px rgba(var(--accent-rgb), 0.46))
+        drop-shadow(0 0 42px rgba(var(--accent-rgb), 0.25))
+        drop-shadow(0 24px 34px rgba(2, 6, 23, 0.3));
+}
+
+.ai-blob__lean {
+    transform-origin: 160px 160px;
+    transform:
+        translate(var(--lean-x), var(--lean-y))
+        rotate(var(--lean-rotate));
+    will-change: transform;
+}
+
+.ai-blob__tickle {
+    transform-origin: 160px 160px;
+}
+
+.ai-blob__floating {
+    transform-origin: 160px 160px;
+    animation:
+        ai-blob-float 5.2s ease-in-out infinite,
+        ai-blob-organic-wobble 7.1s ease-in-out infinite;
+}
+
+.ai-blob__body,
+.ai-blob__shine,
+.ai-blob__shimmer {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: ai-blob-morph 6.5s ease-in-out infinite;
+}
+
+.ai-blob__body--back {
+    fill: rgba(var(--accent-rgb), 0.26);
+    filter: blur(13px);
+    opacity: 0.96;
+}
+
+.ai-blob__shine {
+    pointer-events: none;
+}
+
+.ai-blob__shimmer {
+    opacity: 0.58;
+    mix-blend-mode: screen;
+    animation:
+        ai-blob-morph 6.5s ease-in-out infinite,
+        ai-blob-shimmer 4.5s ease-in-out infinite;
+    pointer-events: none;
+}
+
+/* ---------------------------------
+   EYES
+   --------------------------------- */
+
+/*
+ * The whole pair moves farther toward the cursor as cursor distance grows.
+ * That gives the impression that the face itself is turning.
+ */
+.ai-blob__eyes {
+    transform:
+        translate(
+            var(--eyes-shift-x),
+            var(--eyes-shift-y)
+        );
+    transform-origin: 160px 149px;
+    will-change: transform;
+}
+
+/*
+ * Each eye is a heavily-rounded skinny rectangle.
+ * The entire eye opens/closes vertically for blinking/tickling.
+ */
+.ai-blob__eye {
+    transform-box: fill-box;
+    transform-origin: center;
+    will-change: transform;
+    transition:
+        transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ai-blob__eye--left {
+    transform:
+        scale(
+            calc(
+                var(--left-eye-scale-x) *
+                var(--mood-eye-scale)
+            ),
+            calc(
+                var(--cursor-eye-scale-y) *
+                var(--eye-open)
+            )
+        )
+        rotate(
+            calc(
+                var(--left-eye-rotate) +
+                var(--mood-left-rotate)
+            )
+        );
+}
+
+.ai-blob__eye--right {
+    transform:
+        scale(
+            calc(
+                var(--right-eye-scale-x) *
+                var(--mood-eye-scale)
+            ),
+            calc(
+                var(--cursor-eye-scale-y) *
+                var(--eye-open)
+            )
+        )
+        rotate(
+            calc(
+                var(--right-eye-rotate) +
+                var(--mood-right-rotate)
+            )
+        );
+}
+
+.ai-blob__sclera {
+    fill: var(--eye-white);
+    filter:
+        drop-shadow(0 0 4px rgba(255, 255, 255, 0.14))
+        drop-shadow(0 0 8px rgba(255, 255, 255, 0.06));
+}
+
+/*
+ * Pupil is exactly the same visual language as the eye:
+ * another rounded skinny rectangle at roughly 50% of the eye dimensions.
+ *
+ * No clipping is used. At extreme gaze the pupil can intentionally poke
+ * slightly outside the white eye to exaggerate direction.
+ */
+.ai-blob__pupil {
+    fill: var(--pupil);
+    transform:
+        translate(
+            var(--pupil-x),
+            var(--pupil-y)
+        );
+    transform-box: fill-box;
+    transform-origin: center;
+    will-change: transform;
+}
+
+/* A curious expression tilts each eye in opposite directions. */
+.ai-blob--eyes-curious .ai-blob__eyes {
+    translate: 0 -2px;
+}
+
+.ai-blob--eyes-wide {
+    --mood-eye-scale: 1.06;
+}
+
+/*
+ * Blink closes both the white eye and its pupil together.
+ */
+.ai-blob--blinking {
+    --eye-open: 0.035;
+}
+
+.ai-blob--blinking .ai-blob__eye {
+    transition:
+        transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/*
+ * Tickle = eyes squeezed shut for the duration of the wiggle.
+ */
+.ai-blob--tickled {
+    --eye-open: 0.025;
+}
+
+.ai-blob--tickled .ai-blob__eye {
+    transition:
+        transform 120ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ai-blob--tickled .ai-blob__tickle {
+    animation:
+        ai-blob-tickle 720ms
+        cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+/* Future AI states */
+.ai-blob--thinking {
+    --eye-open: 0.64;
+}
+
+.ai-blob--thinking .ai-blob__status-dot {
+    animation: ai-blob-status-pulse 0.9s ease-in-out infinite;
+}
+
+.ai-blob--speaking {
+    --mood-eye-scale: 1.06;
+}
+
+.ai-blob--error {
+    --blob-main: #f28d7d;
+    --blob-highlight: #ffd7d1;
+    --blob-shadow: #b85f62;
+    --eye-open: 0.58;
+}
+
+/* ---------------------------------
+   STATUS
+   --------------------------------- */
+
+.ai-blob__status-dot {
+    position: absolute;
+    right: 15%;
+    bottom: 17%;
+    width: 0.72rem;
+    height: 0.72rem;
+    border: 2px solid rgba(10, 17, 22, 0.85);
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow:
+        0 0 0 5px rgba(var(--accent-rgb), 0.12),
+        0 0 18px rgba(var(--accent-rgb), 0.8);
+}
+
+/* ---------------------------------
+   LIGHT MODE
+   --------------------------------- */
+
+.site-shell--light .ai-blob {
+    --blob-main: #159f98;
+    --blob-highlight: #89eee4;
+    --blob-shadow: #176d76;
+
+    /* Keep eyes white in light mode too. */
+    --eye-white: #ffffff;
+    --pupil: #075f68;
+}
+
+.site-shell--light .ai-blob__glow {
+    background:
+        radial-gradient(
+            circle,
+            rgba(20, 166, 157, 0.46) 0%,
+            rgba(20, 166, 157, 0.27) 36%,
+            rgba(20, 166, 157, 0.11) 61%,
+            transparent 80%
+        );
+}
+
+.site-shell--light .ai-blob::before {
+    background: rgba(20, 166, 157, 0.22);
+}
+
+.site-shell--light .ai-blob__svg {
+    filter:
+        drop-shadow(0 0 14px rgba(20, 166, 157, 0.32))
+        drop-shadow(0 0 32px rgba(20, 166, 157, 0.2))
+        drop-shadow(0 22px 30px rgba(36, 81, 88, 0.2));
+}
+
+.site-shell--light .ai-blob__status-dot {
+    border-color: rgba(237, 245, 244, 0.95);
+}
+
+/* ---------------------------------
+   ORGANIC BODY MOTION
+   --------------------------------- */
+
+@keyframes ai-blob-float {
+    0%,
+    100% {
+        translate: 0 0;
+    }
+
+    50% {
+        translate: 0 -8px;
+    }
+}
+
+@keyframes ai-blob-organic-wobble {
+    0%,
+    100% {
+        scale: 1 1;
+        rotate: 0deg;
+    }
+
+    20% {
+        scale: 1.022 0.982;
+        rotate: -0.8deg;
+    }
+
+    42% {
+        scale: 0.988 1.025;
+        rotate: 0.7deg;
+    }
+
+    66% {
+        scale: 1.025 0.99;
+        rotate: -0.5deg;
+    }
+
+    82% {
+        scale: 0.994 1.014;
+        rotate: 0.45deg;
+    }
+}
+
+@keyframes ai-blob-morph {
+    0%,
+    100% {
+        transform:
+            scale(1)
+            skew(0deg, 0deg);
+    }
+
+    18% {
+        transform:
+            scale(1.038, 0.974)
+            skew(1deg, -0.5deg);
+    }
+
+    39% {
+        transform:
+            scale(0.974, 1.038)
+            skew(-0.8deg, 0.6deg);
+    }
+
+    61% {
+        transform:
+            scale(1.03, 0.985)
+            skew(0.5deg, 0.9deg);
+    }
+
+    82% {
+        transform:
+            scale(0.984, 1.027)
+            skew(-0.45deg, -0.6deg);
+    }
+}
+
+@keyframes ai-blob-shimmer {
+    0%,
+    100% {
+        opacity: 0.14;
+        translate: -10px 0;
+        rotate: -4deg;
+        scale: 1.02;
+    }
+
+    45% {
+        opacity: 0.62;
+    }
+
+    56% {
+        opacity: 0.76;
+        translate: 10px 0;
+        rotate: 3deg;
+        scale: 1.028;
+    }
+
+    72% {
+        opacity: 0.24;
+    }
+}
+
+@keyframes ai-blob-core-pulse {
+    0%,
+    100% {
+        transform: scale(0.94);
+        opacity: 0.78;
+    }
+
+    50% {
+        transform: scale(1.07);
+        opacity: 1;
+    }
+}
+
+/* ---------------------------------
+   TICKLE
+   --------------------------------- */
+
+@keyframes ai-blob-tickle {
+    0% {
+        transform:
+            translateX(0)
+            rotate(0deg)
+            scale(1);
+    }
+
+    12% {
+        transform:
+            translateX(-10px)
+            rotate(-5.5deg)
+            scale(1.035, 0.965);
+    }
+
+    24% {
+        transform:
+            translateX(11px)
+            rotate(6deg)
+            scale(0.975, 1.035);
+    }
+
+    37% {
+        transform:
+            translateX(-9px)
+            rotate(-4.5deg)
+            scale(1.03, 0.975);
+    }
+
+    51% {
+        transform:
+            translateX(7px)
+            rotate(3.5deg)
+            scale(0.985, 1.025);
+    }
+
+    65% {
+        transform:
+            translateX(-5px)
+            rotate(-2.6deg)
+            scale(1.018, 0.99);
+    }
+
+    79% {
+        transform:
+            translateX(3px)
+            rotate(1.6deg)
+            scale(0.995, 1.01);
+    }
+
+    100% {
+        transform:
+            translateX(0)
+            rotate(0deg)
+            scale(1);
+    }
+}
+
+@keyframes ai-blob-status-pulse {
+    0%,
+    100% {
+        transform: scale(0.9);
+        opacity: 0.7;
+    }
+
+    50% {
+        transform: scale(1.25);
+        opacity: 1;
+    }
+}
+
+/* ---------------------------------
+   RESPONSIVE
+   --------------------------------- */
+
+@media (max-width: 720px) {
+    .ai-blob {
+        width: min(72vw, 260px);
+    }
+
+    .ai-blob__status-dot {
+        right: 13%;
+        bottom: 15%;
+    }
+}
+
+/* ---------------------------------
+   REDUCED MOTION
+   --------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+    .ai-blob::before,
+    .ai-blob__floating,
+    .ai-blob__body,
+    .ai-blob__shine,
+    .ai-blob__shimmer,
+    .ai-blob__tickle,
+    .ai-blob__status-dot {
+        animation: none;
+    }
+
+    .ai-blob__lean,
+    .ai-blob__eyes,
+    .ai-blob__pupil {
+        transform: none;
+    }
+}
