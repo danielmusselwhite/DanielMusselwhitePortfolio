@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import AiAssistant from "./AiAssistant/AiAssistant";
 
-const heroTitle = "Full-Stack Developer";
+const heroTitle = "Software Engineer";
 
 export default function Hero() {
     const [typedTitle, setTypedTitle] = useState("");

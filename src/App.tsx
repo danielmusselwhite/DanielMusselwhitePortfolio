@@ -25,9 +25,19 @@ function App() {
     const savedTheme = window.localStorage.getItem("portfolio-theme");
     return savedTheme === "light" ? "light" : "dark";
   });
+
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const pointerRef = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
-  const glowRef = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+
+  const pointerRef = useRef({
+    x: window.innerWidth / 2,
+    y: window.innerHeight / 2,
+  });
+
+  const glowRef = useRef({
+    x: window.innerWidth / 2,
+    y: window.innerHeight / 2,
+  });
+
   const themeRef = useRef(theme);
 
   useEffect(() => {
@@ -58,11 +68,13 @@ function App() {
 
   useEffect(() => {
     const canvas = canvasRef.current;
+
     if (!canvas) {
       return undefined;
     }
 
     const ctx = canvas.getContext("2d");
+
     if (!ctx) {
       return undefined;
     }
@@ -70,11 +82,16 @@ function App() {
     let animationFrameId = 0;
     let particles: Particle[] = [];
 
-    const setupParticles = () => {
-      // Scale particle count with viewport area so mobile screens render far fewer.
-      const area = window.innerWidth * window.innerHeight;
-      const particleCount = Math.max(120, Math.min(900, Math.round(area / 18000)));
+    // Calculate particle count ONCE using the viewport size
+    // from when the page initially loads.
+    const initialArea = window.innerWidth * window.innerHeight;
 
+    const particleCount = Math.max(
+      20,
+      Math.min(900, Math.round(initialArea / 20000)),
+    );
+
+    const setupParticles = () => {
       particles = Array.from({ length: particleCount }, () => ({
         x: Math.random() * window.innerWidth,
         y: Math.random() * window.innerHeight,
@@ -94,27 +111,43 @@ function App() {
       canvas.height = height * ratio;
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
+
       ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
 
       glowRef.current.x = pointerRef.current.x;
       glowRef.current.y = pointerRef.current.y;
-      setupParticles();
+
+      // Important:
+      // Do NOT call setupParticles() here.
+      // This keeps the particle count unchanged when resizing.
     };
 
     const draw = () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
 
-      glowRef.current.x += (pointerRef.current.x - glowRef.current.x) * 0.08;
-      glowRef.current.y += (pointerRef.current.y - glowRef.current.y) * 0.08;
+      glowRef.current.x +=
+        (pointerRef.current.x - glowRef.current.x) * 0.08;
 
-      document.documentElement.style.setProperty("--pointer-x", `${glowRef.current.x}px`);
-      document.documentElement.style.setProperty("--pointer-y", `${glowRef.current.y}px`);
+      glowRef.current.y +=
+        (pointerRef.current.y - glowRef.current.y) * 0.08;
+
+      document.documentElement.style.setProperty(
+        "--pointer-x",
+        `${glowRef.current.x}px`,
+      );
+
+      document.documentElement.style.setProperty(
+        "--pointer-y",
+        `${glowRef.current.y}px`,
+      );
 
       ctx.clearRect(0, 0, width, height);
 
-      // Light mode inverts the palette: dark particles/accents on a light backdrop.
-      const particleRgb = themeRef.current === "light" ? "15, 135, 113" : "110, 231, 209";
+      // Light mode inverts the palette:
+      // dark particles/accents on a light backdrop.
+      const particleRgb =
+        themeRef.current === "light" ? "15, 135, 113" : "110, 231, 209";
 
       for (let i = 0; i < particles.length; i += 1) {
         const particle = particles[i];
@@ -122,8 +155,13 @@ function App() {
         particle.x += particle.vx;
         particle.y += particle.vy;
 
-        if (particle.x < 0 || particle.x > width) particle.vx *= -1;
-        if (particle.y < 0 || particle.y > height) particle.vy *= -1;
+        if (particle.x < 0 || particle.x > width) {
+          particle.vx *= -1;
+        }
+
+        if (particle.y < 0 || particle.y > height) {
+          particle.vy *= -1;
+        }
 
         const dx = particle.x - glowRef.current.x;
         const dy = particle.y - glowRef.current.y;
@@ -136,7 +174,13 @@ function App() {
 
         ctx.beginPath();
         ctx.fillStyle = `rgba(${particleRgb}, ${particle.alpha})`;
-        ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+        ctx.arc(
+          particle.x,
+          particle.y,
+          particle.radius,
+          0,
+          Math.PI * 2,
+        );
         ctx.fill();
       }
 
@@ -144,12 +188,14 @@ function App() {
         for (let j = i + 1; j < particles.length; j += 1) {
           const a = particles[i];
           const b = particles[j];
+
           const dx = a.x - b.x;
           const dy = a.y - b.y;
           const distance = Math.hypot(dx, dy);
 
           if (distance < 110) {
             const opacity = (1 - distance / 110) * 0.45;
+
             ctx.beginPath();
             ctx.strokeStyle = `rgba(${particleRgb}, ${opacity})`;
             ctx.lineWidth = 1;
@@ -161,6 +207,7 @@ function App() {
       }
 
       const glowSize = 140;
+
       const glowGradient = ctx.createRadialGradient(
         glowRef.current.x,
         glowRef.current.y,
@@ -169,19 +216,41 @@ function App() {
         glowRef.current.y,
         glowSize,
       );
-      glowGradient.addColorStop(0, `rgba(${particleRgb}, 0.22)`);
-      glowGradient.addColorStop(0.5, `rgba(${particleRgb}, 0.08)`);
-      glowGradient.addColorStop(1, `rgba(${particleRgb}, 0)`);
+
+      glowGradient.addColorStop(
+        0,
+        `rgba(${particleRgb}, 0.22)`,
+      );
+
+      glowGradient.addColorStop(
+        0.5,
+        `rgba(${particleRgb}, 0.08)`,
+      );
+
+      glowGradient.addColorStop(
+        1,
+        `rgba(${particleRgb}, 0)`,
+      );
 
       ctx.beginPath();
       ctx.fillStyle = glowGradient;
-      ctx.arc(glowRef.current.x, glowRef.current.y, glowSize, 0, Math.PI * 2);
+
+      ctx.arc(
+        glowRef.current.x,
+        glowRef.current.y,
+        glowSize,
+        0,
+        Math.PI * 2,
+      );
+
       ctx.fill();
 
       animationFrameId = window.requestAnimationFrame(draw);
     };
 
+    // Resize the canvas first, then create the particles once.
     resizeCanvas();
+    setupParticles();
     draw();
 
     window.addEventListener("resize", resizeCanvas);
@@ -200,7 +269,10 @@ function App() {
     ).matches;
 
     if (prefersReducedMotion) {
-      sections.forEach((section) => section.classList.add("section--visible"));
+      sections.forEach((section) =>
+        section.classList.add("section--visible"),
+      );
+
       return undefined;
     }
 
@@ -213,7 +285,10 @@ function App() {
           }
         });
       },
-      { threshold: 0.15, rootMargin: "0px 0px -60px 0px" },
+      {
+        threshold: 0.15,
+        rootMargin: "0px 0px -60px 0px",
+      },
     );
 
     sections.forEach((section) => observer.observe(section));
@@ -223,16 +298,34 @@ function App() {
 
   return (
     <div className={`site-shell site-shell--${theme}`}>
-      <div className="background-grid" aria-hidden="true" />
-      <div className="background-glow background-glow--one" aria-hidden="true" />
-      <div className="background-glow background-glow--two" aria-hidden="true" />
-      <canvas ref={canvasRef} className="particle-canvas" aria-hidden="true" />
+      <div
+        className="background-grid"
+        aria-hidden="true"
+      />
+
+      <div
+        className="background-glow background-glow--one"
+        aria-hidden="true"
+      />
+
+      <div
+        className="background-glow background-glow--two"
+        aria-hidden="true"
+      />
+
+      <canvas
+        ref={canvasRef}
+        className="particle-canvas"
+        aria-hidden="true"
+      />
 
       <div className="site-content">
         <Navbar
           theme={theme}
           onToggleTheme={() => {
-            setTheme((current) => (current === "dark" ? "light" : "dark"));
+            setTheme((current) =>
+              current === "dark" ? "light" : "dark",
+            );
           }}
         />
 
@@ -247,7 +340,9 @@ function App() {
         </main>
 
         <footer className="footer">
-          <p>© {new Date().getFullYear()} Daniel Musselwhite</p>
+          <p>
+            © {new Date().getFullYear()} Daniel Musselwhite
+          </p>
         </footer>
       </div>
     </div>

@@ -24,6 +24,10 @@ For more technical information please see the [Technical Documentation](./docs/T
 * Netlify serverless backend
 * Responsive design for desktop and mobile
 
+## 🌐 Project Architecture
+
+![Portfolio Architecture Diagram](./docs/images/PortfolioArchitecture.png)
+
 ## 🛠️ Tech Stack
 
 ### Frontend
