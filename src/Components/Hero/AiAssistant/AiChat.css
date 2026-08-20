@@ -1,0 +1,501 @@
+.ai-chat {
+    --chat-accent: var(--accent, #56e0d0);
+    --chat-accent-rgb: var(--accent-rgb, 86, 224, 208);
+
+    position: absolute;
+    z-index: 20;
+
+    left: 50%;
+    top: 64%;
+
+    width: min(440px, 42vw);
+    min-width: 330px;
+
+    transform: translateX(-50%);
+
+    display: grid;
+    grid-template-rows:
+        auto
+        minmax(180px, 1fr)
+        auto
+        auto;
+
+    color: #d9f7f3;
+
+    border:
+        1px solid rgba(var(--chat-accent-rgb), 0.30);
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(12, 23, 30, 0.985) 0%,
+            rgba(7, 15, 21, 0.975) 100%
+        );
+
+    box-shadow:
+        0 28px 80px rgba(0, 0, 0, 0.36),
+        0 0 0 1px rgba(255, 255, 255, 0.025) inset,
+        0 0 42px rgba(var(--chat-accent-rgb), 0.09);
+
+    overflow: hidden;
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    pointer-events: auto;
+
+    animation:
+        ai-chat-enter 220ms
+        cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ai-chat__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+
+    min-height: 48px;
+
+    padding: 0.8rem 0.95rem;
+
+    border-bottom:
+        1px solid rgba(var(--chat-accent-rgb), 0.18);
+
+    background:
+        rgba(var(--chat-accent-rgb), 0.035);
+
+    font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        "Liberation Mono",
+        "Courier New",
+        monospace;
+
+    font-size: 0.78rem;
+    letter-spacing: 0.035em;
+}
+
+.ai-chat__header-title,
+.ai-chat__header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.ai-chat__header-title {
+    color: #edfdfb;
+}
+
+.ai-chat__status-dot {
+    flex: 0 0 auto;
+
+    width: 0.55rem;
+    height: 0.55rem;
+
+    border-radius: 50%;
+
+    background: var(--chat-accent);
+
+    box-shadow:
+        0 0 0 4px rgba(var(--chat-accent-rgb), 0.10),
+        0 0 13px rgba(var(--chat-accent-rgb), 0.62);
+}
+
+.ai-chat__status-label {
+    color: var(--chat-accent);
+
+    font-size: 0.66rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+
+.ai-chat__close {
+    display: grid;
+    place-items: center;
+
+    width: 1.85rem;
+    height: 1.85rem;
+
+    padding: 0;
+
+    border:
+        1px solid rgba(var(--chat-accent-rgb), 0.12);
+    border-radius: 8px;
+
+    background:
+        rgba(var(--chat-accent-rgb), 0.055);
+
+    color: #dffaf6;
+
+    font: inherit;
+    font-size: 1.1rem;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background 150ms ease,
+        border-color 150ms ease,
+        transform 150ms ease;
+}
+
+.ai-chat__close:hover {
+    background:
+        rgba(var(--chat-accent-rgb), 0.12);
+
+    border-color:
+        rgba(var(--chat-accent-rgb), 0.24);
+
+    transform: scale(1.04);
+}
+
+.ai-chat__messages {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+
+    min-height: 220px;
+    max-height: 330px;
+
+    padding: 1rem;
+
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    scrollbar-width: thin;
+    scrollbar-color:
+        rgba(var(--chat-accent-rgb), 0.28)
+        transparent;
+}
+
+.ai-chat__message {
+    display: grid;
+    grid-template-columns: 2.4rem minmax(0, 1fr);
+    align-items: start;
+    gap: 0.6rem;
+
+    font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        "Liberation Mono",
+        "Courier New",
+        monospace;
+
+    font-size: 0.78rem;
+    line-height: 1.55;
+}
+
+.ai-chat__message-prefix {
+    padding-top: 0.55rem;
+
+    color: var(--chat-accent);
+
+    font-size: 0.64rem;
+    letter-spacing: 0.075em;
+    text-transform: uppercase;
+}
+
+.ai-chat__message p {
+    margin: 0;
+
+    padding: 0.7rem 0.8rem;
+
+    border:
+        1px solid rgba(var(--chat-accent-rgb), 0.13);
+    border-radius: 10px;
+
+    background:
+        rgba(var(--chat-accent-rgb), 0.035);
+
+    color: #d9efec;
+}
+
+.ai-chat__message--user p {
+    border-color:
+        rgba(var(--chat-accent-rgb), 0.28);
+
+    background:
+        rgba(var(--chat-accent-rgb), 0.09);
+
+    color: #effffd;
+}
+
+.ai-chat__message--user .ai-chat__message-prefix {
+    color: #a9c5c1;
+}
+
+.ai-chat__composer {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.6rem;
+
+    margin: 0 1rem;
+    padding: 0.68rem 0.75rem;
+
+    border:
+        1px solid rgba(var(--chat-accent-rgb), 0.22);
+    border-radius: 10px;
+
+    background:
+        rgba(var(--chat-accent-rgb), 0.045);
+
+    box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.18) inset;
+}
+
+.ai-chat__composer:focus-within {
+    border-color:
+        rgba(var(--chat-accent-rgb), 0.48);
+
+    box-shadow:
+        0 0 0 3px rgba(var(--chat-accent-rgb), 0.08);
+}
+
+.ai-chat__prompt-symbol {
+    color: var(--chat-accent);
+
+    font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        "Liberation Mono",
+        "Courier New",
+        monospace;
+
+    font-size: 0.86rem;
+}
+
+.ai-chat__composer input {
+    width: 100%;
+    min-width: 0;
+
+    padding: 0;
+
+    border: 0;
+    outline: 0;
+
+    background: transparent;
+
+    color: #f2fffd;
+
+    font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        "Liberation Mono",
+        "Courier New",
+        monospace;
+
+    font-size: 0.78rem;
+}
+
+.ai-chat__composer input::placeholder {
+    color: #8aa5a1;
+    opacity: 0.72;
+}
+
+.ai-chat__composer button {
+    padding: 0.36rem 0.58rem;
+
+    border:
+        1px solid rgba(var(--chat-accent-rgb), 0.22);
+    border-radius: 7px;
+
+    background:
+        rgba(var(--chat-accent-rgb), 0.09);
+
+    color: var(--chat-accent);
+
+    font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        "Liberation Mono",
+        "Courier New",
+        monospace;
+
+    font-size: 0.67rem;
+    letter-spacing: 0.03em;
+
+    cursor: pointer;
+
+    transition:
+        background 150ms ease,
+        border-color 150ms ease,
+        opacity 150ms ease;
+}
+
+.ai-chat__composer button:hover:not(:disabled) {
+    background:
+        rgba(var(--chat-accent-rgb), 0.16);
+
+    border-color:
+        rgba(var(--chat-accent-rgb), 0.4);
+}
+
+.ai-chat__composer button:disabled {
+    opacity: 0.34;
+    cursor: default;
+}
+
+.ai-chat__footer {
+    margin: 0;
+
+    padding: 0.8rem 1rem 0.95rem;
+
+    color: #8ca6a2;
+
+    font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        "Liberation Mono",
+        "Courier New",
+        monospace;
+
+    font-size: 0.7rem;
+    letter-spacing: 0.02em;
+}
+
+.ai-chat__footer span {
+    color: var(--chat-accent);
+}
+
+@keyframes ai-chat-enter {
+    from {
+        opacity: 0;
+
+        transform:
+            translateX(-50%)
+            translateY(10px)
+            scale(0.985);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateX(-50%)
+            translateY(0)
+            scale(1);
+    }
+}
+
+@media (max-width: 980px) {
+    .ai-chat {
+        top: 68%;
+
+        width: min(90vw, 430px);
+        min-width: 0;
+    }
+}
+
+@media (max-width: 560px) {
+    .ai-chat {
+        top: 70%;
+
+        width: min(92vw, 390px);
+    }
+
+    .ai-chat__messages {
+        min-height: 190px;
+        max-height: 270px;
+    }
+
+    .ai-chat__message {
+        grid-template-columns: 2rem minmax(0, 1fr);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ai-chat {
+        animation: none;
+    }
+}
+
+
+/* =========================================================
+   COMBINED MASCOT + CHAT LAYOUT
+   ========================================================= */
+
+/*
+ * The chat is no longer absolutely positioned.
+ * It participates in the assistant's height, so Hero centres the whole unit.
+ *
+ * Negative margin creates the desired overlap with the mascot.
+ */
+.ai-chat {
+    position: relative !important;
+
+    left: auto !important;
+    top: auto !important;
+
+    width: min(440px, 42vw);
+    min-width: 330px;
+
+    margin-top: -92px;
+
+    transform: none !important;
+
+    z-index: 5;
+}
+
+/*
+ * Replace the old absolute-position entrance animation with one that works
+ * naturally in document flow.
+ */
+.ai-chat {
+    animation:
+        ai-chat-enter-combined 220ms
+        cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+@keyframes ai-chat-enter-combined {
+    from {
+        opacity: 0;
+        transform:
+            translateY(10px)
+            scale(0.985);
+    }
+
+    to {
+        opacity: 1;
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+@media (max-width: 980px) {
+    .ai-chat {
+        width: min(90vw, 430px);
+        min-width: 0;
+
+        margin-top: -76px;
+    }
+}
+
+@media (max-width: 560px) {
+    .ai-chat {
+        width: min(92vw, 390px);
+
+        margin-top: -62px;
+    }
+}

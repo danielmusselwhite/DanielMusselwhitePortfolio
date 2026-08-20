@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import AiBlob from "./AiBlob/AiBlob";
+import AiAssistant from "./AiAssistant/AiAssistant";
 
 const heroTitle = "Full-Stack Developer";
 
@@ -40,6 +40,7 @@ export default function Hero() {
 
                     <h2 className="hero__typing" aria-label={heroTitle}>
                         <span aria-hidden="true">{typedTitle}</span>
+
                         <span
                             className="hero__typing-cursor"
                             aria-hidden="true"
@@ -70,13 +71,7 @@ export default function Hero() {
                     </div>
                 </div>
 
-                <div className="hero__assistant">
-                    <AiBlob state="idle" />
-
-                    <span className="hero__assistant-label">
-                        Portfolio assistant
-                    </span>
-                </div>
+                <AiAssistant />
             </div>
         </section>
     );
