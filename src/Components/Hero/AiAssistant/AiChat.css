@@ -758,3 +758,337 @@
 .light .ai-chat__footer {
     color: #6c8986;
 }
+
+
+/* =========================================================
+   SLASH COMMAND PALETTE
+   ========================================================= */
+
+.ai-chat__command-menu {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    flex-direction: column;
+
+    margin:
+        0 1rem
+        0.45rem;
+
+    padding: 0.35rem;
+
+    border:
+        1px solid rgba(var(--chat-accent-rgb), 0.22);
+    border-radius: 10px;
+
+    background:
+        rgba(7, 15, 21, 0.985);
+
+    box-shadow:
+        0 14px 36px rgba(0, 0, 0, 0.28),
+        0 0 22px rgba(var(--chat-accent-rgb), 0.06);
+
+    overflow: hidden;
+
+    animation:
+        ai-chat-command-enter 130ms
+        ease-out;
+}
+
+.ai-chat__command-option {
+    display: grid;
+    grid-template-columns: 7.4rem minmax(0, 1fr);
+    align-items: center;
+    gap: 0.65rem;
+
+    width: 100%;
+
+    padding: 0.55rem 0.65rem;
+
+    border: 0;
+    border-radius: 7px;
+
+    background: transparent;
+    color: inherit;
+
+    text-align: left;
+
+    font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        "Liberation Mono",
+        "Courier New",
+        monospace;
+
+    cursor: pointer;
+
+    transition:
+        background 100ms ease,
+        color 100ms ease;
+}
+
+.ai-chat__command-option:hover,
+.ai-chat__command-option--selected {
+    background:
+        rgba(var(--chat-accent-rgb), 0.10);
+}
+
+.ai-chat__command-name {
+    color: var(--chat-accent);
+
+    font-size: 0.74rem;
+    letter-spacing: 0.025em;
+}
+
+.ai-chat__command-description {
+    color: #98b1ad;
+
+    font-size: 0.68rem;
+}
+
+.ai-chat__command-option--selected
+.ai-chat__command-description {
+    color: #c5d9d6;
+}
+
+@keyframes ai-chat-command-enter {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Light mode command palette */
+.site-shell--light .ai-chat__command-menu,
+[data-theme="light"] .ai-chat__command-menu,
+.theme-light .ai-chat__command-menu,
+.light .ai-chat__command-menu {
+    border-color:
+        rgba(var(--chat-accent-rgb), 0.18);
+
+    background:
+        rgba(247, 253, 252, 0.99);
+
+    box-shadow:
+        0 12px 32px rgba(24, 66, 64, 0.14),
+        0 0 18px rgba(var(--chat-accent-rgb), 0.05);
+}
+
+.site-shell--light .ai-chat__command-description,
+[data-theme="light"] .ai-chat__command-description,
+.theme-light .ai-chat__command-description,
+.light .ai-chat__command-description {
+    color: #607d79;
+}
+
+.site-shell--light
+.ai-chat__command-option--selected
+.ai-chat__command-description,
+[data-theme="light"]
+.ai-chat__command-option--selected
+.ai-chat__command-description,
+.theme-light
+.ai-chat__command-option--selected
+.ai-chat__command-description,
+.light
+.ai-chat__command-option--selected
+.ai-chat__command-description {
+    color: #294d49;
+}
+
+@media (max-width: 560px) {
+    .ai-chat__command-option {
+        grid-template-columns: 6.4rem minmax(0, 1fr);
+        gap: 0.45rem;
+    }
+
+    .ai-chat__command-description {
+        font-size: 0.64rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ai-chat__command-menu {
+        animation: none;
+    }
+}
+
+
+/* =========================================================
+   COMMAND PALETTE — OVERLAY, NOT LAYOUT
+   ========================================================= */
+
+/*
+ * The command menu should float above the composer instead of contributing
+ * to the chat's layout height.
+ */
+.ai-chat {
+    position: relative;
+    overflow: visible;
+}
+
+.ai-chat__composer {
+    position: relative;
+    z-index: 3;
+}
+
+.ai-chat__command-menu {
+    position: absolute !important;
+
+    left: 1rem;
+    right: 1rem;
+
+    /*
+     * Anchor it immediately above the composer area.
+     * Footer height + composer height are accounted for here.
+     */
+    bottom: 4.85rem;
+
+    z-index: 20;
+
+    margin: 0 !important;
+
+    max-height: 220px;
+    overflow-y: auto;
+
+    transform-origin: bottom center;
+}
+
+/*
+ * Keep it visually attached to the input without pushing any content.
+ */
+@keyframes ai-chat-command-enter {
+    from {
+        opacity: 0;
+        transform:
+            translateY(6px)
+            scale(0.985);
+    }
+
+    to {
+        opacity: 1;
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+@media (max-width: 560px) {
+    .ai-chat__command-menu {
+        left: 0.75rem;
+        right: 0.75rem;
+        bottom: 4.7rem;
+        max-height: 190px;
+    }
+}
+
+/* =========================================================
+   MARKDOWN RESPONSES
+   ========================================================= */
+
+.ai-chat__message-content {
+    min-width: 0;
+}
+
+.ai-chat__message-content > :first-child {
+    margin-top: 0;
+}
+
+.ai-chat__message-content > :last-child {
+    margin-bottom: 0;
+}
+
+.ai-chat__message-content p {
+    margin: 0 0 0.65rem;
+}
+
+.ai-chat__message-content strong {
+    color: inherit;
+    font-weight: 700;
+}
+
+.ai-chat__message-content em {
+    opacity: 0.9;
+}
+
+.ai-chat__message-content ul,
+.ai-chat__message-content ol {
+    margin: 0.5rem 0 0.65rem;
+    padding-left: 1.3rem;
+}
+
+.ai-chat__message-content li + li {
+    margin-top: 0.25rem;
+}
+
+.ai-chat__message-content code {
+    padding: 0.12rem 0.3rem;
+
+    border:
+        1px solid rgba(var(--chat-accent-rgb), 0.14);
+    border-radius: 5px;
+
+    background:
+        rgba(var(--chat-accent-rgb), 0.08);
+
+    color: var(--chat-accent);
+
+    font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        "Liberation Mono",
+        "Courier New",
+        monospace;
+
+    font-size: 0.92em;
+}
+
+.ai-chat__message-content pre {
+    max-width: 100%;
+
+    margin: 0.65rem 0;
+
+    padding: 0.75rem;
+
+    border:
+        1px solid rgba(var(--chat-accent-rgb), 0.14);
+    border-radius: 8px;
+
+    background:
+        rgba(0, 0, 0, 0.2);
+
+    overflow-x: auto;
+}
+
+.ai-chat__message-content pre code {
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+.ai-chat__message-content a {
+    color: var(--chat-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.ai-chat__message-content blockquote {
+    margin: 0.65rem 0;
+    padding-left: 0.75rem;
+
+    border-left:
+        2px solid rgba(var(--chat-accent-rgb), 0.48);
+
+    opacity: 0.86;
+}

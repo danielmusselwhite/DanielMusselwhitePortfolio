@@ -1,12 +1,13 @@
 import {
     useEffect,
-    useMemo,
     useRef,
     useState,
     type FormEvent,
+    type KeyboardEvent,
 } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import type { AiBlobState } from "./AiMascot";
-import { buildPortfolioContext } from "./portfolioContext";
 import "./AiChat.css";
 
 interface AiChatProps {
@@ -48,15 +49,71 @@ const stateLabels: Record<AiBlobState, string> = {
     angry: "angry",
 };
 
-const debugCommands: Record<string, AiBlobState> = {
-    "/idle": "idle",
-    "/listening": "listening",
-    "/thinking": "thinking",
-    "/busy": "busy",
-    "/speaking": "speaking",
-    "/error": "error",
-    "/angry": "angry",
+interface AssistantCommand {
+    state: AiBlobState;
+    reply: string;
+    description: string;
+}
+
+const debugCommands: Record<
+    string,
+    AssistantCommand
+> = {
+    "/idle": {
+        state: "idle",
+        reply: "Okay, I'll idle.",
+        description: "Let me relax",
+    },
+    "/listening": {
+        state: "listening",
+        reply: "I'm listening...",
+        description: "Get my attention",
+    },
+    "/thinking": {
+        state: "thinking",
+        reply: "That's a lot to think about...",
+        description: "Give me something to ponder",
+    },
+    "/busy": {
+        state: "busy",
+        reply: "Alright, give me a second!",
+        description: "Keep me busy",
+    },
+    "/speaking": {
+        state: "speaking",
+        reply: "I've got something to say!",
+        description: "Let me talk",
+    },
+    "/error": {
+        state: "error",
+        reply: "Uh oh... what did you do?",
+        description: "Something went wrong",
+    },
+    "/angry": {
+        state: "angry",
+        reply: "You've made me angry.",
+        description: "Don't say I didn't warn you",
+    },
+    "/party": {
+        state: "party",
+        reply: "Okay... PARTY MODE!",
+        description: "Maximum rainbow wiggle",
+    },
+
 };
+
+/*
+ * Intentionally omitted from the command palette.
+ */
+const hiddenCommands = {
+    "/party": true,
+} as const;
+
+const commandEntries =
+    Object.entries(debugCommands) as Array<
+        [string, AssistantCommand]
+    >;
+
 
 export default function AiChat({
     isOpen,
@@ -69,6 +126,8 @@ export default function AiChat({
     const [input, setInput] = useState("");
     const [isSubmitting, setIsSubmitting] =
         useState(false);
+    const [selectedCommandIndex, setSelectedCommandIndex] =
+        useState(0);
 
     const nextIdRef = useRef(2);
     const messagesEndRef =
@@ -77,14 +136,28 @@ export default function AiChat({
         useRef<number | null>(null);
     const busyTimerRef =
         useRef<number | null>(null);
-
-    const portfolioContext = useMemo(
-        () => buildPortfolioContext(),
-        [],
-    );
+    const partyTimerRefs =
+        useRef<number[]>([]);
 
     const canSubmit =
         input.trim().length > 0 && !isSubmitting;
+
+    const normalizedInput =
+        input.trim().toLowerCase();
+
+    const matchingCommands =
+        normalizedInput.startsWith("/")
+            ? commandEntries.filter(([command]) =>
+                command.startsWith(
+                    normalizedInput,
+                ),
+            )
+            : [];
+
+    const showCommandMenu =
+        !isSubmitting &&
+        input.startsWith("/") &&
+        matchingCommands.length > 0;
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({
@@ -92,6 +165,10 @@ export default function AiChat({
             block: "nearest",
         });
     }, [messages, isSubmitting]);
+
+    useEffect(() => {
+        setSelectedCommandIndex(0);
+    }, [input]);
 
     useEffect(() => {
         return () => {
@@ -106,6 +183,11 @@ export default function AiChat({
                     busyTimerRef.current,
                 );
             }
+
+            partyTimerRefs.current.forEach((timer) => {
+                window.clearTimeout(timer);
+            });
+            partyTimerRefs.current = [];
         };
     }, []);
 
@@ -123,14 +205,7 @@ export default function AiChat({
         );
     }
 
-    function runDebugCommand(command: string) {
-        const state =
-            debugCommands[command.toLowerCase()];
-
-        if (!state) {
-            return false;
-        }
-
+    function clearShowcaseTimers() {
         if (busyTimerRef.current !== null) {
             window.clearTimeout(
                 busyTimerRef.current,
@@ -145,8 +220,16 @@ export default function AiChat({
             speakingTimerRef.current = null;
         }
 
-        onAssistantStateChange(state);
+        partyTimerRefs.current.forEach((timer) => {
+            window.clearTimeout(timer);
+        });
+        partyTimerRefs.current = [];
+    }
 
+    function addCommandMessages(
+        command: string,
+        reply: string,
+    ) {
         setMessages((current) => [
             ...current,
             {
@@ -157,27 +240,129 @@ export default function AiChat({
             {
                 id: nextIdRef.current++,
                 role: "assistant",
-                content:
-                    `Debug animation forced: ${state}. ` +
-                    "No API request was made.",
+                content: reply,
             },
         ]);
+    }
+
+    function runPartyCommand() {
+        clearShowcaseTimers();
+
+        addCommandMessages(
+            "/party",
+            "Okay... PARTY MODE!",
+        );
+
+        setInput("");
+        onAssistantStateChange("party");
+
+        speakingTimerRef.current =
+            window.setTimeout(() => {
+                onAssistantStateChange("idle");
+                speakingTimerRef.current = null;
+            }, 30000);
+    }
+
+    function runDebugCommand(command: string) {
+        const normalized =
+            command.toLowerCase();
+
+        /*
+         * Party owns its own 30-second timer.
+         * Do not let the generic showcase reset overwrite it.
+         */
+        if (normalized === "/party") {
+            runPartyCommand();
+            return true;
+        }
+
+        const config =
+            debugCommands[normalized];
+
+        if (!config) {
+            return false;
+        }
+
+        clearShowcaseTimers();
+
+        onAssistantStateChange(config.state);
+
+        addCommandMessages(
+            normalized,
+            config.reply,
+        );
 
         setInput("");
 
         /*
-         * Keep idle persistent; other showcase states reset automatically.
+         * Normal showcase states are intentionally brief.
          */
-        if (state !== "idle") {
+        if (config.state !== "idle") {
             speakingTimerRef.current =
                 window.setTimeout(() => {
                     onAssistantStateChange("idle");
                     speakingTimerRef.current = null;
-                }, state === "angry" ? 2800 : 2200);
+                }, config.state === "angry" ? 2800 : 2200);
         }
 
         return true;
     }
+
+    function selectCommand(command: string) {
+        setInput(command);
+        setSelectedCommandIndex(0);
+    }
+
+    function handleComposerKeyDown(
+        event: KeyboardEvent<HTMLInputElement>,
+    ) {
+        if (!showCommandMenu) {
+            return;
+        }
+
+        if (event.key === "ArrowDown") {
+            event.preventDefault();
+
+            setSelectedCommandIndex((current) =>
+                (current + 1) %
+                matchingCommands.length,
+            );
+            return;
+        }
+
+        if (event.key === "ArrowUp") {
+            event.preventDefault();
+
+            setSelectedCommandIndex((current) =>
+                (current - 1 +
+                    matchingCommands.length) %
+                matchingCommands.length,
+            );
+            return;
+        }
+
+        if (
+            event.key === "Enter" &&
+            matchingCommands[
+            selectedCommandIndex
+            ]
+        ) {
+            event.preventDefault();
+
+            runDebugCommand(
+                matchingCommands[
+                selectedCommandIndex
+                ][0],
+            );
+            return;
+        }
+
+        if (event.key === "Escape") {
+            event.preventDefault();
+            setInput("");
+        }
+    }
+
 
     async function handleSubmit(
         event: FormEvent<HTMLFormElement>,
@@ -247,7 +432,6 @@ export default function AiChat({
                     body: JSON.stringify({
                         message: trimmed,
                         history,
-                        portfolioContext,
                     }),
                 },
             );
@@ -352,6 +536,15 @@ export default function AiChat({
                     <span className="ai-chat__status-label">
                         {stateLabels[assistantState]}
                     </span>
+
+                    <button
+                        type="button"
+                        className="ai-chat__close"
+                        onClick={onClose}
+                        aria-label="Close assistant"
+                    >
+                        ×
+                    </button>
                 </div>
             </div>
 
@@ -374,7 +567,28 @@ export default function AiChat({
                                 : "bot"}
                         </span>
 
-                        <p>{message.content}</p>
+                        <div className="ai-chat__message-content">
+                            {message.role === "assistant" ? (
+                                <ReactMarkdown
+                                    remarkPlugins={[remarkGfm]}
+                                    components={{
+                                        a: ({ children, ...props }) => (
+                                            <a
+                                                {...props}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                {children}
+                                            </a>
+                                        ),
+                                    }}
+                                >
+                                    {message.content}
+                                </ReactMarkdown>
+                            ) : (
+                                <p>{message.content}</p>
+                            )}
+                        </div>
                     </div>
                 ))}
 
@@ -397,6 +611,60 @@ export default function AiChat({
                 <div ref={messagesEndRef} />
             </div>
 
+            {showCommandMenu && (
+                <div
+                    className="ai-chat__command-menu"
+                    role="listbox"
+                    aria-label="Assistant commands"
+                >
+                    {matchingCommands.map(
+                        (
+                            [
+                                command,
+                                config,
+                            ],
+                            index,
+                        ) => (
+                            <button
+                                key={command}
+                                type="button"
+                                className={[
+                                    "ai-chat__command-option",
+                                    index ===
+                                        selectedCommandIndex
+                                        ? "ai-chat__command-option--selected"
+                                        : "",
+                                ].join(" ")}
+                                onMouseDown={(event) => {
+                                    event.preventDefault();
+                                    selectCommand(command);
+                                }}
+                                onClick={() =>
+                                    runDebugCommand(
+                                        command,
+                                    )
+                                }
+                                role="option"
+                                aria-selected={
+                                    index ===
+                                    selectedCommandIndex
+                                }
+                            >
+                                <span className="ai-chat__command-name">
+                                    {command}
+                                </span>
+
+                                <span className="ai-chat__command-description">
+                                    {
+                                        config.description
+                                    }
+                                </span>
+                            </button>
+                        ),
+                    )}
+                </div>
+            )}
+
             <form
                 className="ai-chat__composer"
                 onSubmit={handleSubmit}
@@ -415,6 +683,9 @@ export default function AiChat({
                         handleInputChange(
                             event.target.value,
                         )
+                    }
+                    onKeyDown={
+                        handleComposerKeyDown
                     }
                     placeholder={
                         isSubmitting

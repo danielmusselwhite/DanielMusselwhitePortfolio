@@ -1,0 +1,380 @@
+DANIEL MUSSELWHITE — PORTFOLIO ASSISTANT CONTEXT
+
+This document is a curated factual knowledge source for Daniel Musselwhite's portfolio assistant.
+Use it to answer questions about Daniel's professional experience, education, technical background, and projects.
+Do not infer employers, dates, achievements, technologies, responsibilities, or experience that are not stated here or in the separate project data supplied to the assistant.
+
+
+=== PROFILE ===
+
+Name: Daniel Musselwhite
+Role: Software Engineer / Full-Stack Developer
+
+Daniel is a software engineer with professional experience across full-stack application development, enterprise software, APIs, desktop applications, cloud integrations, automated testing, CI/CD, authentication and authorization, and software architecture.
+
+His professional work has included C#/.NET, WPF, Blazor, ASP.NET, REST APIs, Entity Framework Core, SQL, Azure Blob Storage, FusionAuth, Python, JavaScript/TypeScript, Angular, automated testing, Jenkins, Groovy, PowerShell, and related engineering practices.
+
+He has also built personal and academic projects involving Azure, AKS, microservices, event-driven architecture, Microsoft Entra ID, Azure API Management, Ocelot, RabbitMQ, Azure Service Bus, Redis, PostgreSQL, MySQL, MongoDB, React, Firebase, Azure Speech Services, and real-time desktop integrations.
+
+
+=== PROFESSIONAL EXPERIENCE ===
+
+SOFTWARE ENGINEER — WEBSURE (SHERATON SYSTEMS LTD)
+Aug 2026 – Present
+Wickford, England, United Kingdom
+Hybrid, full-time
+
+Daniel joined Websure as a Software Engineer in August 2026.
+
+He is working on the modernisation of a legacy Delphi application, migrating it toward a modern, cloud-native architecture hosted on Microsoft Azure.
+
+The modernisation involves decomposing functionality from the legacy application into logical business domains, with domain functionality exposed through APIs and moved toward independently deployable microservices.
+
+Daniel's work includes:
+- Designing and developing APIs to expose functionality from the modernised application domains.
+- Contributing to the decomposition of the legacy Delphi application into domain-focused services.
+- Helping design the target cloud-native, microservices-based architecture.
+- Setting up CI/CD pipelines to automate application build, testing, and deployment processes.
+- Creating and maintaining Azure infrastructure as code using Bicep.
+- Provisioning and configuring Azure infrastructure required by the modernised platform.
+- Supporting the migration from the legacy application toward independently deployable services and APIs running on Azure.
+
+The work combines application development, API design, cloud architecture, DevOps, infrastructure as code, and legacy-system modernisation.
+
+INTERMEDIATE SOFTWARE ENGINEER — GAMIT
+Dec 2024 – Jul 2026
+Stansted Mountfitchet, England, United Kingdom
+On-site, full-time
+
+Daniel worked as an Intermediate Software Engineer at GAMIT and acted as project lead for the RDOC WPF application.
+
+Key responsibilities and achievements:
+- Led the design, development, deployment, and maintenance of the RDOC platform.
+- Worked directly with customers to gather requirements and translate them into technical designs and implemented solutions.
+- Led design discussions and architecture decisions for RDOC modules with a focus on scalability, maintainability, and customer requirements.
+- Developed full-stack applications using .NET, including WPF and Blazor.
+- Developed REST APIs and SQL-backed systems using Entity Framework Core.
+- Used ASP.NET Identity Framework.
+- Integrated applications with Azure Blob Storage.
+- Integrated FusionAuth SSO into RDOC.
+- Passed FusionAuth-provided tokens to the ROAM API and implemented custom endpoint attributes for permission checking and role-based access control.
+- Built automated test suites with xUnit.
+- Built UI automation using FlaUI.
+- Maintained a legacy Angular/TypeScript system.
+- Produced UML diagrams and contributed to lifecycle design, engineering standards, documentation, and support workflows.
+- Helped define team engineering standards including branching and release policies, commit guidelines, and pull request structure.
+- Mentored junior engineers and onboarded new team members.
+
+
+TECHNICAL SPECIALIST — SS&C TECHNOLOGIES
+Sep 2022 – Dec 2024
+Basildon, England, United Kingdom
+Hybrid, full-time
+
+Daniel worked on large-scale financial software.
+
+Key responsibilities and achievements:
+- Designed, developed, and deployed features for large-scale financial software.
+- Created internal/greenhouse projects intended to improve team efficiency.
+- Built a Python-based IDE for Drools files.
+- Created PowerShell automation scripts to reduce manual work.
+- Built automated test suites with PyTest for backend services and SOAP APIs.
+- Built Selenium-based UI tests.
+- Configured Jenkins CI/CD pipelines using Groovy scripts to automate testing and deployment.
+- Collaborated with cross-functional teams to deliver incremental improvements within Agile development cycles.
+
+
+=== EDUCATION ===
+
+UNIVERSITY COLLEGE LONDON (UCL)
+MSc Software Systems Engineering
+Sep 2021 – Sep 2022
+Grade: Distinction, 76%
+
+Daniel completed a Master's degree in Software Systems Engineering at UCL.
+He was also involved with UCL BJJ.
+
+
+UNIVERSITY OF NOTTINGHAM
+BSc Computer Science and Artificial Intelligence
+2018 – 2021
+Grade: First-Class Honours, 81%
+
+Daniel completed a Bachelor's degree combining Computer Science and Artificial Intelligence.
+
+
+=== SELECTED PROFESSIONAL PROJECT ===
+
+ENTERPRISE OCR & DOCUMENT PROCESSING PLATFORM MODERNISATION
+GAMIT
+Jan 2026 – Jul 2026
+
+Daniel led the end-to-end modernisation and migration of an established enterprise OCR and rules-based document-processing platform.
+
+The work was driven by the release of a companion web application for managing and viewing exported documents. This required a new integration architecture, API layer, and substantial enhancements to the existing platform.
+
+Key work:
+- Designed and implemented an ASP.NET/C# API layer connecting the document-processing engine with the new web application.
+- Led migration work involving authentication, workflows, data migration, and Azure Blob Storage integration.
+- Designed version-controlled configuration management with audit history, change tracking, and rollback.
+- Re-engineered document verification workflows with configurable validation rules, OCR correction, and document-specific processing logic.
+- Implemented FusionAuth authentication using JWTs, PKCE, and refresh tokens.
+- Modernised the WPF C#/XAML desktop UI.
+- Refactored legacy components and improved the application architecture to reduce technical debt and improve maintainability and scalability.
+- Implemented resilience and automated recovery around COM-based OCR engine integrations so the application could recover from failed dependencies without manual intervention.
+- Added Sentry-based observability and diagnostics for error tracking and troubleshooting.
+- Created migration scripts to move data from the old system to the new system, including transformations required by differences in database structure.
+
+
+=== ACADEMIC PROJECT ===
+
+MICROSOFT LEARN LTI — MULTITENANT ARCHITECTURE SUPPORT
+UCL
+Jun 2022 – Sep 2022
+
+Microsoft Learn LTI uses the Learning Tools Interoperability framework to integrate Microsoft Learn resources with Learning Management Systems such as Moodle.
+
+The existing architecture supported only single tenancy, preventing organisations whose users were spread across multiple tenants from using the system. Daniel's project focused on adding multitenant support.
+
+Key work:
+- Adapted the existing cloud architecture to introduce a new Azure AD B2C tenant for multitenant access.
+- Modified PowerShell deployment scripts to automatically create and configure the B2C tenant and other authentication resources in Azure.
+- Used Microsoft Graph API calls as part of the automated deployment/configuration process.
+- Reworked backend authentication checks to use claims from the new B2C bearer tokens rather than the previous AAD bearer tokens.
+
+Project repository:
+github.com/UCL-MSc-Learn-LTI/Learn-LTI
+
+
+=== PUBLIC / PERSONAL PROJECTS ===
+
+ACTIVITY WEB APP
+
+A full-stack activity-tracking web application.
+
+Architecture and technologies:
+- React frontend.
+- TypeScript.
+- ASP.NET Core Web API backend.
+- C#.
+- ASP.NET Core Identity for authentication.
+- SQLite persistence.
+- Authenticated CRUD operations.
+
+The repository is approximately evenly split between TypeScript and C#.
+
+
+COMMERCEFABRIC
+
+CommerceFabric is an Azure-hosted e-commerce platform built to demonstrate cloud-native and distributed-system architecture.
+
+Architecture:
+- Angular web frontend.
+- Microsoft Entra ID for authentication.
+- Azure API Management as an external API management layer.
+- Ocelot API Gateway.
+- Azure Kubernetes Service (AKS).
+- Independently deployable ASP.NET Core User, Product, and Order services.
+- Database-per-service architecture.
+- PostgreSQL for user data.
+- MySQL for product data.
+- MongoDB for order data.
+- REST for synchronous service communication.
+- RabbitMQ and Azure Service Bus for asynchronous/event-driven communication.
+- Redis caching.
+- Polly for retry and transient-fault resilience.
+- Microsoft Graph integration.
+- Infrastructure work includes Bicep.
+
+Order workflow:
+- A successful order publishes an Order Created event to an Azure Service Bus Topic.
+- The Product Service subscribes and asynchronously reduces product stock.
+- Failed stock-processing messages can be moved to a dead-letter queue.
+- The topic-based publish/subscribe model allows future services such as Payment and Notification services to subscribe without creating direct dependencies.
+
+Product update/delete events:
+- RabbitMQ and Azure Service Bus are both demonstrated.
+- The Order Service consumes events to update or invalidate its Redis cache of product information.
+- Both messaging technologies are intentionally included to demonstrate experience with self-hosted and Azure-managed messaging; a production system would typically standardise on one where appropriate.
+
+The project demonstrates scalability, fault isolation, independent deployment, service ownership, API governance, resilience, caching, asynchronous workflows, and loose coupling.
+
+Primary languages/technologies include C#, TypeScript, and Bicep.
+
+
+DOTNOTE
+
+DotNote is a desktop note-taking application inspired by Evernote.
+
+Features:
+- User registration and authentication.
+- Notebook creation and management.
+- Note creation, editing, and deletion.
+- Rich-text editing with font, size, colour, and styling controls.
+- User profiles and profile-picture uploads.
+- Speech-to-text dictation.
+
+Architecture and technologies:
+- MVVM architecture.
+- Firebase Authentication.
+- Firebase Realtime Database.
+- Azure Blob Storage for notes/user files and profile images.
+- Azure Speech Services for real-time dictation.
+- Per-user data isolation through Firebase authentication rules and structured database paths.
+
+The project demonstrates desktop application architecture, cloud storage integration, authentication, rich-text functionality, and speech-service integration.
+
+
+HEARTHSTONE DECK PREDICTOR
+
+A WPF plugin for Hearthstone Deck Tracker that predicts an opponent's likely deck in real time.
+
+Purpose:
+Returning Hearthstone players can find it difficult to keep up with a changing meta and recognise opposing archetypes. The plugin uses cards revealed during a match to progressively estimate the opponent's likely deck and strategy.
+
+Architecture and behaviour:
+- Integrates with Hearthstone Deck Tracker's internal API.
+- Reacts to live game and opponent card-play events.
+- Retrieves current Standard meta deck data from HSReplay.net at the start of a game.
+- Stores deck information in memory for fast matching.
+- Uses hash-based lookups and progressive filtering to eliminate incompatible decks as cards are revealed.
+- Ranks remaining candidates to identify likely archetypes.
+- Displays likely remaining cards.
+- Displays predicted deck/archetype information.
+- Surfaces matchup odds against the player's likely archetype.
+
+The goal is to help players identify threats, understand the current meta, and make better-informed decisions during a match.
+
+
+DANIEL MUSSELWHITE PORTFOLIO WEBSITE
+
+Daniel designed and developed this portfolio website as a personal software project.
+
+The site includes a custom interactive AI portfolio assistant represented by an animated blob-like mascot.
+
+The assistant:
+- Provides a conversational interface for asking about Daniel's experience and projects.
+- Uses curated portfolio/project information as context for AI-generated answers.
+- Uses a frontend chat interface with a server-side API integration.
+- Is designed so API credentials remain server-side rather than being exposed in browser code.
+- Includes interactive mascot behaviours and state-driven animations.
+- Visually reacts to states such as listening, thinking, replying, errors, and annoyance.
+- Includes custom interaction behaviours such as eye tracking, blinking, dragging/elastic movement, click reactions, and animated emotional states.
+- Supports light and dark presentation within the portfolio design.
+
+Do not claim specific deployment infrastructure, AI models, or production architecture for the portfolio assistant unless those details are provided elsewhere in the current project data.
+
+
+=== TECHNICAL THEMES ===
+
+Daniel's supplied experience demonstrates work in the following areas:
+
+Backend and application development:
+- C#
+- .NET
+- ASP.NET / ASP.NET Core
+- REST APIs
+- Entity Framework Core
+- SQL
+- Python
+
+Desktop:
+- WPF
+- XAML
+- MVVM
+- FlaUI
+
+Frontend:
+- React
+- TypeScript
+- Angular
+- Blazor
+- JavaScript
+
+Cloud and infrastructure:
+- Microsoft Azure
+- Azure Blob Storage
+- Azure Kubernetes Service
+- Azure API Management
+- Azure Service Bus
+- Microsoft Entra ID
+- Azure AD B2C
+- Microsoft Graph
+- Bicep
+- Firebase
+
+Distributed systems:
+- Microservices
+- REST
+- Event-driven architecture
+- RabbitMQ
+- Azure Service Bus Topics
+- Dead-letter queues
+- Redis
+- Database-per-service patterns
+- Ocelot API Gateway
+- Polly resilience policies
+
+Authentication and security:
+- ASP.NET Identity
+- FusionAuth
+- Microsoft Entra ID
+- Azure AD B2C
+- JWT bearer tokens
+- PKCE
+- Refresh tokens
+- Role-based access control
+- Firebase Authentication
+
+Testing and delivery:
+- xUnit
+- PyTest
+- Selenium
+- FlaUI
+- Jenkins
+- Groovy
+- PowerShell
+- CI/CD
+
+Engineering practices:
+- Software architecture and design discussions
+- Customer requirements gathering
+- Technical design
+- UML
+- Refactoring legacy systems
+- Technical-debt reduction
+- Observability and diagnostics
+- Sentry
+- Branching/release standards
+- Pull request standards
+- Documentation
+- Mentoring and onboarding
+
+
+=== GUIDANCE FOR ANSWERING EXPERIENCE QUESTIONS ===
+
+When asked about Daniel's strongest or most demonstrated areas, answers can reasonably emphasise:
+- C# and the .NET ecosystem.
+- Full-stack and backend application development.
+- WPF/desktop development.
+- REST API design and integration.
+- Microsoft Azure and cloud integrations.
+- Authentication and authorization.
+- Automated testing.
+- Application architecture and maintainability.
+- Increasing exposure to distributed, cloud-native, microservice, and event-driven architecture through both professional and personal projects.
+
+Do not convert overlapping employment/project dates into an exact claim such as "X years of C# experience" unless the calculation is explicitly requested and the relevant roles clearly establish use of that technology.
+
+When discussing leadership, supported examples include:
+- Acting as project lead for RDOC at GAMIT.
+- Leading design and architecture discussions.
+- Working directly with customers on requirements.
+- Contributing to team engineering standards.
+- Mentoring junior engineers and onboarding new team members.
+
+When discussing academic performance, supported facts are:
+- MSc Software Systems Engineering at UCL: Distinction, 76%.
+- BSc Computer Science and Artificial Intelligence at University of Nottingham: First-Class Honours, 81%.
+
+When asked about Daniel's current role, state only that he joined Websure (Sheraton Systems Ltd) as a Software Engineer in August 2026 unless additional current-role information has been supplied elsewhere.

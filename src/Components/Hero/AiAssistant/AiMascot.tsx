@@ -9,7 +9,7 @@ import {
 } from "react";
 import "./AiMascot.css";
 
-export type AiBlobState = "idle" | "listening" | "thinking" | "busy" | "speaking" | "error" | "angry";
+export type AiBlobState = "idle" | "listening" | "thinking" | "busy" | "speaking" | "error" | "angry" | "party";
 
 interface AiMascotProps {
     state?: AiBlobState;
@@ -37,6 +37,10 @@ export default function AiMascot({
     const blinkTimerRef = useRef<number | null>(null);
     const expressionTimerRef = useRef<number | null>(null);
     const annoyedTimerRef = useRef<number | null>(null);
+    const idleGazeStartTimerRef = useRef<number | null>(null);
+    const idleGazeMoveTimerRef = useRef<number | null>(null);
+    const idleGazeActiveRef = useRef(false);
+    const lastPointerMoveRef = useRef(Date.now());
 
     const clickTimesRef = useRef<number[]>([]);
     const dragStateRef = useRef({
@@ -82,6 +86,104 @@ export default function AiMascot({
         let currentDistance = 0;
 
         const maxLean = 10;
+
+        function setIdleGazeTarget() {
+            if (
+                reducedMotion.matches ||
+                !idleGazeActiveRef.current ||
+                !root.classList.contains("ai-blob--idle") ||
+                root.classList.contains("ai-blob--dragging") ||
+                root.classList.contains("ai-blob--annoyed")
+            ) {
+                return;
+            }
+
+            /*
+             * Avoid always looking at the extremes. Most glances are casual,
+             * with the occasional more dramatic look around.
+             */
+            const angle =
+                Math.random() * Math.PI * 2;
+            const strength =
+                0.28 + Math.random() * 0.58;
+
+            targetLookX =
+                Math.cos(angle) * strength;
+            targetLookY =
+                Math.sin(angle) * strength * 0.72;
+            targetDistance =
+                0.28 + strength * 0.48;
+
+            /*
+             * Idle wandering is primarily an eye behaviour. A tiny amount
+             * of lean keeps him alive without turning it into cursor curiosity.
+             */
+            targetLeanX =
+                targetLookX * maxLean * 0.18;
+            targetLeanY =
+                targetLookY * maxLean * 0.10;
+
+            const holdFor =
+                900 + Math.random() * 2600;
+
+            idleGazeMoveTimerRef.current =
+                window.setTimeout(
+                    setIdleGazeTarget,
+                    holdFor,
+                );
+        }
+
+        function beginIdleGaze() {
+            if (
+                !root.classList.contains("ai-blob--idle") ||
+                root.classList.contains("ai-blob--dragging") ||
+                root.classList.contains("ai-blob--annoyed")
+            ) {
+                scheduleIdleGaze();
+                return;
+            }
+
+            idleGazeActiveRef.current = true;
+            setIdleGazeTarget();
+        }
+
+        function stopIdleGaze() {
+            idleGazeActiveRef.current = false;
+
+            if (
+                idleGazeMoveTimerRef.current !== null
+            ) {
+                window.clearTimeout(
+                    idleGazeMoveTimerRef.current,
+                );
+                idleGazeMoveTimerRef.current = null;
+            }
+        }
+
+        function scheduleIdleGaze() {
+            stopIdleGaze();
+
+            if (
+                idleGazeStartTimerRef.current !== null
+            ) {
+                window.clearTimeout(
+                    idleGazeStartTimerRef.current,
+                );
+            }
+
+            /*
+             * Only gets bored after the visitor has left him alone for a while.
+             * The random delay prevents the behaviour feeling clockwork.
+             */
+            const idleDelay =
+                6500 + Math.random() * 4500;
+
+            idleGazeStartTimerRef.current =
+                window.setTimeout(
+                    beginIdleGaze,
+                    idleDelay,
+                );
+        }
 
         function renderFrame() {
             /*
@@ -209,6 +311,10 @@ export default function AiMascot({
         }
 
         function handlePointerMove(event: PointerEvent) {
+            lastPointerMoveRef.current = Date.now();
+            stopIdleGaze();
+            scheduleIdleGaze();
+
             if (reducedMotion.matches) {
                 targetLookX = 0;
                 targetLookY = 0;
@@ -251,6 +357,7 @@ export default function AiMascot({
         }
 
         function resetPointer() {
+            stopIdleGaze();
             targetLookX = 0;
             targetLookY = 0;
             targetLeanX = 0;
@@ -264,10 +371,21 @@ export default function AiMascot({
         window.addEventListener("blur", resetPointer);
 
         rafRef.current = window.requestAnimationFrame(renderFrame);
+        scheduleIdleGaze();
 
         return () => {
             window.removeEventListener("pointermove", handlePointerMove);
             window.removeEventListener("blur", resetPointer);
+
+            stopIdleGaze();
+
+            if (
+                idleGazeStartTimerRef.current !== null
+            ) {
+                window.clearTimeout(
+                    idleGazeStartTimerRef.current,
+                );
+            }
 
             if (rafRef.current !== null) {
                 window.cancelAnimationFrame(rafRef.current);
@@ -284,6 +402,7 @@ export default function AiMascot({
             speaking: "wide",
             error: "squint",
             angry: "squint",
+            party: "wide",
         };
 
         setEyeMood(stateMood[state]);
@@ -818,6 +937,50 @@ export default function AiMascot({
                 aria-hidden="true"
             >
                 <defs>
+                    <filter
+                        id="ai-blob-party-wobble"
+                        x="-25%"
+                        y="-25%"
+                        width="150%"
+                        height="150%"
+                    >
+                        <feTurbulence
+                            type="fractalNoise"
+                            baseFrequency="0.018 0.026"
+                            numOctaves="2"
+                            seed="7"
+                            result="noise"
+                        >
+                            <animate
+                                attributeName="baseFrequency"
+                                dur="0.42s"
+                                values="0.018 0.026;0.034 0.018;0.022 0.038;0.018 0.026"
+                                repeatCount="indefinite"
+                            />
+                            <animate
+                                attributeName="seed"
+                                dur="1.2s"
+                                values="7;11;17;23;7"
+                                repeatCount="indefinite"
+                            />
+                        </feTurbulence>
+
+                        <feDisplacementMap
+                            in="SourceGraphic"
+                            in2="noise"
+                            scale="20"
+                            xChannelSelector="R"
+                            yChannelSelector="G"
+                        >
+                            <animate
+                                attributeName="scale"
+                                dur="0.34s"
+                                values="12;24;16;28;12"
+                                repeatCount="indefinite"
+                            />
+                        </feDisplacementMap>
+                    </filter>
+
                     <linearGradient
                         id="ai-blob-fill"
                         x1="72"
