@@ -1,3 +1,5 @@
+import "./Skills.css";
+
 interface SkillGroup {
     title: string;
     description: string;

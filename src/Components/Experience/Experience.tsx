@@ -1,3 +1,5 @@
+import "./Experience.css";
+
 const experienceItems = [
     {
         role: "Software Engineer",
