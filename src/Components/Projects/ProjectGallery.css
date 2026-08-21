@@ -1,0 +1,77 @@
+/* Standalone project gallery styles. */
+
+.project-gallery {
+  width: 100%;
+  margin: 1.2rem 0 0;
+}
+
+.project-gallery__viewport {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(var(--accent-rgb), 0.13);
+  border-radius: 1rem;
+  background: rgba(2, 6, 23, 0.7);
+}
+
+.project-gallery__image {
+  display: block;
+  flex: 0 0 100%;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.project-gallery__button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2.8rem;
+  height: 2.8rem;
+  font-size: 1.2rem;
+  z-index: 2;
+  pointer-events: auto;
+}
+
+.project-gallery__track {
+  display: flex;
+  transition: transform 0.7s ease-in-out;
+  will-change: transform;
+}
+
+.project-gallery__button--previous {
+  left: 0.9rem;
+}
+
+.project-gallery__button--next {
+  right: 0.9rem;
+}
+
+.project-gallery__dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.project-gallery__dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(148, 163, 184, 0.35);
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+.project-gallery__dot--active {
+  background: var(--accent);
+  opacity: 1;
+}
+
+.project-gallery__counter {
+  margin-top: 0.5rem;
+  text-align: center;
+  color: #9bb7c0;
+  font-size: 0.82rem;
+}

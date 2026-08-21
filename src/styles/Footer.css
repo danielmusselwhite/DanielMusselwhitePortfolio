@@ -1,0 +1,17 @@
+/* Footer styles. */
+
+.site-shell--light .footer {
+  margin-bottom: 0;
+  padding-bottom: 2rem;
+  color: #65818a;
+  border-color: rgba(36, 81, 88, 0.14);
+}
+
+.footer {
+  width: min(1100px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 1rem 0 2rem;
+  color: #8ea6b1;
+  text-align: center;
+  border-top: 1px solid rgba(148, 163, 184, 0.12);
+}

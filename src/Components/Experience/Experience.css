@@ -1,0 +1,218 @@
+/* Experience section cards and reveal animation. */
+
+.experience h3 {
+  color: #ecfdf5;
+  letter-spacing: -0.04em;
+}
+
+.experience p {
+  color: #b7c8d0;
+  line-height: 1.7;
+}
+
+.experience {
+  position: relative;
+}
+
+.experience .section__content {
+  padding: 2rem 1.2rem;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 1.6rem;
+  background: rgba(12, 18, 25, 0.8);
+  box-shadow: 0 20px 50px rgba(2, 6, 23, 0.3);
+}
+
+.site-shell--light .experience .section__content {
+  border-color: rgba(36, 81, 88, 0.16);
+  background: rgba(247, 252, 251, 0.82);
+  box-shadow: 0 20px 50px rgba(36, 81, 88, 0.12);
+}
+
+.site-shell--light .experience__header h3 {
+  color: #17343c;
+}
+
+.site-shell--light .experience__header > span {
+  color: #24726d;
+}
+
+.site-shell--light .experience__heading > p:last-child {
+  color: #496873;
+}
+
+.site-shell--light .experience__marker span {
+  color: #05bbaf;
+}
+
+.site-shell--light .experience {
+  border-color: rgba(36, 81, 88, 0.16);
+  background: rgba(244, 250, 249, 0.9);
+  box-shadow: 0 18px 40px rgba(36, 81, 88, 0.1);
+}
+
+.site-shell--light .experience:hover {
+  border-color: rgba(31, 146, 132, 0.42);
+  background: rgba(232, 247, 244, 0.96);
+}
+
+.site-shell--light .experience__summary,
+.site-shell--light .experience__highlights li {
+  color: #496873;
+}
+
+.site-shell--light .experience__meta {
+  color: #65818a !important;
+}
+
+.experience-list {
+  display: grid;
+  gap: 1.2rem;
+  margin-top: 2.2rem;
+}
+
+.experience {
+  position: relative;
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: 1.35rem 1.4rem 1.4rem 1.1rem;
+  border: 1px solid rgba(var(--accent-rgb), 0.12);
+  border-radius: 1.1rem;
+  background: rgba(13, 18, 24, 0.75);
+  transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+}
+
+.experience:hover {
+  border-color: rgba(var(--accent-rgb), 0.3);
+  background: rgba(18, 34, 39, 0.82);
+  transform: translateX(3px);
+}
+
+.experience__marker {
+  display: flex;
+  justify-content: center;
+  padding-top: 0.2rem;
+  border-right: 1px solid rgba(var(--accent-rgb), 0.2);
+}
+
+.experience__marker span {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+
+.experience__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 0.8rem;
+}
+
+.experience__header h3 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.experience__header p {
+  margin: 0.35rem 0 0;
+  color: #89c6be;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.experience__header > span {
+  flex: 0 0 auto;
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+}
+
+.experience__meta {
+  margin: 0.9rem 0 0;
+  color: #8ea6b1;
+  font-size: 0.78rem;
+}
+
+.experience__summary {
+  max-width: 50rem;
+  margin: 0.75rem 0 0;
+  color: #d7e7ee;
+  line-height: 1.6;
+}
+
+.experience__highlights {
+  display: grid;
+  gap: 0.45rem;
+  max-width: 54rem;
+  margin: 0.9rem 0 0;
+  padding-left: 1.15rem;
+  color: #bfd5df;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.experience__highlights li::marker {
+  color: var(--accent);
+}
+
+.experience__heading {
+  max-width: 48rem;
+}
+
+.experience__heading h2 {
+  max-width: 42rem;
+  margin-bottom: 1rem;
+}
+
+.experience__heading > p:last-child {
+  max-width: 42rem;
+  margin: 0;
+  color: #bfd5df;
+  line-height: 1.7;
+}
+
+@media (max-width: 720px) {
+  .experience__header {
+    flex-direction: column;
+  }
+}
+
+.experience__heading,
+.experience-list .experience {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.section--visible .experience__heading,
+.section--visible .experience-list .experience {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section--visible .experience__heading {
+  transition-delay: 0.05s;
+}
+
+.section--visible .experience-list .experience:nth-child(1) {
+  transition-delay: 0.22s;
+}
+
+.section--visible .experience-list .experience:nth-child(2) {
+  transition-delay: 0.38s;
+}
+
+.section--visible .experience-list .experience:nth-child(3) {
+  transition-delay: 0.54s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .experience__heading,
+  .experience-list .experience {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

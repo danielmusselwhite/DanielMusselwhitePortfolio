@@ -1,3 +1,4 @@
+import "./Hero.css";
 import { useEffect, useState } from "react";
 import AiAssistant from "./AiAssistant/AiAssistant";
 

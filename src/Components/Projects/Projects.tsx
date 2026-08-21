@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import "./Projects.css";
+import { useState } from "react";
 
 import { loadProjects } from "../../Utils/loadProjects";
 import ProjectCard from "./ProjectCard";
@@ -7,8 +8,6 @@ const projects = loadProjects();
 
 export default function Projects() {
     const [closedSlugs, setClosedSlugs] = useState<string[]>([]);
-    const [showTrafficHint, setShowTrafficHint] = useState(false);
-    const sectionRef = useRef<HTMLElement | null>(null);
 
     const visibleProjects = projects.filter(
         (project) => !closedSlugs.includes(project.slug),
@@ -17,47 +16,12 @@ export default function Projects() {
     const allClosed =
         projects.length > 0 && visibleProjects.length === 0;
 
-    useEffect(() => {
-        const sectionEl = sectionRef.current;
-
-        if (!sectionEl) {
-            return undefined;
-        }
-
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
-                    setShowTrafficHint(true);
-                    observer.disconnect();
-                }
-            },
-            { threshold: 0.35 },
-        );
-
-        observer.observe(sectionEl);
-
-        return () => observer.disconnect();
-    }, []);
-
-    useEffect(() => {
-        if (!showTrafficHint) {
-            return undefined;
-        }
-
-        const dismissTimeout = window.setTimeout(
-            () => setShowTrafficHint(false),
-            6000,
-        );
-
-        return () => window.clearTimeout(dismissTimeout);
-    }, [showTrafficHint]);
-
     const restoreProjects = () => {
         setClosedSlugs([]);
     };
 
     return (
-        <section id="projects" className="section" ref={sectionRef}>
+        <section id="projects" className="section">
             <div className="section__content">
                 <div className="projects__heading">
                     <div>
@@ -74,15 +38,52 @@ export default function Projects() {
                         </p>
                     </div>
 
-                    <div
-                        className="projects__summary"
-                        aria-label="Project collection summary"
-                    >
-                        <span className="projects__summary-dot" />
-                        <span>
-                            {projects.length} project
-                            {projects.length === 1 ? "" : "s"} available
-                        </span>
+                    <div className="projects__meta">
+                        <div
+                            className="projects__summary"
+                            aria-label="Project collection summary"
+                        >
+                            <span className="projects__summary-dot" />
+                            <span>
+                                {projects.length} project
+                                {projects.length === 1 ? "" : "s"} available
+                            </span>
+                        </div>
+
+                        <div
+                            className="projects__controls-legend"
+                            aria-label="Project window controls"
+                        >
+                            <span className="projects__control-guide">
+                                <span
+                                    className="projects__control-dot projects__control-dot--red"
+                                    aria-hidden="true"
+                                >
+                                    <span className="projects__control-icon projects__control-icon--close" />
+                                </span>
+                                Close
+                            </span>
+
+                            <span className="projects__control-guide">
+                                <span
+                                    className="projects__control-dot projects__control-dot--yellow"
+                                    aria-hidden="true"
+                                >
+                                    <span className="projects__control-icon projects__control-icon--minimize" />
+                                </span>
+                                Minimize
+                            </span>
+
+                            <span className="projects__control-guide">
+                                <span
+                                    className="projects__control-dot projects__control-dot--green"
+                                    aria-hidden="true"
+                                >
+                                    <span className="projects__control-icon projects__control-icon--expand" />
+                                </span>
+                                Expand
+                            </span>
+                        </div>
                     </div>
                 </div>
 
@@ -116,12 +117,6 @@ export default function Projects() {
                                         ...current,
                                         project.slug,
                                     ])
-                                }
-                                showTrafficHint={
-                                    index === 0 && showTrafficHint
-                                }
-                                onDismissTrafficHint={() =>
-                                    setShowTrafficHint(false)
                                 }
                             />
                         ))}

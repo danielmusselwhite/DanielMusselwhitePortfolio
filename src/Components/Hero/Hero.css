@@ -1,0 +1,162 @@
+/* Hero section styles and hero-specific animation. */
+
+.hero__eyebrow {
+  margin: 0 0 0.9rem;
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.hero h1,
+.hero h2 {
+  color: #ecfdf5;
+  letter-spacing: -0.04em;
+}
+
+.hero {
+  padding: 4.5rem 0 3.5rem;
+}
+
+.hero__content {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+  align-items: center;
+  gap: clamp(2rem, 5vw, 4.5rem);
+  width: min(1100px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 3rem 0 2rem;
+}
+
+.hero__copy {
+  min-width: 0;
+}
+
+.hero__assistant {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
+.hero__assistant-label {
+  margin-top: 0.8rem;
+  color: #8ea6b1;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(3rem, 7vw, 6rem);
+  line-height: 0.96;
+  letter-spacing: -0.07em;
+}
+
+.hero h2 {
+  margin: 1rem 0 0;
+  min-height: 1.2em;
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  font-weight: 500;
+  color: #8ee7da;
+}
+
+.hero__typing-cursor {
+  display: inline-block;
+  margin-left: 0.1rem;
+  color: var(--accent);
+  font-weight: 700;
+  animation: hero-cursor-blink 0.9s steps(1, end) infinite;
+}
+
+@keyframes hero-cursor-blink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+
+  46%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__typing-cursor {
+    animation: none;
+  }
+}
+
+.hero__description {
+  color: #b7c8d0;
+  line-height: 1.7;
+}
+
+.hero__description {
+  max-width: 40rem;
+  margin-top: 1.5rem;
+  font-size: 1.06rem;
+}
+
+.hero__actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.site-shell--light .hero h1,
+.site-shell--light .hero h2,
+.site-shell--light .hero__typing-cursor {
+  color: #17343c;
+}
+
+.site-shell--light .hero__eyebrow {
+  color: #24726d;
+}
+
+.site-shell--light .hero__description {
+  color: #496873;
+}
+
+@media (max-width: 720px) {
+  .hero {
+    padding-top: 3rem;
+  }
+
+  .hero__content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding-top: 2rem;
+  }
+
+  .hero__assistant {
+    order: -1;
+  }
+
+  .hero__assistant-label {
+    margin-top: 0.35rem;
+  }
+}
+
+.hero {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+}
+
+.site-shell--light .hero__assistant-label {
+  color: #65818a;
+}
+
+@media (max-width: 960px) and (min-width: 721px) {
+  .hero__content {
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 0.55fr);
+    gap: 2rem;
+  }
+}

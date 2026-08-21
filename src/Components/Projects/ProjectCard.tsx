@@ -1,6 +1,5 @@
+import "./ProjectCard.css";
 import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-
 import type {
     Project,
     ProjectProminence,
@@ -10,8 +9,6 @@ interface ProjectCardProps {
     project: Project;
     index: number;
     onClose: () => void;
-    showTrafficHint?: boolean;
-    onDismissTrafficHint?: () => void;
 }
 
 type ProjectViewMode = "minimized" | "normal" | "expanded";
@@ -36,8 +33,6 @@ export default function ProjectCard({
     project,
     index,
     onClose,
-    showTrafficHint = false,
-    onDismissTrafficHint,
 }: ProjectCardProps) {
     const prominence = getProjectProminence(project);
 
@@ -45,14 +40,8 @@ export default function ProjectCard({
     const [viewMode, setViewMode] = useState<ProjectViewMode>(() =>
         getInitialViewMode(prominence),
     );
-    const [hintPosition, setHintPosition] = useState<{
-        top: number;
-        left: number;
-    } | null>(null);
-
     const pathRef = useRef<HTMLSpanElement>(null);
     const pathTextRef = useRef<HTMLSpanElement>(null);
-    const trafficRef = useRef<HTMLDivElement>(null);
 
     const slides =
         project.images.length > 0
@@ -184,65 +173,24 @@ export default function ProjectCard({
         };
     }, [index, slides.length]);
 
-    useEffect(() => {
-        if (!showTrafficHint) {
-            setHintPosition(null);
-            return undefined;
-        }
-
-        const updatePosition = () => {
-            const rect =
-                trafficRef.current?.getBoundingClientRect();
-
-            if (rect) {
-                setHintPosition({
-                    top: rect.bottom + 12,
-                    left: rect.left,
-                });
-            }
-        };
-
-        updatePosition();
-
-        window.addEventListener(
-            "scroll",
-            updatePosition,
-            true,
-        );
-        window.addEventListener(
-            "resize",
-            updatePosition,
-        );
-
-        return () => {
-            window.removeEventListener(
-                "scroll",
-                updatePosition,
-                true,
-            );
-            window.removeEventListener(
-                "resize",
-                updatePosition,
-            );
-        };
-    }, [showTrafficHint]);
 
     return (
         <article className={cardClassName}>
             <div className="project-window__chrome">
-                <div
-                    className="project-window__traffic"
-                    ref={trafficRef}
-                >
+                <div className="project-window__traffic">
                     <button
                         type="button"
                         className="traffic-dot traffic-dot--red"
                         onClick={() => {
                             onClose();
-                            onDismissTrafficHint?.();
                         }}
                         aria-label="Close project window"
-                    />
+                    >
+                        <span
+                            className="traffic-dot__icon traffic-dot__icon--close"
+                            aria-hidden="true"
+                        />
+                    </button>
 
                     <button
                         type="button"
@@ -253,7 +201,6 @@ export default function ProjectCard({
                                     ? "normal"
                                     : "minimized",
                             );
-                            onDismissTrafficHint?.();
                         }}
                         aria-label={
                             viewMode === "minimized"
@@ -263,7 +210,12 @@ export default function ProjectCard({
                         aria-pressed={
                             viewMode === "minimized"
                         }
-                    />
+                    >
+                        <span
+                            className="traffic-dot__icon traffic-dot__icon--minimize"
+                            aria-hidden="true"
+                        />
+                    </button>
 
                     <button
                         type="button"
@@ -274,7 +226,6 @@ export default function ProjectCard({
                                     ? "normal"
                                     : "expanded",
                             );
-                            onDismissTrafficHint?.();
                         }}
                         aria-label={
                             viewMode === "expanded"
@@ -284,37 +235,14 @@ export default function ProjectCard({
                         aria-pressed={
                             viewMode === "expanded"
                         }
-                    />
+                    >
+                        <span
+                            className="traffic-dot__icon traffic-dot__icon--expand"
+                            aria-hidden="true"
+                        />
+                    </button>
                 </div>
 
-                {showTrafficHint &&
-                    hintPosition &&
-                    createPortal(
-                        <div
-                            className="traffic-hint"
-                            role="status"
-                            style={{
-                                top: hintPosition.top,
-                                left: hintPosition.left,
-                            }}
-                        >
-                            <span
-                                className="traffic-hint__cursor"
-                                aria-hidden="true"
-                            >
-                                <span className="traffic-hint__cursor-glyph">
-                                    🖱️
-                                </span>
-                                <span className="traffic-hint__cursor-ripple" />
-                            </span>
-
-                            <p className="traffic-hint__text">
-                                Click these to close, minimize, or
-                                maximize this project
-                            </p>
-                        </div>,
-                        document.body,
-                    )}
 
                 <span
                     className="project-window__path"
@@ -352,8 +280,8 @@ export default function ProjectCard({
 
             <div
                 className={`project-window__content ${viewMode === "minimized"
-                        ? "project-window__content--minimized"
-                        : ""
+                    ? "project-window__content--minimized"
+                    : ""
                     }`}
             >
                 <div className="project-window__content-inner">

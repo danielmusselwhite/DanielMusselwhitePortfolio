@@ -1,3 +1,4 @@
+import "./Education.css";
 const educationItems = [
     {
         institution: "University College London",

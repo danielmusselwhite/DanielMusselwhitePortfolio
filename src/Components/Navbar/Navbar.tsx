@@ -1,3 +1,4 @@
+import "./Navbar.css";
 import { useEffect, useState } from "react";
 
 interface NavbarProps {
@@ -109,12 +110,12 @@ export default function Navbar({
                     className="navbar__theme-toggle"
                     onClick={onToggleTheme}
                     aria-label={`Switch to ${theme === "dark"
-                            ? "light"
-                            : "dark"
+                        ? "light"
+                        : "dark"
                         } mode`}
                     title={`Switch to ${theme === "dark"
-                            ? "light"
-                            : "dark"
+                        ? "light"
+                        : "dark"
                         } mode`}
                 >
                     <span aria-hidden="true">

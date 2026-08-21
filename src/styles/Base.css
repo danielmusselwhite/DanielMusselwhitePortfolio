@@ -1,0 +1,94 @@
+/* Shared layout primitives, buttons, and reusable utility styles. */
+
+.section {
+  padding: 3.5rem 0;
+}
+
+.section__content {
+  position: relative;
+  z-index: 1;
+  width: min(1100px, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.section__eyebrow {
+  margin: 0 0 0.9rem;
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.section h2 {
+  color: #ecfdf5;
+  letter-spacing: -0.04em;
+}
+
+.section h2 {
+  margin: 0 0 1.5rem;
+  font-size: clamp(2rem, 3vw, 2.8rem);
+  line-height: 1.1;
+}
+
+.icon-btn {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.72);
+  color: #dffdf8;
+  cursor: pointer;
+}
+
+.button {
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+}
+
+.section__content p {
+  color: #b7c8d0;
+  line-height: 1.7;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.9rem 1.4rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.button--primary {
+  background: linear-gradient(135deg, var(--accent) 0%, #5bc3d9 100%);
+  color: #062e2f;
+  box-shadow: 0 14px 30px rgba(92, 204, 192, 0.25);
+}
+
+.button--secondary {
+  border: 1px solid rgba(var(--accent-rgb), 0.25);
+  background: rgba(15, 23, 42, 0.4);
+  color: #d9f8f3;
+}
+
+.skill:hover {
+  border-color: rgba(var(--accent-rgb), 0.5);
+  background: rgba(var(--accent-rgb), 0.12);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 720px) {
+  .section {
+    padding: 2.5rem 0;
+  }
+}
+
+.section {
+  min-height: 100svh;
+  padding: 3.5rem 0;
+  display: flex;
+  align-items: center;
+}

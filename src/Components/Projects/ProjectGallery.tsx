@@ -1,3 +1,4 @@
+import "./ProjectGallery.css";
 import { useEffect, useState } from "react";
 import type { ProjectImage } from "../../Types/Project";
 
