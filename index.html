@@ -4,9 +4,161 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>danielmusselwhiteportfolio</title>
+    <meta
+      name="description"
+      content="Daniel Musselwhite — Software Engineer portfolio"
+    />
+    <meta name="theme-color" content="#07100f" />
+    <title>Daniel Musselwhite | Software Engineer</title>
+
+    <script>
+      try {
+        if (localStorage.getItem("portfolio-theme") === "light") {
+          document.documentElement.dataset.bootTheme = "light";
+        }
+      } catch {
+        // The app will fall back to dark mode if storage is unavailable.
+      }
+    </script>
+
+    <style>
+      html,
+      body,
+      #root {
+        min-height: 100%;
+      }
+
+      body {
+        margin: 0;
+      }
+
+      #boot-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 2147483647;
+        display: grid;
+        place-items: center;
+        background:
+          radial-gradient(circle at 50% 42%, rgba(86, 224, 208, 0.11), transparent 34%),
+          #07100f;
+        opacity: 1;
+        visibility: visible;
+        transition:
+          opacity 420ms cubic-bezier(0.22, 1, 0.36, 1),
+          visibility 420ms step-end;
+      }
+
+      html[data-boot-theme="light"] #boot-loader {
+        background:
+          radial-gradient(circle at 50% 42%, rgba(36, 114, 109, 0.12), transparent 34%),
+          #f5fbf9;
+      }
+
+      .boot-loader__mark {
+        position: relative;
+        display: grid;
+        place-items: center;
+        width: 76px;
+        height: 76px;
+        color: #c8fff9;
+        font-family:
+          ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          Monaco,
+          Consolas,
+          "Liberation Mono",
+          monospace;
+        font-size: 1.06rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-indent: 0.12em;
+        isolation: isolate;
+        animation: boot-mark-pulse 1.5s ease-in-out infinite;
+      }
+
+      .boot-loader__mark::before,
+      .boot-loader__mark::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        pointer-events: none;
+      }
+
+      .boot-loader__mark::before {
+        border: 1px solid rgba(86, 224, 208, 0.16);
+        border-top-color: rgba(200, 255, 249, 0.96);
+        border-right-color: rgba(86, 224, 208, 0.52);
+        box-shadow:
+          0 0 18px rgba(86, 224, 208, 0.22),
+          inset 0 0 14px rgba(86, 224, 208, 0.06);
+        animation: boot-ring-spin 1s linear infinite;
+      }
+
+      .boot-loader__mark::after {
+        inset: 13px;
+        background: rgba(86, 224, 208, 0.08);
+        filter: blur(8px);
+        z-index: -1;
+      }
+
+      html[data-boot-theme="light"] .boot-loader__mark {
+        color: #17343c;
+      }
+
+      html[data-boot-theme="light"] .boot-loader__mark::before {
+        border-color: rgba(36, 114, 109, 0.14);
+        border-top-color: rgba(36, 114, 109, 0.9);
+        border-right-color: rgba(36, 114, 109, 0.48);
+        box-shadow:
+          0 0 18px rgba(36, 114, 109, 0.16),
+          inset 0 0 14px rgba(36, 114, 109, 0.05);
+      }
+
+      html.app-ready #boot-loader {
+        pointer-events: none;
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      @keyframes boot-ring-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes boot-mark-pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.88;
+        }
+
+        50% {
+          transform: scale(0.965);
+          opacity: 1;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .boot-loader__mark,
+        .boot-loader__mark::before {
+          animation: none;
+        }
+
+        #boot-loader {
+          transition-duration: 120ms;
+        }
+      }
+    </style>
   </head>
+
   <body>
+    <div id="boot-loader" role="status" aria-label="Loading portfolio">
+      <div class="boot-loader__mark" aria-hidden="true">DM</div>
+    </div>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

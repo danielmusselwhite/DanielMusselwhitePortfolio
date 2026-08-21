@@ -69,16 +69,11 @@ export default function AiMascot({
             return;
         }
 
-        /*
-         * Capture the guarded element in a non-null variable.
-         * TypeScript can then safely use it inside nested callbacks
-         * such as requestAnimationFrame handlers and pointer listeners.
-         */
         const root = rootElement as HTMLDivElement;
-
         const reducedMotion = window.matchMedia(
             "(prefers-reduced-motion: reduce)",
         );
+        const finePointer = window.matchMedia("(pointer: fine)");
 
         let targetLookX = 0;
         let targetLookY = 0;
@@ -93,7 +88,39 @@ export default function AiMascot({
         let targetDistance = 0;
         let currentDistance = 0;
 
+        let rootRect = root.getBoundingClientRect();
+        let isInViewport = true;
+        let isPageVisible = !document.hidden;
+        let pointerListenerAttached = false;
+
         const maxLean = 10;
+        const settleThreshold = 0.001;
+
+        function animationNeeded() {
+            return (
+                Math.abs(targetLookX - currentLookX) > settleThreshold ||
+                Math.abs(targetLookY - currentLookY) > settleThreshold ||
+                Math.abs(targetDistance - currentDistance) > settleThreshold ||
+                Math.abs(targetLeanX - currentLeanX) > settleThreshold ||
+                Math.abs(targetLeanY - currentLeanY) > settleThreshold
+            );
+        }
+
+        function canAnimate() {
+            return isPageVisible && isInViewport && !reducedMotion.matches;
+        }
+
+        function requestRender() {
+            if (!canAnimate() || rafRef.current !== null) {
+                return;
+            }
+
+            rafRef.current = window.requestAnimationFrame(renderFrame);
+        }
+
+        function updateRootRect() {
+            rootRect = root.getBoundingClientRect();
+        }
 
         function setIdleGazeTarget() {
             if (
@@ -106,39 +133,24 @@ export default function AiMascot({
                 return;
             }
 
-            /*
-             * Avoid always looking at the extremes. Most glances are casual,
-             * with the occasional more dramatic look around.
-             */
-            const angle =
-                Math.random() * Math.PI * 2;
-            const strength =
-                0.28 + Math.random() * 0.58;
+            const angle = Math.random() * Math.PI * 2;
+            const strength = 0.28 + Math.random() * 0.58;
 
-            targetLookX =
-                Math.cos(angle) * strength;
-            targetLookY =
-                Math.sin(angle) * strength * 0.72;
-            targetDistance =
-                0.28 + strength * 0.48;
+            targetLookX = Math.cos(angle) * strength;
+            targetLookY = Math.sin(angle) * strength * 0.72;
+            targetDistance = 0.28 + strength * 0.48;
 
-            /*
-             * Idle wandering is primarily an eye behaviour. A tiny amount
-             * of lean keeps him alive without turning it into cursor curiosity.
-             */
-            targetLeanX =
-                targetLookX * maxLean * 0.18;
-            targetLeanY =
-                targetLookY * maxLean * 0.10;
+            targetLeanX = targetLookX * maxLean * 0.18;
+            targetLeanY = targetLookY * maxLean * 0.10;
 
-            const holdFor =
-                900 + Math.random() * 2600;
+            requestRender();
 
-            idleGazeMoveTimerRef.current =
-                window.setTimeout(
-                    setIdleGazeTarget,
-                    holdFor,
-                );
+            const holdFor = 900 + Math.random() * 2600;
+
+            idleGazeMoveTimerRef.current = window.setTimeout(
+                setIdleGazeTarget,
+                holdFor,
+            );
         }
 
         function beginIdleGaze() {
@@ -158,12 +170,8 @@ export default function AiMascot({
         function stopIdleGaze() {
             idleGazeActiveRef.current = false;
 
-            if (
-                idleGazeMoveTimerRef.current !== null
-            ) {
-                window.clearTimeout(
-                    idleGazeMoveTimerRef.current,
-                );
+            if (idleGazeMoveTimerRef.current !== null) {
+                window.clearTimeout(idleGazeMoveTimerRef.current);
                 idleGazeMoveTimerRef.current = null;
             }
         }
@@ -171,33 +179,25 @@ export default function AiMascot({
         function scheduleIdleGaze() {
             stopIdleGaze();
 
-            if (
-                idleGazeStartTimerRef.current !== null
-            ) {
-                window.clearTimeout(
-                    idleGazeStartTimerRef.current,
-                );
+            if (idleGazeStartTimerRef.current !== null) {
+                window.clearTimeout(idleGazeStartTimerRef.current);
             }
 
-            /*
-             * Only gets bored after the visitor has left him alone for a while.
-             * The random delay prevents the behaviour feeling clockwork.
-             */
-            const idleDelay =
-                6500 + Math.random() * 4500;
+            const idleDelay = 6500 + Math.random() * 4500;
 
-            idleGazeStartTimerRef.current =
-                window.setTimeout(
-                    beginIdleGaze,
-                    idleDelay,
-                );
+            idleGazeStartTimerRef.current = window.setTimeout(
+                beginIdleGaze,
+                idleDelay,
+            );
         }
 
         function renderFrame() {
-            /*
-             * Gaze reacts quickly.
-             * Body lean is deliberately a little softer so it feels organic.
-             */
+            rafRef.current = null;
+
+            if (!canAnimate()) {
+                return;
+            }
+
             currentLookX += (targetLookX - currentLookX) * 0.38;
             currentLookY += (targetLookY - currentLookY) * 0.38;
             currentDistance += (targetDistance - currentDistance) * 0.24;
@@ -208,35 +208,14 @@ export default function AiMascot({
             const horizontal = currentLookX;
             const vertical = currentLookY;
             const distance = currentDistance;
-
-            /*
-             * At short distances the eyes mostly stay centred.
-             * At long distances the entire eye pair travels toward the cursor,
-             * which helps sell the illusion that the blob is turning its face.
-             */
             const eyeTurnStrength = distance * distance;
 
-            const eyesShiftX =
-                horizontal * (5 + eyeTurnStrength * 10);
+            const eyesShiftX = horizontal * (5 + eyeTurnStrength * 10);
+            const eyesShiftY = vertical * (3 + eyeTurnStrength * 6);
 
-            const eyesShiftY =
-                vertical * (3 + eyeTurnStrength * 6);
+            const pupilTravelX = horizontal * (8 + eyeTurnStrength * 10);
+            const pupilTravelY = vertical * (5 + eyeTurnStrength * 7);
 
-            /*
-             * Pupils move further than the eye whites and are intentionally
-             * allowed to leave the eye shape slightly at extreme gaze.
-             * There is no clipping mask on purpose.
-             */
-            const pupilTravelX =
-                horizontal * (8 + eyeTurnStrength * 10);
-
-            const pupilTravelY =
-                vertical * (5 + eyeTurnStrength * 7);
-
-            /*
-             * Eye widths subtly change with direction so the face feels like
-             * it is rotating rather than simply translating.
-             */
             const leftEyeScaleX =
                 1 +
                 (horizontal < 0
@@ -249,10 +228,6 @@ export default function AiMascot({
                     ? horizontal * 0.10
                     : -Math.abs(horizontal) * 0.12);
 
-            /*
-             * Looking up opens the eyes a touch; looking down narrows them.
-             * Keep this subtle because the base eye shape is already skinny.
-             */
             const cursorEyeScaleY =
                 1 +
                 Math.max(-vertical, 0) * 0.08 -
@@ -261,29 +236,11 @@ export default function AiMascot({
             root.style.setProperty("--look-x", `${horizontal}`);
             root.style.setProperty("--look-y", `${vertical}`);
             root.style.setProperty("--look-distance", `${distance}`);
-
-            root.style.setProperty(
-                "--eyes-shift-x",
-                `${eyesShiftX}px`,
-            );
-            root.style.setProperty(
-                "--eyes-shift-y",
-                `${eyesShiftY}px`,
-            );
-
-            root.style.setProperty(
-                "--left-eye-scale-x",
-                `${leftEyeScaleX}`,
-            );
-            root.style.setProperty(
-                "--right-eye-scale-x",
-                `${rightEyeScaleX}`,
-            );
-            root.style.setProperty(
-                "--cursor-eye-scale-y",
-                `${cursorEyeScaleY}`,
-            );
-
+            root.style.setProperty("--eyes-shift-x", `${eyesShiftX}px`);
+            root.style.setProperty("--eyes-shift-y", `${eyesShiftY}px`);
+            root.style.setProperty("--left-eye-scale-x", `${leftEyeScaleX}`);
+            root.style.setProperty("--right-eye-scale-x", `${rightEyeScaleX}`);
+            root.style.setProperty("--cursor-eye-scale-y", `${cursorEyeScaleY}`);
             root.style.setProperty(
                 "--left-eye-rotate",
                 `${horizontal * -3.2 + vertical * -1.6}deg`,
@@ -292,30 +249,18 @@ export default function AiMascot({
                 "--right-eye-rotate",
                 `${horizontal * -3.2 + vertical * 1.6}deg`,
             );
-
-            root.style.setProperty(
-                "--pupil-x",
-                `${pupilTravelX}px`,
-            );
-            root.style.setProperty(
-                "--pupil-y",
-                `${pupilTravelY}px`,
-            );
-
-            root.style.setProperty(
-                "--lean-x",
-                `${currentLeanX}px`,
-            );
-            root.style.setProperty(
-                "--lean-y",
-                `${currentLeanY}px`,
-            );
+            root.style.setProperty("--pupil-x", `${pupilTravelX}px`);
+            root.style.setProperty("--pupil-y", `${pupilTravelY}px`);
+            root.style.setProperty("--lean-x", `${currentLeanX}px`);
+            root.style.setProperty("--lean-y", `${currentLeanY}px`);
             root.style.setProperty(
                 "--lean-rotate",
                 `${(currentLeanX / maxLean) * 3.2}deg`,
             );
 
-            rafRef.current = window.requestAnimationFrame(renderFrame);
+            if (animationNeeded()) {
+                requestRender();
+            }
         }
 
         function handlePointerMove(event: PointerEvent) {
@@ -332,36 +277,22 @@ export default function AiMascot({
                 return;
             }
 
-            const rect = root.getBoundingClientRect();
-            const centreX = rect.left + rect.width / 2;
-            const centreY = rect.top + rect.height / 2;
+            const centreX = rootRect.left + rootRect.width / 2;
+            const centreY = rootRect.top + rootRect.height / 2;
 
             const dx = event.clientX - centreX;
             const dy = event.clientY - centreY;
 
-            /*
-             * Full gaze is reached fairly quickly so eye movement feels
-             * immediate even if the cursor is only a few hundred px away.
-             */
             targetLookX = Math.max(-1, Math.min(1, dx / 300));
             targetLookY = Math.max(-1, Math.min(1, dy / 230));
-
-            /*
-             * Distance is independent from direction and is used to decide
-             * how dramatically the eyes + body should turn.
-             */
-            targetDistance = Math.min(
-                1,
-                Math.hypot(dx / 560, dy / 430),
-            );
+            targetDistance = Math.min(1, Math.hypot(dx / 560, dy / 430));
 
             const farLeanBoost = 0.55 + targetDistance * 0.45;
 
-            targetLeanX =
-                targetLookX * maxLean * farLeanBoost;
+            targetLeanX = targetLookX * maxLean * farLeanBoost;
+            targetLeanY = targetLookY * maxLean * 0.58 * farLeanBoost;
 
-            targetLeanY =
-                targetLookY * maxLean * 0.58 * farLeanBoost;
+            requestRender();
         }
 
         function resetPointer() {
@@ -371,32 +302,112 @@ export default function AiMascot({
             targetLeanX = 0;
             targetLeanY = 0;
             targetDistance = 0;
+            requestRender();
         }
 
-        window.addEventListener("pointermove", handlePointerMove, {
-            passive: true,
-        });
-        window.addEventListener("blur", resetPointer);
+        function attachPointerListener() {
+            if (!finePointer.matches || pointerListenerAttached) {
+                return;
+            }
 
-        rafRef.current = window.requestAnimationFrame(renderFrame);
+            window.addEventListener("pointermove", handlePointerMove, {
+                passive: true,
+            });
+            pointerListenerAttached = true;
+        }
+
+        function detachPointerListener() {
+            if (!pointerListenerAttached) {
+                return;
+            }
+
+            window.removeEventListener("pointermove", handlePointerMove);
+            pointerListenerAttached = false;
+        }
+
+        function handlePointerCapabilityChange() {
+            if (finePointer.matches) {
+                attachPointerListener();
+            } else {
+                detachPointerListener();
+                resetPointer();
+            }
+        }
+
+        function handleVisibilityChange() {
+            isPageVisible = !document.hidden;
+
+            if (!isPageVisible) {
+                if (rafRef.current !== null) {
+                    window.cancelAnimationFrame(rafRef.current);
+                    rafRef.current = null;
+                }
+                return;
+            }
+
+            updateRootRect();
+            requestRender();
+        }
+
+        const resizeObserver = new ResizeObserver(updateRootRect);
+        resizeObserver.observe(root);
+
+        const intersectionObserver = new IntersectionObserver(
+            ([entry]) => {
+                isInViewport = entry?.isIntersecting ?? true;
+
+                if (!isInViewport) {
+                    if (rafRef.current !== null) {
+                        window.cancelAnimationFrame(rafRef.current);
+                        rafRef.current = null;
+                    }
+                    return;
+                }
+
+                updateRootRect();
+                requestRender();
+            },
+            { rootMargin: "120px" },
+        );
+        intersectionObserver.observe(root);
+
+        attachPointerListener();
+        window.addEventListener("blur", resetPointer);
+        window.addEventListener("resize", updateRootRect, { passive: true });
+        window.addEventListener("scroll", updateRootRect, {
+            passive: true,
+            capture: true,
+        });
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+        finePointer.addEventListener("change", handlePointerCapabilityChange);
+
         scheduleIdleGaze();
 
         return () => {
-            window.removeEventListener("pointermove", handlePointerMove);
+            detachPointerListener();
             window.removeEventListener("blur", resetPointer);
+            window.removeEventListener("resize", updateRootRect);
+            window.removeEventListener("scroll", updateRootRect, true);
+            document.removeEventListener(
+                "visibilitychange",
+                handleVisibilityChange,
+            );
+            finePointer.removeEventListener(
+                "change",
+                handlePointerCapabilityChange,
+            );
 
+            resizeObserver.disconnect();
+            intersectionObserver.disconnect();
             stopIdleGaze();
 
-            if (
-                idleGazeStartTimerRef.current !== null
-            ) {
-                window.clearTimeout(
-                    idleGazeStartTimerRef.current,
-                );
+            if (idleGazeStartTimerRef.current !== null) {
+                window.clearTimeout(idleGazeStartTimerRef.current);
             }
 
             if (rafRef.current !== null) {
                 window.cancelAnimationFrame(rafRef.current);
+                rafRef.current = null;
             }
         };
     }, []);

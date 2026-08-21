@@ -20,24 +20,35 @@ type Particle = {
   alpha: number;
 };
 
+type Theme = "dark" | "light";
+
+function getInitialTheme(): Theme {
+  if (typeof window === "undefined") {
+    return "dark";
+  }
+
+  return window.localStorage.getItem("portfolio-theme") === "light"
+    ? "light"
+    : "dark";
+}
+
+function getViewportCentre() {
+  if (typeof window === "undefined") {
+    return { x: 0, y: 0 };
+  }
+
+  return {
+    x: window.innerWidth / 2,
+    y: window.innerHeight / 2,
+  };
+}
+
 function App() {
-  const [theme, setTheme] = useState<"dark" | "light">(() => {
-    const savedTheme = window.localStorage.getItem("portfolio-theme");
-    return savedTheme === "light" ? "light" : "dark";
-  });
+  const [theme, setTheme] = useState<Theme>(getInitialTheme);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  const pointerRef = useRef({
-    x: window.innerWidth / 2,
-    y: window.innerHeight / 2,
-  });
-
-  const glowRef = useRef({
-    x: window.innerWidth / 2,
-    y: window.innerHeight / 2,
-  });
-
+  const pointerRef = useRef(getViewportCentre());
+  const glowRef = useRef(getViewportCentre());
   const themeRef = useRef(theme);
 
   useEffect(() => {
@@ -47,22 +58,96 @@ function App() {
   }, [theme]);
 
   useEffect(() => {
+    const html = document.documentElement;
+    const loader = document.getElementById("boot-loader");
+
+    let secondFrameId = 0;
+    let removalTimerId = 0;
+
+    const removeLoader = () => {
+      loader?.remove();
+    };
+
+    const firstFrameId = window.requestAnimationFrame(() => {
+      secondFrameId = window.requestAnimationFrame(() => {
+        html.classList.add("app-ready");
+
+        if (loader) {
+          loader.addEventListener("transitionend", removeLoader, {
+            once: true,
+          });
+
+          // Fallback for browsers that skip transitionend.
+          removalTimerId = window.setTimeout(removeLoader, 900);
+        }
+      });
+    });
+
+    return () => {
+      window.cancelAnimationFrame(firstFrameId);
+      window.cancelAnimationFrame(secondFrameId);
+      window.clearTimeout(removalTimerId);
+      loader?.removeEventListener("transitionend", removeLoader);
+    };
+  }, []);
+
+  useEffect(() => {
+    const finePointer = window.matchMedia("(pointer: fine)");
+
     const handlePointerMove = (event: PointerEvent) => {
       pointerRef.current.x = event.clientX;
       pointerRef.current.y = event.clientY;
     };
 
-    const handlePointerLeave = () => {
+    const resetPointer = () => {
       pointerRef.current.x = window.innerWidth / 2;
       pointerRef.current.y = window.innerHeight / 2;
     };
 
-    window.addEventListener("pointermove", handlePointerMove);
-    window.addEventListener("pointerleave", handlePointerLeave);
+    let pointerListenerAttached = false;
+
+    const attachPointerListener = () => {
+      if (!finePointer.matches || pointerListenerAttached) {
+        return;
+      }
+
+      window.addEventListener("pointermove", handlePointerMove, {
+        passive: true,
+      });
+      pointerListenerAttached = true;
+    };
+
+    const detachPointerListener = () => {
+      if (!pointerListenerAttached) {
+        return;
+      }
+
+      window.removeEventListener("pointermove", handlePointerMove);
+      pointerListenerAttached = false;
+    };
+
+    const handlePointerCapabilityChange = () => {
+      if (finePointer.matches) {
+        attachPointerListener();
+      } else {
+        detachPointerListener();
+        resetPointer();
+      }
+    };
+
+    attachPointerListener();
+    window.addEventListener("pointerleave", resetPointer);
+    window.addEventListener("blur", resetPointer);
+    finePointer.addEventListener("change", handlePointerCapabilityChange);
 
     return () => {
-      window.removeEventListener("pointermove", handlePointerMove);
-      window.removeEventListener("pointerleave", handlePointerLeave);
+      detachPointerListener();
+      window.removeEventListener("pointerleave", resetPointer);
+      window.removeEventListener("blur", resetPointer);
+      finePointer.removeEventListener(
+        "change",
+        handlePointerCapabilityChange,
+      );
     };
   }, []);
 
@@ -73,28 +158,44 @@ function App() {
       return undefined;
     }
 
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { alpha: true });
 
     if (!ctx) {
       return undefined;
     }
 
-    let animationFrameId = 0;
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    );
+    const finePointer = window.matchMedia("(pointer: fine)");
+    const mobileViewport = window.matchMedia("(max-width: 768px)");
+
+    let animationFrameId: number | null = null;
+    let resizeFrameId: number | null = null;
     let particles: Particle[] = [];
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    let running = !document.hidden;
+    let lastFrameTime = 0;
 
-    // Calculate particle count ONCE using the viewport size
-    // from when the page initially loads.
-    const initialArea = window.innerWidth * window.innerHeight;
-
+    const initialArea = width * height;
     const particleCount = Math.max(
       20,
       Math.min(900, Math.round(initialArea / 20000)),
     );
 
+    const getFrameInterval = () => {
+      if (reducedMotion.matches) {
+        return 1000 / 15;
+      }
+
+      return mobileViewport.matches ? 1000 / 30 : 1000 / 60;
+    };
+
     const setupParticles = () => {
       particles = Array.from({ length: particleCount }, () => ({
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
+        x: Math.random() * width,
+        y: Math.random() * height,
         vx: (Math.random() - 0.5) * 0.75,
         vy: (Math.random() - 0.5) * 0.75,
         radius: Math.random() * 2.5 + 1.2,
@@ -103,40 +204,66 @@ function App() {
     };
 
     const resizeCanvas = () => {
-      const ratio = window.devicePixelRatio || 1;
-      const width = window.innerWidth;
-      const height = window.innerHeight;
+      width = window.innerWidth;
+      height = window.innerHeight;
 
-      canvas.width = width * ratio;
-      canvas.height = height * ratio;
+      // Decorative canvases do not need full phone DPR. A DPR of 3 can turn a
+      // 390x844 viewport into a roughly 1170x2532 canvas every frame.
+      const ratio = mobileViewport.matches
+        ? 1
+        : Math.min(window.devicePixelRatio || 1, 1.5);
+
+      canvas.width = Math.round(width * ratio);
+      canvas.height = Math.round(height * ratio);
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
 
       ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
 
+      if (!finePointer.matches) {
+        pointerRef.current.x = width / 2;
+        pointerRef.current.y = height / 2;
+      }
+
       glowRef.current.x = pointerRef.current.x;
       glowRef.current.y = pointerRef.current.y;
-
-      // Important:
-      // Do NOT call setupParticles() here.
-      // This keeps the particle count unchanged when resizing.
     };
 
-    const draw = () => {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
+    const requestNextFrame = () => {
+      if (!running || animationFrameId !== null) {
+        return;
+      }
+
+      animationFrameId = window.requestAnimationFrame(draw);
+    };
+
+    const draw = (timestamp: number) => {
+      animationFrameId = null;
+
+      if (!running) {
+        return;
+      }
+
+      const frameInterval = getFrameInterval();
+
+      if (timestamp - lastFrameTime < frameInterval) {
+        requestNextFrame();
+        return;
+      }
+
+      lastFrameTime = timestamp;
 
       glowRef.current.x +=
         (pointerRef.current.x - glowRef.current.x) * 0.08;
-
       glowRef.current.y +=
         (pointerRef.current.y - glowRef.current.y) * 0.08;
 
+      // The CSS cursor glow is useful on desktop, but touch devices do not have
+      // a continuously moving cursor. Leave it centred on coarse-pointer devices.
       document.documentElement.style.setProperty(
         "--pointer-x",
         `${glowRef.current.x}px`,
       );
-
       document.documentElement.style.setProperty(
         "--pointer-y",
         `${glowRef.current.y}px`,
@@ -144,8 +271,6 @@ function App() {
 
       ctx.clearRect(0, 0, width, height);
 
-      // Light mode inverts the palette:
-      // dark particles/accents on a light backdrop.
       const particleRgb =
         themeRef.current === "light" ? "15, 135, 113" : "110, 231, 209";
 
@@ -167,7 +292,7 @@ function App() {
         const dy = particle.y - glowRef.current.y;
         const distance = Math.hypot(dx, dy) || 1;
 
-        if (distance < 180) {
+        if (finePointer.matches && distance < 180) {
           particle.x += (dx / distance) * 0.7;
           particle.y += (dy / distance) * 0.7;
         }
@@ -206,8 +331,7 @@ function App() {
         }
       }
 
-      const glowSize = 140;
-
+      const glowSize = mobileViewport.matches ? 105 : 140;
       const glowGradient = ctx.createRadialGradient(
         glowRef.current.x,
         glowRef.current.y,
@@ -217,24 +341,12 @@ function App() {
         glowSize,
       );
 
-      glowGradient.addColorStop(
-        0,
-        `rgba(${particleRgb}, 0.22)`,
-      );
-
-      glowGradient.addColorStop(
-        0.5,
-        `rgba(${particleRgb}, 0.08)`,
-      );
-
-      glowGradient.addColorStop(
-        1,
-        `rgba(${particleRgb}, 0)`,
-      );
+      glowGradient.addColorStop(0, `rgba(${particleRgb}, 0.22)`);
+      glowGradient.addColorStop(0.5, `rgba(${particleRgb}, 0.08)`);
+      glowGradient.addColorStop(1, `rgba(${particleRgb}, 0)`);
 
       ctx.beginPath();
       ctx.fillStyle = glowGradient;
-
       ctx.arc(
         glowRef.current.x,
         glowRef.current.y,
@@ -242,22 +354,72 @@ function App() {
         0,
         Math.PI * 2,
       );
-
       ctx.fill();
 
-      animationFrameId = window.requestAnimationFrame(draw);
+      requestNextFrame();
     };
 
-    // Resize the canvas first, then create the particles once.
+    const handleResize = () => {
+      if (resizeFrameId !== null) {
+        return;
+      }
+
+      resizeFrameId = window.requestAnimationFrame(() => {
+        resizeFrameId = null;
+        resizeCanvas();
+      });
+    };
+
+    const handleVisibilityChange = () => {
+      running = !document.hidden;
+
+      if (!running) {
+        if (animationFrameId !== null) {
+          window.cancelAnimationFrame(animationFrameId);
+          animationFrameId = null;
+        }
+        return;
+      }
+
+      lastFrameTime = 0;
+      requestNextFrame();
+    };
+
+    const handlePointerCapabilityChange = () => {
+      if (!finePointer.matches) {
+        pointerRef.current.x = width / 2;
+        pointerRef.current.y = height / 2;
+      }
+    };
+
     resizeCanvas();
     setupParticles();
-    draw();
+    requestNextFrame();
 
-    window.addEventListener("resize", resizeCanvas);
+    window.addEventListener("resize", handleResize, { passive: true });
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    finePointer.addEventListener("change", handlePointerCapabilityChange);
 
     return () => {
-      window.cancelAnimationFrame(animationFrameId);
-      window.removeEventListener("resize", resizeCanvas);
+      running = false;
+
+      if (animationFrameId !== null) {
+        window.cancelAnimationFrame(animationFrameId);
+      }
+
+      if (resizeFrameId !== null) {
+        window.cancelAnimationFrame(resizeFrameId);
+      }
+
+      window.removeEventListener("resize", handleResize);
+      document.removeEventListener(
+        "visibilitychange",
+        handleVisibilityChange,
+      );
+      finePointer.removeEventListener(
+        "change",
+        handlePointerCapabilityChange,
+      );
     };
   }, []);
 
@@ -298,10 +460,7 @@ function App() {
 
   return (
     <div className={`site-shell site-shell--${theme}`}>
-      <div
-        className="background-grid"
-        aria-hidden="true"
-      />
+      <div className="background-grid" aria-hidden="true" />
 
       <div
         className="background-glow background-glow--one"
@@ -340,9 +499,7 @@ function App() {
         </main>
 
         <footer className="footer">
-          <p>
-            © {new Date().getFullYear()} Daniel Musselwhite
-          </p>
+          <p>© {new Date().getFullYear()} Daniel Musselwhite</p>
         </footer>
       </div>
     </div>

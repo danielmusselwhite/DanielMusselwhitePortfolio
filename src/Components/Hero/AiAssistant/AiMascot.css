@@ -3198,3 +3198,87 @@
             brightness(1.7) !important;
     }
 }
+
+/* =========================================================
+   MOBILE PERFORMANCE OVERRIDES
+   Keep the mascot interactive while reducing expensive GPU work.
+   ========================================================= */
+
+@media (max-width: 720px), (pointer: coarse) {
+  .ai-blob {
+    /* Keep touch drag/tickle, but avoid retaining large compositor layers. */
+    contain: layout style;
+  }
+
+  /* Large multi-pass blurs and SVG drop shadows are expensive on phone GPUs. */
+  .ai-blob .ai-blob__glow {
+    --glow-blur: 18px;
+    filter:
+      blur(var(--glow-blur))
+      brightness(var(--glow-brightness)) !important;
+  }
+
+  .ai-blob::before {
+    --core-glow-blur: 14px;
+    filter:
+      blur(var(--core-glow-blur))
+      brightness(var(--core-glow-brightness)) !important;
+  }
+
+  .ai-blob .ai-blob__svg {
+    filter:
+      drop-shadow(0 0 12px var(--svg-glow-1))
+      drop-shadow(0 16px 22px rgba(2, 6, 23, 0.24)) !important;
+  }
+
+  /* The back-body blur adds another full SVG filter pass. */
+  .ai-blob__body--back {
+    filter: blur(7px);
+    opacity: 0.82;
+  }
+
+  /* Keep body morph + float, but stop duplicate morph/shimmer work. */
+  .ai-blob__shine,
+  .ai-blob__shimmer {
+    animation: none !important;
+  }
+
+  .ai-blob__shimmer {
+    opacity: 0.28;
+    mix-blend-mode: normal;
+  }
+
+  /* Party mode still dances/rainbows, but skips feTurbulence/displacement. */
+  .ai-blob--party .ai-blob__body,
+  .ai-blob--party .ai-blob__shine,
+  .ai-blob--party .ai-blob__shimmer {
+    filter: none !important;
+  }
+
+  /* Avoid animated filter stacks on the SVG itself on mobile. */
+  .ai-blob--party .ai-blob__svg {
+    animation: none !important;
+    filter:
+      drop-shadow(0 0 14px rgba(86, 224, 208, 0.62))
+      drop-shadow(0 18px 24px rgba(2, 6, 23, 0.22)) !important;
+  }
+
+  /* Party aura remains visible but uses transform/opacity instead of filter animation. */
+  .ai-blob--party .ai-blob__party-glow {
+    filter: blur(18px) saturate(1.35) brightness(1.25) !important;
+  }
+
+  .ai-blob__lean,
+  .ai-blob__eyes,
+  .ai-blob__pupil,
+  .ai-blob__drag,
+  .ai-blob__glow,
+  .ai-blob::before {
+    will-change: auto;
+  }
+
+  .ai-blob--dragging .ai-blob__drag,
+  .ai-blob--snapping .ai-blob__drag {
+    will-change: transform;
+  }
+}
