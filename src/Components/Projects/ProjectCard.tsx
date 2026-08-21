@@ -25,7 +25,7 @@ function getInitialViewMode(
     prominence: ProjectProminence,
 ): ProjectViewMode {
     return prominence === "flagship"
-        ? "expanded"
+        ? "normal"
         : "minimized";
 }
 
