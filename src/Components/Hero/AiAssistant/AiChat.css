@@ -1268,3 +1268,9 @@
     color: #17343c;
     background: rgba(45, 190, 169, 0.08);
 }
+
+@media (max-width: 560px) {
+    .ai-chat__composer input {
+        font-size: 16px;
+    }
+}
