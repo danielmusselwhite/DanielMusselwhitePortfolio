@@ -189,19 +189,33 @@
 
 .traffic-dot--red {
   background: #f87171;
+  box-shadow:
+    inset 0 0 0 1px rgba(127, 29, 29, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 0.18),
+    0 0 8px rgba(248, 113, 113, 0.5);
 }
 
 .traffic-dot--yellow {
   background: #fbbf24;
+  box-shadow:
+    inset 0 0 0 1px rgba(120, 53, 15, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 0.18),
+    0 0 8px rgba(251, 191, 36, 0.45);
 }
 
 .traffic-dot--green {
   background: #4ade80;
+  box-shadow:
+    inset 0 0 0 1px rgba(20, 83, 45, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 0.18),
+    0 0 8px rgba(74, 222, 128, 0.45);
 }
 
-/* Reveal the symbols only once the user is interacting with the window. */
+/* Reveal the symbols while hovering the window. For keyboard users, reveal
+   them only when a traffic control has :focus-visible. A mouse click can leave
+   a button focused, but it will not pin the whole control set open. */
 .project-window:hover .traffic-dot__icon,
-.project-window:focus-within .traffic-dot__icon {
+.project-window__traffic:has(.traffic-dot:focus-visible) .traffic-dot__icon {
   opacity: 0.78;
 }
 
