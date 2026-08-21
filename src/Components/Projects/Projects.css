@@ -171,6 +171,19 @@
   color: rgba(16, 24, 30, 0.72);
 }
 
+/* Bigger touch target on phones */
+@media (max-width: 600px) {
+  .projects__control-dot {
+    width: 1.6rem;
+    height: 1.6rem;
+    flex: 0 0 1.6rem;
+  }
+  .projects__control-icon{
+    width: 0.8rem;
+    height: 0.8rem;
+  }
+}
+
 .projects__control-icon--close::before,
 .projects__control-icon--close::after,
 .projects__control-icon--minimize::before,

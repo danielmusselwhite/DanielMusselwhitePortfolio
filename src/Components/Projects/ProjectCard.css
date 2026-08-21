@@ -176,6 +176,19 @@
     inset 0 1px 1px rgba(255, 255, 255, 0.18);
 }
 
+/* Bigger touch target on phones */
+@media (max-width: 600px) {
+  .traffic-dot {
+    width: 1.6rem;
+    height: 1.6rem;
+    flex: 0 0 1.6rem;
+  }
+  .traffic-dot__icon{
+    width: 0.8rem;
+    height: 0.8rem;
+  }
+}
+
 .traffic-dot::after {
   content: "";
   position: absolute;
