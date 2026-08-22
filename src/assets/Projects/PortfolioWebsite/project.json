@@ -1,0 +1,33 @@
+{
+  "title": "Developer Portfolio",
+  "shortDescription": "A responsive React portfolio combining interactive frontend design, structured project content, and an AI-powered assistant.",
+  "overview": "A personal developer portfolio built with React and TypeScript to present projects, technical skills, experience, and education through a polished and responsive single-page interface. The application combines component-based frontend architecture, custom interactive effects, structured project content, and a serverless AI assistant.",
+  "problem": "Create a portfolio that presents technical experience clearly while remaining maintainable as new projects are added, without relying on a CMS or unnecessarily complex backend. The site also needed to provide an engaging experience across desktop and mobile while keeping API credentials and AI functionality secure.",
+  "solution": "I built the portfolio as a React and TypeScript single-page application using reusable components and structured JSON project metadata discovered automatically through Vite. Custom CSS and the Canvas API provide responsive visual effects and theming, while a Netlify Function securely integrates the OpenAI Responses API for a portfolio-specific AI assistant. The same project metadata is shared between the visible Projects UI and the assistant's context to avoid duplicating content.",
+  "outcome": "The finished portfolio provides a responsive and maintainable platform for showcasing my work, with project content that can be extended largely through configuration rather than frontend changes. It also demonstrates practical frontend architecture, accessibility-conscious interaction design, serverless integration, and secure use of an external AI API.",
+  "highlights": [
+    "Built a responsive single-page application using React, TypeScript, Vite, and component-specific CSS",
+    "Designed a data-driven project system where structured JSON and images are automatically discovered and rendered by the application",
+    "Reused project metadata across both the Projects UI and AI assistant to maintain a shared source of truth",
+    "Integrated the OpenAI Responses API through a Netlify Function with server-side credentials, request validation, rate limiting, and error handling",
+    "Built a custom Canvas-based particle system with pointer interaction, theme-aware rendering, responsive behaviour, and reduced-motion support",
+    "Created an interactive AI mascot whose visual states respond to assistant activity such as idle, thinking, speaking, and error states"
+  ],
+  "technologies": [
+    "React",
+    "TypeScript",
+    "Vite",
+    "CSS",
+    "Canvas API",
+    "Netlify",
+    "Netlify Functions",
+    "OpenAI Responses API"
+  ],
+  "prominence": "standard",
+  "order": 6,
+  "github": "https://github.com/danielmusselwhite/DanielMusselwhitePortfolio",
+  "demo": {
+    "url": "https://danielmusselwhite.netlify.app",
+    "label": "View Live Site"
+  }
+}
