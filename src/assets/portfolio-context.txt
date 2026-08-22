@@ -166,7 +166,44 @@ Additional achievements:
 - Daniel was offered a funded PhD opportunity to continue the research.
 
 
-=== ACADEMIC PROJECT ===
+=== ACADEMIC PROJECTS ===
+
+UNDERGRADUATE DISSERTATION — ENERGY FORECASTING & HYPERPARAMETER OPTIMISATION
+UNIVERSITY OF NOTTINGHAM
+
+Daniel's undergraduate dissertation combined machine learning, forecasting, and optimisation research.
+
+Key work:
+- Built LightGBM-based predictive models for energy forecasting.
+- Implemented and compared multiple hyperparameter optimisation approaches, including Genetic Algorithm, Firefly Algorithm, Grid Search, and Random Search.
+- Developed a novel warm-started greedy Genetic Algorithm for hyperparameter optimisation.
+- Benchmarked the proposed approach against established optimisation techniques.
+- In the dissertation experiments, the proposed approach demonstrated improved optimisation efficiency compared with the benchmarked methods.
+- The work contributed to Daniel graduating with First-Class Honours, 81%, and receiving the High Achievers Award as a top-5% student.
+- Daniel was offered a funded PhD opportunity to continue the research.
+
+Project repository:
+github.com/danielmusselwhite/UG_Dissertation_Energy_Forecasting
+
+When asked about Daniel's AI or machine-learning background, this dissertation is a particularly strong academic example.
+
+
+REFINITIV GROUP SOFTWARE ENGINEERING PROJECT
+UNIVERSITY OF NOTTINGHAM
+
+Daniel worked on a group software-engineering project with Refinitiv.
+
+Daniel acted as backend lead and Scrum Master.
+
+The project involved:
+- A browser extension.
+- A Python backend.
+- A daemon/scheduled component.
+- Detecting changes to monitored websites and surfacing those changes for review.
+- Collaborative development, requirements work, technical coordination, and iterative delivery.
+
+This project can be used as an academic example of Python backend development, team leadership, Scrum, automation, and working with an external industry partner.
+
 
 MICROSOFT LEARN LTI — MULTITENANT ARCHITECTURE SUPPORT
 UCL
@@ -247,6 +284,8 @@ When asked about Daniel's most technically substantial personal project, Commerc
 
 When discussing CommerceFabric, emphasise the architectural decisions and trade-offs involved in distributed systems rather than describing it simply as an e-commerce application or presenting it as a list of technologies.
 
+Project Organization:
+https://github.com/CommerceFabric/
 
 DOTNOTE
 
@@ -270,6 +309,8 @@ Architecture and technologies:
 
 The project demonstrates desktop application architecture, cloud storage integration, authentication, rich-text functionality, and speech-service integration.
 
+Project Repository:
+https://github.com/danielmusselwhite/dotnote
 
 HEARTHSTONE DECK PREDICTOR
 
@@ -291,6 +332,45 @@ Architecture and behaviour:
 
 The goal is to help players identify threats, understand the current meta, and make better-informed decisions during a match.
 
+Project Repository:
+https://github.com/danielmusselwhite/HSDeckTrackerOpponentGuesser
+
+NUCLEAR LOBE DETECTION
+
+A Python computer-vision project for detecting cells and nuclear lobes in microscopy imagery.
+
+Architecture and technologies:
+- Python.
+- YOLO-based object detection.
+- Computer vision and image processing.
+- Model evaluation and hyperparameter optimisation.
+- Genetic Algorithm-based optimisation drawing on ideas from Daniel's undergraduate dissertation work.
+
+The project demonstrates applied machine learning, computer vision, object detection, optimisation, and the reuse of academic AI techniques in a later practical project.
+
+Project repository:
+github.com/danielmusselwhite/NuclearLobeDetection
+
+When asked about Daniel's practical AI or computer-vision work, Nuclear Lobe Detection is a strong personal-project example.
+
+
+FOLDER CUSTOMIZER
+
+Folder Customizer is a C#/.NET WPF desktop utility for visually creating and applying custom Windows folder icons.
+
+Features and technologies:
+- C# and .NET.
+- WPF desktop interface.
+- Interactive editing canvas.
+- Image positioning and resizing.
+- Generation of .ico files.
+- Windows folder icon integration through desktop.ini.
+
+The project demonstrates desktop UI development, custom interaction design, image manipulation, and integration with Windows-specific functionality.
+
+Project repository:
+github.com/danielmusselwhite/FolderCustomizer
+
 
 DANIEL MUSSELWHITE PORTFOLIO WEBSITE
 
@@ -307,8 +387,98 @@ The assistant:
 - Visually reacts to states such as listening, thinking, replying, errors, and annoyance.
 - Includes custom interaction behaviours such as eye tracking, blinking, dragging/elastic movement, click reactions, and animated emotional states.
 - Supports light and dark presentation within the portfolio design.
+- Uses React and VITE, and Netlify Function for the backend
 
 Do not claim specific deployment infrastructure, AI models, or production architecture for the portfolio assistant unless those details are provided elsewhere in the current project data.
+
+Project Repository:
+https://github.com/danielmusselwhite/danielmusselwhiteportfolio
+
+=== OTHER PUBLIC PROJECTS ===
+
+The following projects can be referenced when directly relevant to a visitor's question, but should generally not be prioritised over the stronger examples elsewhere in this document.
+
+TOY ROBOT CHALLENGE
+- Java application created as an interview exercise.
+- Demonstrates object-oriented design, SOLID principles, layered/clean structure, and automated testing.
+- Uses Maven, JUnit 5, and Mockito.
+- Repository: github.com/danielmusselwhite/ToyRobotChallenge
+
+WORKOUT WEB APP
+- Blazor-based workout tracking application.
+- Includes authentication, workout-history management, exercise-performance tracking, and data visualisation.
+- Repository: github.com/danielmusselwhite/WorkoutWebApp
+
+NUCLEI COUNTER
+- Python/OpenCV computer-vision utility for interactively detecting, labelling, and counting cell nuclei using image-processing techniques and HSV thresholding.
+- Repository: github.com/danielmusselwhite/NucleiCounter
+
+UNITY GOAP VILLAGE
+- Unity/C# project containing simple AI agents using Goal-Oriented Action Planning.
+- Repository: github.com/danielmusselwhite/UnityGOAPVillage
+
+CARDGAME
+- C#/Unity augmented-reality card-game project using Vuforia.
+- Repository: github.com/danielmusselwhite/cARdgame
+
+POWERSHELL UTILITIES
+- Daniel has also published small PowerShell utilities for practical desktop automation, including media conversion/renaming, audio-device switching, and moving Hearthstone screenshots.
+- These are useful as lightweight examples of scripting and automation, but should not be presented as major portfolio projects.
+
+Do not enumerate these smaller projects unless they are relevant to the user's question.
+
+
+=== EXAMPLE SELECTION PRIORITY ===
+
+When multiple projects could answer the same question, prefer the strongest and most relevant evidence rather than listing every possible example.
+
+A useful default priority is:
+
+1. Current professional cloud / legacy-modernisation work:
+   - Websure.
+
+2. Substantial commercial ownership, architecture, and end-to-end delivery:
+   - GAMIT RDOC / enterprise OCR and document-processing modernisation.
+
+3. Distributed systems and cloud-native personal architecture:
+   - CommerceFabric.
+
+4. Artificial intelligence, machine learning, optimisation, or computer vision:
+   - Undergraduate dissertation.
+   - Nuclear Lobe Detection.
+
+5. Academic Azure, identity, authentication, and multitenancy:
+   - Microsoft Learn LTI.
+
+6. Full-stack web development:
+   - Activity Web App.
+
+7. Desktop application architecture and cloud integrations:
+   - DotNote.
+   - Folder Customizer.
+
+8. Real-time integration and event-driven desktop behaviour:
+   - Hearthstone Deck Predictor.
+
+9. Smaller public projects:
+   - Use only when directly relevant to a technology or question.
+
+For professional-experience questions, professional examples should generally take precedence over personal or academic projects.
+
+
+=== CAREER / ENGINEERING NARRATIVE ===
+
+Where useful, Daniel's experience can be described as a progression rather than as a flat list of technologies.
+
+A grounded high-level progression is:
+
+- Computer Science and Artificial Intelligence education, including machine-learning and optimisation research.
+- Enterprise software engineering at SS&C, including automation, testing, backend work, and CI/CD.
+- Increased end-to-end ownership at GAMIT, including project leadership, customer requirements, architecture decisions, APIs, authentication, desktop/full-stack development, testing, and mentoring.
+- Current work at Websure focused on modernising a legacy platform toward Azure-hosted APIs, independently deployable services, infrastructure as code, and cloud-native architecture.
+- Personal projects such as CommerceFabric provide further hands-on exploration of distributed systems, microservices, event-driven architecture, Kubernetes, messaging, API management, and related Azure technologies.
+
+Do not present this progression as evidence of unsupported seniority. Use it to explain the breadth and direction of Daniel's engineering experience.
 
 
 === EXPERIENCE BOUNDARIES ===
@@ -322,6 +492,9 @@ Examples:
 - These technologies must not automatically be described as commercial experience.
 - GAMIT, Websure, and SS&C should be used as the primary sources when discussing Daniel's professional experience.
 - The Microsoft Learn LTI work should be described as academic/project experience completed during Daniel's MSc unless additional context states otherwise.
+- The undergraduate dissertation should be described as academic AI/ML research, not professional machine-learning experience.
+- Nuclear Lobe Detection is a personal project demonstrating applied computer vision and must not be described as commercial AI experience.
+- The Refinitiv project is academic/project experience completed during Daniel's undergraduate studies, not employment at Refinitiv.
 
 If a user asks whether Daniel has experience with a technology, it is acceptable to say that he has used it in a personal or academic project, but make that distinction clear where relevant.
 
@@ -340,6 +513,18 @@ Backend and application development:
 - Entity Framework Core
 - SQL
 - Python
+
+AI, machine learning, and computer vision:
+- Machine learning
+- LightGBM
+- Energy forecasting
+- Hyperparameter optimisation
+- Genetic Algorithms
+- Firefly Algorithm
+- YOLO
+- OpenCV
+- Computer vision
+- Image processing
 
 Desktop:
 - WPF
@@ -394,6 +579,8 @@ Testing and delivery:
 - PyTest
 - Selenium
 - FlaUI
+- JUnit
+- Mockito
 - Jenkins
 - Groovy
 - PowerShell
@@ -426,6 +613,23 @@ When asked about Daniel's strongest or most demonstrated areas, answers can reas
 - Automated testing.
 - Application architecture and maintainability.
 - Increasing exposure to distributed, cloud-native, microservice, and event-driven architecture through both professional and personal projects.
+
+When asked about Daniel's AI, machine-learning, or optimisation background, answers can reasonably emphasise:
+- BSc Computer Science and Artificial Intelligence.
+- Undergraduate dissertation work using LightGBM and multiple hyperparameter-optimisation approaches.
+- Development of a novel warm-started greedy Genetic Algorithm.
+- Nuclear Lobe Detection as a later personal project applying computer vision, YOLO, and optimisation.
+- Older AI projects can be mentioned when directly relevant, but the dissertation and Nuclear Lobe Detection are stronger examples.
+
+When discussing Daniel's engineering direction, it is reasonable to describe a growing focus on:
+- C#/.NET.
+- Microsoft Azure.
+- System design and application architecture.
+- Legacy-system modernisation.
+- Cloud-native architecture.
+- Distributed and event-driven systems.
+
+Do not imply that all of these areas are equally mature professional specialisms; some distributed/cloud-native technologies are demonstrated primarily through personal projects.
 
 When discussing leadership, supported examples include:
 - Acting as project lead for RDOC at GAMIT.
