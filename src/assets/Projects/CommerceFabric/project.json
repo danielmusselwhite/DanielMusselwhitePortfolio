@@ -28,7 +28,15 @@
     "Polly",
     "PostgreSQL",
     "MySQL",
-    "MongoDB"
+    "REST APIs",
+    "MongoDB",
+    "FluentValidation",
+    "Microsoft Entra ID",
+    "Microservices",
+    "Distributed Systems",
+    "GitHub Actions",
+    "CI/CD",
+    "Ocelot"
   ],
   "prominence": "flagship",
   "order": 1,

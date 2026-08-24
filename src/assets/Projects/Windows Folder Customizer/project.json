@@ -16,11 +16,10 @@
     "C#",
     ".NET",
     "WPF",
+    "MVVM",
     "XAML",
-    "WriteableBitmap",
     "Windows Shell",
-    "File System APIs",
-    "Image Processing"
+    "File System APIs"
   ],
   "prominence": "featured",
   "order": 3,

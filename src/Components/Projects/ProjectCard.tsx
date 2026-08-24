@@ -1,17 +1,27 @@
 import "./ProjectCard.css";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
+
 import type {
     Project,
     ProjectProminence,
 } from "../../Types/Project";
+import ProjectGallery from "./ProjectGallery";
+
+export type ProjectViewMode = "minimized" | "normal" | "maximized";
 
 interface ProjectCardProps {
     project: Project;
     index: number;
+    viewMode: ProjectViewMode;
+    onViewModeChange: (viewMode: ProjectViewMode) => void;
     onClose: () => void;
 }
 
-type ProjectViewMode = "minimized" | "normal" | "expanded";
+interface ProjectDetailSection {
+    key: string;
+    label: string;
+    value: string | string[];
+}
 
 function getProjectProminence(project: Project): ProjectProminence {
     if (project.prominence) {
@@ -21,10 +31,10 @@ function getProjectProminence(project: Project): ProjectProminence {
     return project.featured ? "featured" : "standard";
 }
 
-function getInitialViewMode(
-    prominence: ProjectProminence,
+export function getDefaultProjectViewMode(
+    project: Project,
 ): ProjectViewMode {
-    return prominence === "flagship"
+    return getProjectProminence(project) === "flagship"
         ? "normal"
         : "minimized";
 }
@@ -32,26 +42,24 @@ function getInitialViewMode(
 export default function ProjectCard({
     project,
     index,
+    viewMode,
+    onViewModeChange,
     onClose,
 }: ProjectCardProps) {
     const prominence = getProjectProminence(project);
+    const [activeDetailKey, setActiveDetailKey] = useState("overview");
 
-    const [activeImageIndex, setActiveImageIndex] = useState(0);
-    const [viewMode, setViewMode] = useState<ProjectViewMode>(() =>
-        getInitialViewMode(prominence),
-    );
-    const pathRef = useRef<HTMLSpanElement>(null);
-    const pathTextRef = useRef<HTMLSpanElement>(null);
-
-    const slides =
+    const galleryImages =
         project.images.length > 0
             ? project.images
-            : [
-                {
-                    fileName: "cover",
-                    url: project.coverImageUrl ?? "",
-                },
-            ];
+            : project.coverImageUrl
+                ? [
+                    {
+                        fileName: "cover",
+                        url: project.coverImageUrl,
+                    },
+                ]
+                : [];
 
     const demoLink =
         typeof project.demo === "string"
@@ -66,7 +74,7 @@ export default function ProjectCard({
             ? "project"
             : prominence;
 
-    const detailSections = [
+    const detailSections: ProjectDetailSection[] = [
         {
             key: "overview",
             label: "Overview",
@@ -110,14 +118,19 @@ export default function ProjectCard({
             : []),
     ];
 
+    const activeDetail =
+        detailSections.find(
+            (detail) => detail.key === activeDetailKey,
+        ) ?? detailSections[0];
+
     const cardClassName = [
         "project-window",
         `project-window--${prominence}`,
         index % 2 === 0
             ? "project-window--left"
             : "project-window--right",
-        viewMode === "expanded"
-            ? "project-window--expanded"
+        viewMode === "maximized"
+            ? "project-window--maximized"
             : "",
         viewMode === "minimized"
             ? "project-window--minimized"
@@ -126,54 +139,6 @@ export default function ProjectCard({
         .filter(Boolean)
         .join(" ");
 
-    const previousSlide = () => {
-        setActiveImageIndex((current) =>
-            current === 0
-                ? slides.length - 1
-                : current - 1,
-        );
-    };
-
-    const nextSlide = () => {
-        setActiveImageIndex((current) =>
-            current === slides.length - 1
-                ? 0
-                : current + 1,
-        );
-    };
-
-    useEffect(() => {
-        if (slides.length <= 1) {
-            return;
-        }
-
-        let interval: number | undefined;
-
-        const startAutoplay = () => {
-            interval = window.setInterval(() => {
-                setActiveImageIndex((current) =>
-                    current === slides.length - 1
-                        ? 0
-                        : current + 1,
-                );
-            }, 4000);
-        };
-
-        const initialDelay = window.setTimeout(
-            startAutoplay,
-            4000 + index * 900,
-        );
-
-        return () => {
-            window.clearTimeout(initialDelay);
-
-            if (interval !== undefined) {
-                window.clearInterval(interval);
-            }
-        };
-    }, [index, slides.length]);
-
-
     return (
         <article className={cardClassName}>
             <div className="project-window__chrome">
@@ -181,9 +146,7 @@ export default function ProjectCard({
                     <button
                         type="button"
                         className="traffic-dot traffic-dot--red"
-                        onClick={() => {
-                            onClose();
-                        }}
+                        onClick={onClose}
                         aria-label="Close project window"
                     >
                         <span
@@ -195,21 +158,19 @@ export default function ProjectCard({
                     <button
                         type="button"
                         className="traffic-dot traffic-dot--yellow"
-                        onClick={() => {
-                            setViewMode((current) =>
-                                current === "minimized"
+                        onClick={() =>
+                            onViewModeChange(
+                                viewMode === "minimized"
                                     ? "normal"
                                     : "minimized",
-                            );
-                        }}
+                            )
+                        }
                         aria-label={
                             viewMode === "minimized"
-                                ? "Restore project preview"
+                                ? "Restore project window"
                                 : "Minimize project window"
                         }
-                        aria-pressed={
-                            viewMode === "minimized"
-                        }
+                        aria-pressed={viewMode === "minimized"}
                     >
                         <span
                             className="traffic-dot__icon traffic-dot__icon--minimize"
@@ -220,21 +181,19 @@ export default function ProjectCard({
                     <button
                         type="button"
                         className="traffic-dot traffic-dot--green"
-                        onClick={() => {
-                            setViewMode((current) =>
-                                current === "expanded"
+                        onClick={() =>
+                            onViewModeChange(
+                                viewMode === "maximized"
                                     ? "normal"
-                                    : "expanded",
-                            );
-                        }}
+                                    : "maximized",
+                            )
+                        }
                         aria-label={
-                            viewMode === "expanded"
-                                ? "Collapse project details"
-                                : "Expand project details"
+                            viewMode === "maximized"
+                                ? "Restore project window"
+                                : "Maximize project window"
                         }
-                        aria-pressed={
-                            viewMode === "expanded"
-                        }
+                        aria-pressed={viewMode === "maximized"}
                     >
                         <span
                             className="traffic-dot__icon traffic-dot__icon--expand"
@@ -243,11 +202,7 @@ export default function ProjectCard({
                     </button>
                 </div>
 
-
-                <span
-                    className="project-window__path"
-                    ref={pathRef}
-                >
+                <span className="project-window__path">
                     <span
                         className={
                             viewMode === "minimized"
@@ -255,10 +210,7 @@ export default function ProjectCard({
                                 : "project-window__path-marquee"
                         }
                     >
-                        <span
-                            className="project-window__path-track"
-                            ref={pathTextRef}
-                        >
+                        <span className="project-window__path-track">
                             ~/projects/{project.slug}
                         </span>
 
@@ -278,193 +230,147 @@ export default function ProjectCard({
                 </span>
             </div>
 
-            <div
-                className={`project-window__content ${viewMode === "minimized"
-                    ? "project-window__content--minimized"
-                    : ""
-                    }`}
-            >
-                <div className="project-window__content-inner">
-                    <div className="project-window__carousel">
-                        {slides.map((slide, slideIndex) => (
-                            <img
-                                key={slide.fileName}
-                                src={slide.url}
-                                alt={`${project.title} preview ${slideIndex + 1
-                                    }`}
-                                className={
-                                    slideIndex === activeImageIndex
-                                        ? "project-window__image project-window__image--active"
-                                        : "project-window__image"
-                                }
-                                aria-hidden={
-                                    slideIndex !==
-                                    activeImageIndex
-                                }
-                                draggable={false}
-                            />
-                        ))}
-
-                        {slides.length > 1 && (
-                            <>
-                                <button
-                                    type="button"
-                                    className="icon-btn project-window__arrow project-window__arrow--left"
-                                    onClick={previousSlide}
-                                    aria-label="Previous project view"
-                                >
-                                    ←
-                                </button>
-
-                                <button
-                                    type="button"
-                                    className="icon-btn project-window__arrow project-window__arrow--right"
-                                    onClick={nextSlide}
-                                    aria-label="Next project view"
-                                >
-                                    →
-                                </button>
-
-                                <div
-                                    className="project-window__image-status"
-                                    aria-label={`Image ${activeImageIndex + 1
-                                        } of ${slides.length}`}
-                                >
-                                    {slides.map(
-                                        (
-                                            slide,
-                                            slideIndex,
-                                        ) => (
-                                            <button
-                                                key={
-                                                    slide.fileName
-                                                }
-                                                type="button"
-                                                className={
-                                                    slideIndex ===
-                                                        activeImageIndex
-                                                        ? "project-window__image-dot project-window__image-dot--active"
-                                                        : "project-window__image-dot"
-                                                }
-                                                onClick={() =>
-                                                    setActiveImageIndex(
-                                                        slideIndex,
-                                                    )
-                                                }
-                                                aria-label={`Show image ${slideIndex +
-                                                    1
-                                                    }`}
-                                                aria-current={
-                                                    slideIndex ===
-                                                        activeImageIndex
-                                                        ? "true"
-                                                        : undefined
-                                                }
-                                            />
-                                        ),
-                                    )}
-                                </div>
-                            </>
-                        )}
+            {viewMode === "minimized" ? (
+                <div className="project-window__minimized-preview">
+                    <div className="project-window__title-row">
+                        <span className="project-window__prompt">
+                            $
+                        </span>
+                        <h3>{project.title}</h3>
                     </div>
 
-                    <div className="project-window__body">
-                        <div className="project-window__title-row">
-                            <span className="project-window__prompt">
-                                $
+                    <p className="project-window__minimized-summary">
+                        {project.shortDescription}
+                    </p>
+
+                    <div
+                        className="project-window__minimized-technologies"
+                        aria-label="Project technologies"
+                    >
+                        {project.technologies.map((technology) => (
+                            <span
+                                key={technology}
+                                className="technology"
+                            >
+                                {technology}
                             </span>
-                            <h3>{project.title}</h3>
-                        </div>
-
-                        <p className="project-window__summary">
-                            {project.shortDescription}
-                        </p>
-
-                        <div className="project-card__technologies">
-                            {project.technologies.map(
-                                (technology) => (
-                                    <span
-                                        key={technology}
-                                        className="technology"
-                                    >
-                                        {technology}
-                                    </span>
-                                ),
-                            )}
-                        </div>
-
-                        <div className="project-card__actions">
-                            {demoLink && (
-                                <a
-                                    href={demoLink.url}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                >
-                                    {demoLink.label}
-                                </a>
-                            )}
-
-                            {project.github && (
-                                <a
-                                    href={project.github}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                >
-                                    GitHub
-                                </a>
-                            )}
-                        </div>
-
-                        {viewMode === "expanded" && (
-                            <div className="project-window__expanded-sections">
-                                {detailSections.map(
-                                    (detail) => (
-                                        <section
-                                            key={
-                                                detail.key
-                                            }
-                                            className="project-window__expanded-section"
-                                        >
-                                            <h5>
-                                                {
-                                                    detail.label
-                                                }
-                                            </h5>
-
-                                            {typeof detail.value ===
-                                                "string" ? (
-                                                <p>
-                                                    {
-                                                        detail.value
-                                                    }
-                                                </p>
-                                            ) : (
-                                                <ul>
-                                                    {detail.value.map(
-                                                        (
-                                                            highlight: string,
-                                                        ) => (
-                                                            <li
-                                                                key={
-                                                                    highlight
-                                                                }
-                                                            >
-                                                                {
-                                                                    highlight
-                                                                }
-                                                            </li>
-                                                        ),
-                                                    )}
-                                                </ul>
-                                            )}
-                                        </section>
-                                    ),
-                                )}
-                            </div>
-                        )}
+                        ))}
                     </div>
                 </div>
-            </div>
+            ) : (
+                <div className="project-window__content">
+                    <div className="project-window__main">
+                        <ProjectGallery
+                            images={galleryImages}
+                            projectTitle={project.title}
+                        />
+
+                        <div className="project-window__body">
+                            <div className="project-window__title-row">
+                                <span className="project-window__prompt">
+                                    $
+                                </span>
+                                <h3>{project.title}</h3>
+                            </div>
+
+                            <div className="project-window__body-scroll">
+                                <p className="project-window__summary">
+                                    {project.shortDescription}
+                                </p>
+
+                                <div className="project-card__technologies">
+                                    {project.technologies.map((technology) => (
+                                        <span
+                                            key={technology}
+                                            className="technology"
+                                        >
+                                            {technology}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="project-card__actions">
+                                {demoLink && (
+                                    <a
+                                        href={demoLink.url}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    >
+                                        {demoLink.label}
+                                    </a>
+                                )}
+
+                                {project.github && (
+                                    <a
+                                        href={project.github}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    >
+                                        GitHub
+                                    </a>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    {viewMode === "maximized" && (
+                        <div className="project-window__details">
+                            <div
+                                className="project-window__detail-tabs"
+                                role="tablist"
+                                aria-label={`${project.title} details`}
+                            >
+                                {detailSections.map((detail) => (
+                                    <button
+                                        key={detail.key}
+                                        type="button"
+                                        id={`${project.slug}-${detail.key}-tab`}
+                                        className={
+                                            activeDetail.key === detail.key
+                                                ? "project-window__detail-tab project-window__detail-tab--active"
+                                                : "project-window__detail-tab"
+                                        }
+                                        onClick={() =>
+                                            setActiveDetailKey(detail.key)
+                                        }
+                                        role="tab"
+                                        aria-selected={
+                                            activeDetail.key === detail.key
+                                        }
+                                        aria-controls={`${project.slug}-detail-panel`}
+                                    >
+                                        {detail.label}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <section
+                                id={`${project.slug}-detail-panel`}
+                                className="project-window__detail-panel"
+                                role="tabpanel"
+                                aria-labelledby={`${project.slug}-${activeDetail.key}-tab`}
+                            >
+                                <h4>{activeDetail.label}</h4>
+
+                                {typeof activeDetail.value === "string" ? (
+                                    <p>{activeDetail.value}</p>
+                                ) : (
+                                    <ul>
+                                        {activeDetail.value.map(
+                                            (highlight) => (
+                                                <li key={highlight}>
+                                                    {highlight}
+                                                </li>
+                                            ),
+                                        )}
+                                    </ul>
+                                )}
+                            </section>
+                        </div>
+                    )}
+                </div>
+            )}
         </article>
     );
 }

@@ -16,10 +16,7 @@
   "technologies": [
     "React",
     "TypeScript",
-    "Vite",
     "CSS",
-    "Canvas API",
-    "Netlify",
     "Netlify Functions",
     "OpenAI Responses API"
   ],
