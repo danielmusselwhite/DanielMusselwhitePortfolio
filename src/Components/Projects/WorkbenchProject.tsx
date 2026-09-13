@@ -6,9 +6,9 @@ export default function WorkbenchProject({ project }: { project: Project }) {
     ? { url: project.demo, label: "View demo" }
     : project.demo;
   const sections = [
-    ["The challenge", project.problem],
-    ["The approach", project.solution],
-    ["What it demonstrates", project.outcome],
+    ["Why I built it", project.problem],
+    ["How it works", project.solution],
+    ["What it covers", project.outcome],
   ].filter(([, body]) => body);
 
   return (

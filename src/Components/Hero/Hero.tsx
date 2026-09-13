@@ -1,70 +1,65 @@
-import "./Hero.css";
-import { useEffect, useState } from "react";
 import AiAssistant from "./AiAssistant/AiAssistant";
 
-const heroTitle = "Software Engineer";
-
 export default function Hero() {
-  const [typedTitle, setTypedTitle] = useState("");
-
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
-    if (prefersReducedMotion) {
-      setTypedTitle(heroTitle);
-      return undefined;
-    }
-
-    let characterIndex = 0;
-
-    const typingInterval = window.setInterval(() => {
-      characterIndex += 1;
-      setTypedTitle(heroTitle.slice(0, characterIndex));
-
-      if (characterIndex >= heroTitle.length) {
-        window.clearInterval(typingInterval);
-      }
-    }, 85);
-
-    return () => window.clearInterval(typingInterval);
-  }, []);
-
   return (
-    <section id="home" className="hero">
-      <div className="hero__content">
-        <div className="hero__copy">
-          <p className="hero__eyebrow">Hello, I'm</p>
-
-          <h1>Daniel Musselwhite</h1>
-
-          <h2 className="hero__typing" aria-label={heroTitle}>
-            <span aria-hidden="true">{typedTitle}</span>
-            <span className="hero__typing-cursor" aria-hidden="true">
-              _
-            </span>
-          </h2>
-
-          <p className="hero__description">
-            I design and build reliable software end-to-end, from
-            requirements and system architecture to .NET services, cloud
-            infrastructure, testing and deployment.
+    <div id="home" className="section-band">
+      <section className="intro container">
+        <div className="intro-copy">
+          <p className="eyebrow">
+            <span className="status-dot" /> Daniel Musselwhite · Software
+            Engineer
           </p>
-
-          <div className="hero__actions">
-            <a href="#projects" className="button button--primary">
-              Explore my work
+          <h1>
+            Full-Stack Engineer
+            <br />
+            <em>Cloud & Distributed systems enthusiast.</em>
+          </h1>
+          <p className="intro-description">
+            I work mainly with .NET, Azure and React. At the moment, I'm helping
+            modernise an insurance platform. Outside work, I build projects to
+            get hands-on with things I want to understand better—most recently,
+            distributed systems and AI-assisted incident analysis.
+          </p>
+          <div className="intro-actions">
+            <a className="button button-primary" href="#projects">
+              See my projects <span aria-hidden="true">↓</span>
             </a>
-
-            <a href="#contact" className="button button--secondary">
-              Get in touch
+            <a className="text-link" href="#contact">
+              Get in touch <span aria-hidden="true">↗</span>
             </a>
           </div>
+          <div className="intro-footnote">
+            <span>BASED IN THE UK</span>
+            <span>C# · AZURE · REACT</span>
+          </div>
         </div>
-
-        <AiAssistant />
-      </div>
-    </section>
+        <div className="assistant-stage">
+          <div className="assistant-label">
+            <span className="status-dot" /> MEET BLOOP
+          </div>
+          <AiAssistant />
+          <p className="assistant-note">
+            Ask him about a project. Or try /party.
+          </p>
+        </div>
+        <div className="credentials">
+          <p>
+            Experience across
+            <br />
+            <strong>finance, aviation & insurance</strong>
+          </p>
+          <span>
+            SS&C<span className="credential-sub">TECHNOLOGIES</span>
+          </span>
+          <span>GAMIT</span>
+          <span>Websure</span>
+          <p>
+            Studied at
+            <br />
+            <strong>UCL & Nottingham</strong>
+          </p>
+        </div>
+      </section>
+    </div>
   );
 }

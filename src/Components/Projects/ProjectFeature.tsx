@@ -47,9 +47,9 @@ export default function ProjectFeature({
         </summary>
         <div className="case-study-grid">
           {[
-            ["The challenge", project.problem],
-            ["The approach", project.solution],
-            ["What it demonstrates", project.outcome],
+            ["Why I built it", project.problem],
+            ["How it works", project.solution],
+            ["What it covers", project.outcome],
           ].map(([title, body]) => (
             <div key={title}>
               <h4>{title}</h4>

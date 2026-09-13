@@ -1,156 +1,69 @@
-import "./Navbar.css";
-import { useEffect, useState } from "react";
-
-interface NavbarProps {
-    theme: "dark" | "light";
-    onToggleTheme: () => void;
-}
+type Props = {
+  theme: "dark" | "light";
+  menuOpen: boolean;
+  onToggleTheme: () => void;
+  onToggleMenu: () => void;
+  onCloseMenu: () => void;
+};
+const links = [
+  ["building", "Building"],
+  ["projects", "Projects"],
+  ["about", "Approach"],
+  ["experience", "Experience"],
+  ["education", "Education"],
+  ["contact", "Contact"],
+] as const;
+const Arrow = () => <span aria-hidden="true">↗</span>;
 
 export default function Navbar({
-    theme,
-    onToggleTheme,
-}: NavbarProps) {
-    const [isMenuOpen, setIsMenuOpen] =
-        useState(false);
-
-    function closeMenu() {
-        setIsMenuOpen(false);
-    }
-
-    useEffect(() => {
-        function handleKeyDown(event: KeyboardEvent) {
-            if (event.key === "Escape") {
-                closeMenu();
-            }
-        }
-
-        window.addEventListener(
-            "keydown",
-            handleKeyDown,
-        );
-
-        return () => {
-            window.removeEventListener(
-                "keydown",
-                handleKeyDown,
-            );
-        };
-    }, []);
-
-    return (
-        <header
-            className={[
-                "navbar",
-                isMenuOpen
-                    ? "navbar--open"
-                    : "",
-            ]
-                .filter(Boolean)
-                .join(" ")}
+  theme,
+  menuOpen,
+  onToggleTheme,
+  onToggleMenu,
+  onCloseMenu,
+}: Props) {
+  return (
+    <header className="site-header">
+      <a href="#home" className="wordmark" aria-label="Daniel Musselwhite home">
+        dm<span>.</span>
+      </a>
+      <nav
+        id="navigation"
+        className={menuOpen ? "nav-links is-open" : "nav-links"}
+        aria-label="Primary navigation"
+      >
+        {links.map(([id, label]) => (
+          <a key={id} href={`#${id}`} onClick={onCloseMenu}>
+            {label}
+          </a>
+        ))}
+      </nav>
+      <div className="header-actions">
+        <button
+          className="theme-toggle"
+          onClick={onToggleTheme}
+          aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
         >
-            <a
-                href="#home"
-                className="navbar__brand"
-                onClick={closeMenu}
-            >
-                DM
-            </a>
-
-            <nav
-                id="mobile-navigation"
-                className="navbar__links"
-                aria-label="Primary navigation"
-            >
-                <a
-                    href="#about"
-                    onClick={closeMenu}
-                >
-                    About
-                </a>
-
-                <a
-                    href="#skills"
-                    onClick={closeMenu}
-                >
-                    Skills
-                </a>
-
-                <a
-                    href="#projects"
-                    onClick={closeMenu}
-                >
-                    Projects
-                </a>
-
-                <a
-                    href="#experience"
-                    onClick={closeMenu}
-                >
-                    Experience
-                </a>
-
-                <a
-                    href="#education"
-                    onClick={closeMenu}
-                >
-                    Education
-                </a>
-
-                <a
-                    href="#contact"
-                    onClick={closeMenu}
-                >
-                    Contact
-                </a>
-            </nav>
-
-            <div className="navbar__actions">
-                <button
-                    type="button"
-                    className="navbar__theme-toggle"
-                    onClick={onToggleTheme}
-                    aria-label={`Switch to ${theme === "dark"
-                        ? "light"
-                        : "dark"
-                        } mode`}
-                    title={`Switch to ${theme === "dark"
-                        ? "light"
-                        : "dark"
-                        } mode`}
-                >
-                    <span aria-hidden="true">
-                        {theme === "dark"
-                            ? "☼"
-                            : "☾"}
-                    </span>
-                </button>
-
-                <button
-                    type="button"
-                    className="navbar__menu-toggle"
-                    onClick={() =>
-                        setIsMenuOpen(
-                            (current) => !current,
-                        )
-                    }
-                    aria-expanded={isMenuOpen}
-                    aria-controls="mobile-navigation"
-                    aria-label={
-                        isMenuOpen
-                            ? "Close navigation"
-                            : "Open navigation"
-                    }
-                    title={
-                        isMenuOpen
-                            ? "Close navigation"
-                            : "Open navigation"
-                    }
-                >
-                    <span />
-                    <span />
-                    <span />
-                </button>
-            </div>
-        </header>
-    );
+          {theme === "dark" ? "☼" : "☾"}
+        </button>
+        <a
+          className="header-github"
+          href="https://github.com/danielmusselwhite"
+          target="_blank"
+          rel="noreferrer"
+        >
+          GitHub <Arrow />
+        </a>
+        <button
+          className="menu-toggle"
+          aria-label="Toggle navigation"
+          aria-controls="navigation"
+          aria-expanded={menuOpen}
+          onClick={onToggleMenu}
+        >
+          {menuOpen ? "Close" : "Menu"}
+        </button>
+      </div>
+    </header>
+  );
 }

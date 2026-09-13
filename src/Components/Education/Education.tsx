@@ -5,8 +5,8 @@ const educationItems = [
     dates: "Sep 2021 — Sep 2022",
     grade: "Distinction · 76%",
     highlights: [
-      "Worked with Microsoft London on team projects involving requirements elicitation, system design, development, documentation, and validation within existing software projects.",
-      "Focused on practical software engineering, architecture, and the design and delivery of complex software systems.",
+      "Worked on team projects with Microsoft London, including multitenant support for Microsoft Learn LTI.",
+      "Worked through requirements, design, implementation, and validation within existing codebases.",
     ],
   },
   {
@@ -29,14 +29,9 @@ export default function Education() {
           <p className="section__eyebrow">04 / Education</p>
 
           <h2>
-            Strong foundations in software engineering and computer science.
+            Where I studied
           </h2>
 
-          <p>
-            Academic experience spanning software systems engineering,
-            artificial intelligence, collaborative development, and applied
-            research.
-          </p>
         </div>
 
         <div className="education-list">

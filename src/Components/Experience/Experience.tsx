@@ -22,7 +22,7 @@ const experienceItems = [
       "Turned customer requirements into technical designs and delivered features, owning implementation, deployment, and ongoing maintenance.",
       "Built full-stack .NET applications using WPF, Blazor, ASP.NET Core, EF Core, REST APIs, SQL, and Azure Blob Storage.",
       "Implemented authentication and role-based access control using FusionAuth SSO, token-based API authorization, and custom permission attributes.",
-      "Improved engineering quality through xUnit and FlaUI test automation, UML-driven design, team standards, code review practices, and mentoring junior engineers.",
+      "Wrote xUnit and FlaUI tests, contributed to code reviews and team standards, and mentored junior engineers.",
     ],
   },
   {
@@ -33,7 +33,6 @@ const experienceItems = [
     summary:
       "Developed features, engineering tools, automated tests, and CI/CD infrastructure for large-scale financial software.",
     highlights: [
-      "Designed, developed, and deployed production changes using Python, Java, JavaScript, and SQL within a large financial software platform.",
       "Built internal Python and PowerShell tooling to automate repetitive engineering workflows, including a development environment for Drools-based files.",
       "Created PyTest suites covering backend services and SOAP APIs alongside Selenium-based browser testing.",
       "Configured Jenkins CI/CD pipelines using Groovy and Python to automate testing, promotion, and deployment workflows.",
@@ -48,12 +47,12 @@ export default function Experience() {
         <div className="experience__heading">
           <p className="section__eyebrow">03 / Experience</p>
 
-          <h2>Engineering software from requirements to release.</h2>
+          <h2>Where I've worked</h2>
 
           <p>
-            Commercial experience across system design, application development,
-            testing, automation, deployment, and the engineering practices that
-            keep software maintainable as it evolves.
+            I've worked on financial software, an aviation application, and
+            now an insurance platform. The roles have involved a mix of
+            application development, testing, and deployment.
           </p>
         </div>
 

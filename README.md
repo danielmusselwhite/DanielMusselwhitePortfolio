@@ -91,7 +91,7 @@ DanielMusselwhitePortfolio/
 │   │   ├── Contact/
 │   │   ├── Education/
 │   │   ├── Experience/
-│   │   ├── Hero/
+│   │   ├── Hero/AiAssistant/
 │   │   ├── Navbar/
 │   │   ├── Projects/
 │   │   └── Skills/

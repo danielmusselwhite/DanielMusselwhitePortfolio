@@ -18,6 +18,7 @@
 .work-copy .eyebrow { display: inline-block; border: 1px solid var(--accent); padding: 5px 9px; }
 .more-work article { background: var(--surface); border: 2px solid var(--border); border-radius: 3px; transition: border-color .2s, transform .2s; }
 .more-work article:hover { border-color: var(--accent); transform: translateY(-4px); }
+.image-controls button:first-child { color: var(--yellow); border-color: var(--yellow); }
 .expertise-grid article { border-top: 3px solid var(--accent); padding-top: 22px; }
 .contact-arrow { border-radius: 3px; box-shadow: 5px 5px 0 rgba(var(--accent-rgb), .25); }
 .building-section { margin-top: 70px; padding: 32px 36px 38px; border: 2px solid var(--accent); box-shadow: 8px 8px 0 rgba(var(--accent-rgb), .25); background: var(--surface); position: relative; }

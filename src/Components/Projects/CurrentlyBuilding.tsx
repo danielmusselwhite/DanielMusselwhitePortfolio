@@ -17,15 +17,16 @@ export default function CurrentlyBuilding() {
           <h3>{incidentIQ.title}</h3>
           <p>An AI-powered incident analysis tool. I’m building it to help engineers investigate failures using relevant past incidents and operational runbooks, with evidence behind the suggested causes and next steps.</p>
           <div className="tags">{incidentIQ.technologies.map(technology => <span key={technology}>{technology}</span>)}</div>
-          <a className="button button-primary" href={incidentIQ.repository} target="_blank" rel="noreferrer">Follow the build on GitHub <span aria-hidden="true">↗</span></a>
+          <a className="button button-primary" href={incidentIQ.repository} target="_blank" rel="noreferrer">View progress on GitHub <span aria-hidden="true">↗</span></a>
         </div>
         <aside className="build-notes" aria-label="IncidentIQ design goals">
           <span className="build-notes-label">THE IDEA</span>
           <h4>Less digging.<br />More understanding.</h4>
           <ul>
-            <li>Process incident analysis asynchronously</li>
-            <li>Retrieve relevant incidents and runbooks</li>
-            <li>Generate explanations grounded in evidence</li>
+            <li>Submit incident reports for asynchronous AI analysis </li>
+            <li>Retrieve relevant incidents and runbooks using semantic search</li>
+            <li>Generate structured likely causes, recommended actions, and evidence-linked explanations through a custom RAG pipeline</li>
+            <li>Interact with the RAG chat interface for dynamic incident analysis</li>
           </ul>
           <p>Active personal project · Features evolving</p>
         </aside>
