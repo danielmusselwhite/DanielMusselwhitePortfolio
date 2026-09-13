@@ -17,7 +17,7 @@ export default function Hero() {
           <p className="intro-description">
             I work mainly with .NET, Azure and React. At the moment, I'm helping
             modernise an insurance platform. Outside work, I build projects to
-            get hands-on with things I want to understand better—most recently,
+            get hands-on with things I want to understand better-most recently,
             distributed systems and AI-assisted incident analysis.
           </p>
           <div className="intro-actions">

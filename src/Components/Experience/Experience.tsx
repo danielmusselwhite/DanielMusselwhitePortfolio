@@ -2,7 +2,7 @@ const experienceItems = [
   {
     role: "Software Engineer",
     company: "Websure · Sheraton Systems Ltd",
-    dates: "Aug 2026 — Present",
+    dates: "Aug 2026 - Present",
     location: "Wickford, England · Hybrid",
     summary:
       "Modernising a legacy Delphi insurance platform toward domain-focused APIs and services on Azure.",
@@ -14,7 +14,7 @@ const experienceItems = [
   {
     role: "Intermediate Software Engineer",
     company: "GAMIT",
-    dates: "Dec 2024 — Jul 2026",
+    dates: "Dec 2024 - Jul 2026",
     location: "Stansted Mountfitchet, England · On-site",
     summary:
       "Led development of RDOC, a WPF application for aviation, working directly with customers from requirements through release and support.",
@@ -28,7 +28,7 @@ const experienceItems = [
   {
     role: "Technical Specialist",
     company: "SS&C Technologies",
-    dates: "Sep 2022 — Dec 2024",
+    dates: "Sep 2022 - Dec 2024",
     location: "Basildon, England · Hybrid",
     summary:
       "Developed features, engineering tools, automated tests, and CI/CD infrastructure for large-scale financial software.",
@@ -47,12 +47,12 @@ export default function Experience() {
         <div className="experience__heading">
           <p className="section__eyebrow">03 / Experience</p>
 
-          <h2>Where I've worked</h2>
+          <h2>Where I’ve worked</h2>
 
           <p>
-            I've worked on financial software, an aviation application, and
-            now an insurance platform. The roles have involved a mix of
-            application development, testing, and deployment.
+            I’ve worked on financial software, an aviation application, and now
+            an insurance platform. The roles have involved a mix of application
+            development, testing, and deployment.
           </p>
         </div>
 

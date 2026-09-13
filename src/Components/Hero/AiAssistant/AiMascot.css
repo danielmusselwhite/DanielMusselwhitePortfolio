@@ -653,7 +653,7 @@
 }
 
 /*
- * Don't rotate the actual eyes when angry — the eyebrows provide the emotion.
+ * Don't rotate the actual eyes when angry - the eyebrows provide the emotion.
  */
 .ai-blob--annoyed .ai-blob__eye--left,
 .ai-blob--tantrum .ai-blob__eye--left {
@@ -840,7 +840,7 @@
 
 
 /* =========================================================
-   DRAG — GLOW FOLLOWS BLOB
+   DRAG - GLOW FOLLOWS BLOB
    ========================================================= */
 
 /*
@@ -1550,7 +1550,7 @@
 
 
 /* =========================================================
-   PARTY MODE — DANCE + ULTRA RAINBOW GLOW
+   PARTY MODE - DANCE + ULTRA RAINBOW GLOW
    ========================================================= */
 
 .ai-blob--party {
@@ -2001,7 +2001,7 @@
 
 
 /* =========================================================
-   PARTY GLOW — TRUE RAINBOW + CENTRED
+   PARTY GLOW - TRUE RAINBOW + CENTRED
    ========================================================= */
 
 /*
@@ -2160,7 +2160,7 @@
 
 
 /* =========================================================
-   PARTY GLOW — FINAL CLEAN VERSION
+   PARTY GLOW - FINAL CLEAN VERSION
    1) always behind mascot
    2) same rainbow hue cycle as mascot
    3) subtle size + intensity breathing
@@ -2260,7 +2260,7 @@
 }
 
 /*
- * Gentle breathing only — small size and intensity change.
+ * Gentle breathing only - small size and intensity change.
  */
 @keyframes ai-blob-party-aura-breathe {
     from {
@@ -2305,7 +2305,7 @@
 
 
 /* =========================================================
-   PARTY AURA — DEDICATED LAYER
+   PARTY AURA - DEDICATED LAYER
    ---------------------------------------------------------
    This intentionally does NOT reuse .ai-blob__glow.
    Older glow rules can therefore no longer fight the party aura.
@@ -2579,7 +2579,7 @@
 }
 
 /*
- * Move the entire stage — mascot + aura + particles — as one object.
+ * Move the entire stage - mascot + aura + particles - as one object.
  */
 .ai-blob--party .ai-blob__party-stage {
     animation:
@@ -3000,7 +3000,7 @@
 
 
 /* =========================================================
-   PARTY DRAG — STRUCTURAL FINAL FIX
+   PARTY DRAG - STRUCTURAL FINAL FIX
    ---------------------------------------------------------
    .ai-blob__party-drag owns pointer dragging.
    .ai-blob__party-stage owns the dance.
@@ -3045,7 +3045,7 @@
 }
 
 /* =========================================================
-   PARTY GLOW — SINGLE SOURCE OF TRUTH
+   PARTY GLOW - SINGLE SOURCE OF TRUTH
    ---------------------------------------------------------
    Suppress every legacy glow source while party is active.
    Only .ai-blob__party-glow is allowed to render an aura.

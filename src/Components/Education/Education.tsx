@@ -2,7 +2,7 @@ const educationItems = [
   {
     institution: "University College London",
     degree: "MSc Software Systems Engineering",
-    dates: "Sep 2021 — Sep 2022",
+    dates: "Sep 2021 - Sep 2022",
     grade: "Distinction · 76%",
     highlights: [
       "Worked on team projects with Microsoft London, including multitenant support for Microsoft Learn LTI.",
@@ -12,7 +12,7 @@ const educationItems = [
   {
     institution: "University of Nottingham",
     degree: "BSc (Hons) Computer Science & Artificial Intelligence",
-    dates: "2018 — 2021",
+    dates: "2018 - 2021",
     grade: "First-Class Honours · 81%",
     highlights: [
       "Graduated within the top 5% of the cohort and received the High Achievers Award.",
@@ -28,10 +28,13 @@ export default function Education() {
         <div className="education__heading">
           <p className="section__eyebrow">04 / Education</p>
 
-          <h2>
-            Where I studied
-          </h2>
+          <h2>Where I studied</h2>
 
+          <p>
+            I studied Computer Science with AI at Nottingham, then Software
+            Systems Engineering at UCL. My MSc included team projects with
+            Microsoft London.
+          </p>
         </div>
 
         <div className="education-list">

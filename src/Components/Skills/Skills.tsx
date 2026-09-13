@@ -1,20 +1,20 @@
 const expertise = [
   {
     number: "01",
-    title: "From a question to a feature",
-    text: "At GAMIT, I worked directly with customers on RDOC. That meant understanding what they needed, building it, and supporting it after release.",
-    skills: ["C# / .NET", "React / TypeScript", "Angular", "WPF / Blazor"],
+    title: "Applications, end to end.",
+    text: "From customer requirements to the interface and the services behind it. Clear boundaries, useful features, and maintainable code.",
+    skills: ["C# / .NET", "React / TypeScript", "Python", "WPF / Blazor"],
   },
   {
     number: "02",
-    title: "Understanding the pieces",
-    text: "CommerceFabric is where I explore how services communicate and own their data. IncidentIQ takes that further with queued analysis jobs and retrieval for AI responses.",
+    title: "Systems that work together.",
+    text: "Service boundaries, asynchronous workflows, data ownership, and the trade-offs that come with building distributed software.",
     skills: ["ASP.NET Core", "Service Bus / RabbitMQ", "SQL / NoSQL", "Redis"],
   },
   {
     number: "03",
-    title: "The work around the code",
-    text: "At SS&C, I worked on Jenkins pipelines and test automation alongside application changes. At Websure, that work includes Azure infrastructure and Bicep.",
+    title: "Built to be delivered.",
+    text: "Infrastructure, automated tests, and deployment are part of the product. I enjoy taking responsibility for the whole journey.",
     skills: [
       "Azure / Kubernetes",
       "Docker / Bicep",

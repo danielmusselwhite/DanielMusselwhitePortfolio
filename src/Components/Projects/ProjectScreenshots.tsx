@@ -51,7 +51,7 @@ export default function ProjectScreenshots({ project }: { project: Project }) {
         >
           <img
             src={project.images[imageIndex].url}
-            alt={`${project.title} application — ${project.images[imageIndex].fileName.replace(/[_-]/g, " ").replace(/\.png$/i, "")}`}
+            alt={`${project.title} application - ${project.images[imageIndex].fileName.replace(/[_-]/g, " ").replace(/\.png$/i, "")}`}
             loading="lazy"
           />
         </a>

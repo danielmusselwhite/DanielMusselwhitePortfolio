@@ -1,4 +1,4 @@
-# Daniel Musselwhite — Portfolio
+# Daniel Musselwhite - Portfolio
 
 A modern, interactive developer portfolio built to showcase my projects, technical skills, professional experience, education, and background.
 

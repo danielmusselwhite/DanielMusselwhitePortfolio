@@ -8,16 +8,16 @@ export default function About() {
                         <div>
                             <p className="eyebrow">02 / How I work</p>
                             <h2>
-                                What I enjoy
+                                How I approach
                                 <br />
-                                about the work
+                                software
                             </h2>
                         </div>
                         <p>
                             I like being involved beyond a single feature: understanding the
                             problem, working out how the pieces fit together, and seeing what
-                            happens when the software is used. Here's what that has looked
-                            like in practice.
+                            happens when the software is used. These are the areas I work
+                            across most often.
                         </p>
                     </div>
                     <Skills />
