@@ -4,3 +4,9 @@
     "src/assets/portfolio-context.txt",
     "src/assets/Projects/**/project.json"
   ]
+
+[dev]
+  command = "npm run dev"
+  targetPort = 5173
+  port = 8888
+  framework = "#custom"

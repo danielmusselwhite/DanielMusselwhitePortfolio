@@ -1046,26 +1046,14 @@ export default function AiMascot({
                                 </feDisplacementMap>
                             </filter>
 
-                            <linearGradient
-                                id="ai-blob-fill"
-                                x1="72"
-                                y1="58"
-                                x2="252"
-                                y2="270"
-                                gradientUnits="userSpaceOnUse"
-                            >
-                                <stop
-                                    offset="0%"
-                                    stopColor="var(--blob-highlight)"
-                                />
-                                <stop
-                                    offset="52%"
-                                    stopColor="var(--blob-main)"
-                                />
-                                <stop
-                                    offset="100%"
-                                    stopColor="var(--blob-shadow)"
-                                />
+                            {/* Repeated stops create flat comic-style light, midtone, and shadow bands. */}
+                            <linearGradient id="ai-blob-fill" x1="72" y1="58" x2="252" y2="270" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stopColor="var(--blob-highlight)" />
+                                <stop offset="24%" stopColor="var(--blob-highlight)" />
+                                <stop offset="24%" stopColor="var(--blob-main)" />
+                                <stop offset="72%" stopColor="var(--blob-main)" />
+                                <stop offset="72%" stopColor="var(--blob-shadow)" />
+                                <stop offset="100%" stopColor="var(--blob-shadow)" />
                             </linearGradient>
 
                             <radialGradient
@@ -1120,12 +1108,24 @@ export default function AiMascot({
                                     stopOpacity="0"
                                 />
                             </linearGradient>
+                            <pattern id="bloop-halftone" width="8" height="8" patternUnits="userSpaceOnUse">
+                                <circle cx="2" cy="2" r="1.5" fill="var(--blob-main)" />
+                            </pattern>
+                            <radialGradient id="bloop-aura-fade">
+                                <stop offset="45%" stopColor="white" />
+                                <stop offset="100%" stopColor="black" />
+                            </radialGradient>
+                            <mask id="bloop-aura-mask" x="-50" y="-40" width="420" height="400" maskUnits="userSpaceOnUse">
+                                <ellipse cx="160" cy="160" rx="205" ry="195" fill="url(#bloop-aura-fade)" />
+                            </mask>
                         </defs>
 
                         <g
                             ref={dragRef}
                             className="ai-blob__drag"
                         >
+                            <ellipse className="ai-blob__comic-aura" cx="160" cy="160" rx="205" ry="195"
+                                fill="url(#bloop-halftone)" mask="url(#bloop-aura-mask)" pointerEvents="none" />
                             <g className="ai-blob__lean">
                                 <g className="ai-blob__tickle">
                                     <g className="ai-blob__floating">

@@ -1,509 +1,317 @@
-import "./App.css";
-
-import { useEffect, useRef, useState } from "react";
-
-import About from "./Components/About/About";
-import Contact from "./Components/Contact/Contact";
-import Education from "./Components/Education/Education";
+import { useEffect, useState } from "react";
+import AiAssistant from "./Components/Hero/AiAssistant/AiAssistant";
 import Experience from "./Components/Experience/Experience";
-import Hero from "./Components/Hero/Hero";
-import Navbar from "./Components/Navbar/Navbar";
-import Projects from "./Components/Projects/Projects";
-import Skills from "./Components/Skills/Skills";
+import Education from "./Components/Education/Education";
+import { loadProjects } from "./Utils/loadProjects";
+import WorkbenchProject from "./Components/Projects/WorkbenchProject";
+import ProjectFeature from "./Components/Projects/ProjectFeature";
+import CurrentlyBuilding from "./Components/Projects/CurrentlyBuilding";
+import ParticleBackground from "./Components/ParticleBackground";
+import "./App.css";
+import "./styles/Comic.css";
+import "./styles/Sections.css";
 
-type Particle = {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  radius: number;
-  alpha: number;
-};
+// Retain project assets and metadata so these can be restored later.
+const hiddenProjects = new Set(["Activity Web App", "Developer Portfolio"]);
+const projects = loadProjects().filter(project => !hiddenProjects.has(project.title));
+const expertise = [
+  {
+    number: "01",
+    title: "Applications, end to end.",
+    text: "From customer requirements to the interface and the services behind it. Clear boundaries, useful features, and maintainable code.",
+    skills: ["C# / .NET", "React / TypeScript", "Angular", "WPF / Blazor"],
+  },
+  {
+    number: "02",
+    title: "Systems that work together.",
+    text: "Service boundaries, asynchronous workflows, data ownership, and the trade-offs that come with building distributed software.",
+    skills: ["ASP.NET Core", "Service Bus / RabbitMQ", "SQL / NoSQL", "Redis"],
+  },
+  {
+    number: "03",
+    title: "Built to be delivered.",
+    text: "Infrastructure, automated tests, and deployment are part of the product. I enjoy taking responsibility for the whole journey.",
+    skills: [
+      "Azure / Kubernetes",
+      "Docker / Bicep",
+      "GitHub Actions / Jenkins",
+      "xUnit / PyTest",
+    ],
+  },
+];
 
-type Theme = "dark" | "light";
+function Arrow() { return <span aria-hidden="true">↗</span>; }
 
-function getInitialTheme(): Theme {
-  if (typeof window === "undefined") {
-    return "dark";
-  }
-
-  return window.localStorage.getItem("portfolio-theme") === "light"
-    ? "light"
-    : "dark";
-}
-
-function getViewportCentre() {
-  if (typeof window === "undefined") {
-    return { x: 0, y: 0 };
-  }
-
-  return {
-    x: window.innerWidth / 2,
-    y: window.innerHeight / 2,
-  };
-}
-
-function App() {
-  const [theme, setTheme] = useState<Theme>(getInitialTheme);
-
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const pointerRef = useRef(getViewportCentre());
-  const glowRef = useRef(getViewportCentre());
-  const themeRef = useRef(theme);
-
+export default function App() {
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    try {
+      return localStorage.getItem("portfolio-theme") === "light"
+        ? "light"
+        : "dark";
+    } catch {
+      return "dark";
+    }
+  });
+  const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
-    window.localStorage.setItem("portfolio-theme", theme);
+    document.documentElement.dataset.theme = theme;
     document.documentElement.style.colorScheme = theme;
-    themeRef.current = theme;
+    try {
+      localStorage.setItem("portfolio-theme", theme);
+    } catch {
+      /* Theme still works without storage. */
+    }
   }, [theme]);
-
   useEffect(() => {
-    const html = document.documentElement;
-    const loader = document.getElementById("boot-loader");
-
-    let secondFrameId = 0;
-    let removalTimerId = 0;
-
-    const removeLoader = () => {
-      loader?.remove();
+    const close = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
     };
-
-    const firstFrameId = window.requestAnimationFrame(() => {
-      secondFrameId = window.requestAnimationFrame(() => {
-        html.classList.add("app-ready");
-
-        if (loader) {
-          loader.addEventListener("transitionend", removeLoader, {
-            once: true,
-          });
-
-          // Fallback for browsers that skip transitionend.
-          removalTimerId = window.setTimeout(removeLoader, 900);
-        }
-      });
-    });
-
-    return () => {
-      window.cancelAnimationFrame(firstFrameId);
-      window.cancelAnimationFrame(secondFrameId);
-      window.clearTimeout(removalTimerId);
-      loader?.removeEventListener("transitionend", removeLoader);
-    };
+    window.addEventListener("keydown", close);
+    return () => window.removeEventListener("keydown", close);
   }, []);
-
-  useEffect(() => {
-    const finePointer = window.matchMedia("(pointer: fine)");
-
-    const handlePointerMove = (event: PointerEvent) => {
-      pointerRef.current.x = event.clientX;
-      pointerRef.current.y = event.clientY;
-    };
-
-    const resetPointer = () => {
-      pointerRef.current.x = window.innerWidth / 2;
-      pointerRef.current.y = window.innerHeight / 2;
-    };
-
-    let pointerListenerAttached = false;
-
-    const attachPointerListener = () => {
-      if (!finePointer.matches || pointerListenerAttached) {
-        return;
-      }
-
-      window.addEventListener("pointermove", handlePointerMove, {
-        passive: true,
-      });
-      pointerListenerAttached = true;
-    };
-
-    const detachPointerListener = () => {
-      if (!pointerListenerAttached) {
-        return;
-      }
-
-      window.removeEventListener("pointermove", handlePointerMove);
-      pointerListenerAttached = false;
-    };
-
-    const handlePointerCapabilityChange = () => {
-      if (finePointer.matches) {
-        attachPointerListener();
-      } else {
-        detachPointerListener();
-        resetPointer();
-      }
-    };
-
-    attachPointerListener();
-    window.addEventListener("pointerleave", resetPointer);
-    window.addEventListener("blur", resetPointer);
-    finePointer.addEventListener("change", handlePointerCapabilityChange);
-
-    return () => {
-      detachPointerListener();
-      window.removeEventListener("pointerleave", resetPointer);
-      window.removeEventListener("blur", resetPointer);
-      finePointer.removeEventListener(
-        "change",
-        handlePointerCapabilityChange,
-      );
-    };
-  }, []);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-
-    if (!canvas) {
-      return undefined;
-    }
-
-    const ctx = canvas.getContext("2d", { alpha: true });
-
-    if (!ctx) {
-      return undefined;
-    }
-
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    );
-    const finePointer = window.matchMedia("(pointer: fine)");
-    const mobileViewport = window.matchMedia("(max-width: 768px)");
-
-    let animationFrameId: number | null = null;
-    let resizeFrameId: number | null = null;
-    let particles: Particle[] = [];
-    let width = window.innerWidth;
-    let height = window.innerHeight;
-    let running = !document.hidden;
-    let lastFrameTime = 0;
-
-    const initialArea = width * height;
-    const particleCount = Math.max(
-      20,
-      Math.min(900, Math.round(initialArea / 20000)),
-    );
-
-    const getFrameInterval = () => {
-      if (reducedMotion.matches) {
-        return 1000 / 15;
-      }
-
-      return mobileViewport.matches ? 1000 / 30 : 1000 / 60;
-    };
-
-    const setupParticles = () => {
-      particles = Array.from({ length: particleCount }, () => ({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.75,
-        vy: (Math.random() - 0.5) * 0.75,
-        radius: Math.random() * 2.5 + 1.2,
-        alpha: Math.random() * 0.8 + 0.2,
-      }));
-    };
-
-    const resizeCanvas = () => {
-      width = window.innerWidth;
-      height = window.innerHeight;
-
-      // Decorative canvases do not need full phone DPR. A DPR of 3 can turn a
-      // 390x844 viewport into a roughly 1170x2532 canvas every frame.
-      const ratio = mobileViewport.matches
-        ? 1
-        : Math.min(window.devicePixelRatio || 1, 1.5);
-
-      canvas.width = Math.round(width * ratio);
-      canvas.height = Math.round(height * ratio);
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
-
-      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-
-      if (!finePointer.matches) {
-        pointerRef.current.x = width / 2;
-        pointerRef.current.y = height / 2;
-      }
-
-      glowRef.current.x = pointerRef.current.x;
-      glowRef.current.y = pointerRef.current.y;
-    };
-
-    const requestNextFrame = () => {
-      if (!running || animationFrameId !== null) {
-        return;
-      }
-
-      animationFrameId = window.requestAnimationFrame(draw);
-    };
-
-    const draw = (timestamp: number) => {
-      animationFrameId = null;
-
-      if (!running) {
-        return;
-      }
-
-      const frameInterval = getFrameInterval();
-
-      if (timestamp - lastFrameTime < frameInterval) {
-        requestNextFrame();
-        return;
-      }
-
-      lastFrameTime = timestamp;
-
-      glowRef.current.x +=
-        (pointerRef.current.x - glowRef.current.x) * 0.08;
-      glowRef.current.y +=
-        (pointerRef.current.y - glowRef.current.y) * 0.08;
-
-      // The CSS cursor glow is useful on desktop, but touch devices do not have
-      // a continuously moving cursor. Leave it centred on coarse-pointer devices.
-      document.documentElement.style.setProperty(
-        "--pointer-x",
-        `${glowRef.current.x}px`,
-      );
-      document.documentElement.style.setProperty(
-        "--pointer-y",
-        `${glowRef.current.y}px`,
-      );
-
-      ctx.clearRect(0, 0, width, height);
-
-      const particleRgb =
-        themeRef.current === "light" ? "15, 135, 113" : "110, 231, 209";
-
-      for (let i = 0; i < particles.length; i += 1) {
-        const particle = particles[i];
-
-        particle.x += particle.vx;
-        particle.y += particle.vy;
-
-        if (particle.x < 0 || particle.x > width) {
-          particle.vx *= -1;
-        }
-
-        if (particle.y < 0 || particle.y > height) {
-          particle.vy *= -1;
-        }
-
-        const dx = particle.x - glowRef.current.x;
-        const dy = particle.y - glowRef.current.y;
-        const distance = Math.hypot(dx, dy) || 1;
-
-        if (finePointer.matches && distance < 180) {
-          particle.x += (dx / distance) * 0.7;
-          particle.y += (dy / distance) * 0.7;
-        }
-
-        ctx.beginPath();
-        ctx.fillStyle = `rgba(${particleRgb}, ${particle.alpha})`;
-        ctx.arc(
-          particle.x,
-          particle.y,
-          particle.radius,
-          0,
-          Math.PI * 2,
-        );
-        ctx.fill();
-      }
-
-      for (let i = 0; i < particles.length; i += 1) {
-        for (let j = i + 1; j < particles.length; j += 1) {
-          const a = particles[i];
-          const b = particles[j];
-
-          const dx = a.x - b.x;
-          const dy = a.y - b.y;
-          const distance = Math.hypot(dx, dy);
-
-          if (distance < 110) {
-            const opacity = (1 - distance / 110) * 0.45;
-
-            ctx.beginPath();
-            ctx.strokeStyle = `rgba(${particleRgb}, ${opacity})`;
-            ctx.lineWidth = 1;
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
-            ctx.stroke();
-          }
-        }
-      }
-
-      const glowSize = mobileViewport.matches ? 105 : 140;
-      const glowGradient = ctx.createRadialGradient(
-        glowRef.current.x,
-        glowRef.current.y,
-        0,
-        glowRef.current.x,
-        glowRef.current.y,
-        glowSize,
-      );
-
-      glowGradient.addColorStop(0, `rgba(${particleRgb}, 0.22)`);
-      glowGradient.addColorStop(0.5, `rgba(${particleRgb}, 0.08)`);
-      glowGradient.addColorStop(1, `rgba(${particleRgb}, 0)`);
-
-      ctx.beginPath();
-      ctx.fillStyle = glowGradient;
-      ctx.arc(
-        glowRef.current.x,
-        glowRef.current.y,
-        glowSize,
-        0,
-        Math.PI * 2,
-      );
-      ctx.fill();
-
-      requestNextFrame();
-    };
-
-    const handleResize = () => {
-      if (resizeFrameId !== null) {
-        return;
-      }
-
-      resizeFrameId = window.requestAnimationFrame(() => {
-        resizeFrameId = null;
-        resizeCanvas();
-      });
-    };
-
-    const handleVisibilityChange = () => {
-      running = !document.hidden;
-
-      if (!running) {
-        if (animationFrameId !== null) {
-          window.cancelAnimationFrame(animationFrameId);
-          animationFrameId = null;
-        }
-        return;
-      }
-
-      lastFrameTime = 0;
-      requestNextFrame();
-    };
-
-    const handlePointerCapabilityChange = () => {
-      if (!finePointer.matches) {
-        pointerRef.current.x = width / 2;
-        pointerRef.current.y = height / 2;
-      }
-    };
-
-    resizeCanvas();
-    setupParticles();
-    requestNextFrame();
-
-    window.addEventListener("resize", handleResize, { passive: true });
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    finePointer.addEventListener("change", handlePointerCapabilityChange);
-
-    return () => {
-      running = false;
-
-      if (animationFrameId !== null) {
-        window.cancelAnimationFrame(animationFrameId);
-      }
-
-      if (resizeFrameId !== null) {
-        window.cancelAnimationFrame(resizeFrameId);
-      }
-
-      window.removeEventListener("resize", handleResize);
-      document.removeEventListener(
-        "visibilitychange",
-        handleVisibilityChange,
-      );
-      finePointer.removeEventListener(
-        "change",
-        handlePointerCapabilityChange,
-      );
-    };
-  }, []);
-
-  useEffect(() => {
-    const sections = document.querySelectorAll<HTMLElement>(".section");
-
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
-    if (prefersReducedMotion) {
-      sections.forEach((section) =>
-        section.classList.add("section--visible"),
-      );
-
-      return undefined;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("section--visible");
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      {
-        threshold: 0.15,
-        rootMargin: "0px 0px -60px 0px",
-      },
-    );
-
-    sections.forEach((section) => observer.observe(section));
-
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <div className={`site-shell site-shell--${theme}`}>
-      <div className="background-grid" aria-hidden="true" />
-
-      <div
-        className="background-glow background-glow--one"
-        aria-hidden="true"
-      />
-
-      <div
-        className="background-glow background-glow--two"
-        aria-hidden="true"
-      />
-
-      <canvas
-        ref={canvasRef}
-        className="particle-canvas"
-        aria-hidden="true"
-      />
-
-      <div className="site-content">
-        <Navbar
-          theme={theme}
-          onToggleTheme={() => {
-            setTheme((current) =>
-              current === "dark" ? "light" : "dark",
-            );
-          }}
-        />
-
-        <main>
-          <Hero />
-          <About />
-          <Skills />
-          <Projects />
-          <Experience />
-          <Education />
-          <Contact />
-        </main>
-
-        <footer className="footer">
-          <p>© {new Date().getFullYear()} Daniel Musselwhite</p>
-        </footer>
-      </div>
+      <ParticleBackground theme={theme} />
+      <a className="skip-link" href="#main">
+        Skip to content
+      </a>
+      <header className="site-header">
+        <a
+          href="#home"
+          className="wordmark"
+          aria-label="Daniel Musselwhite home"
+        >
+          dm<span>.</span>
+        </a>
+        <nav
+          id="navigation"
+          className={menuOpen ? "nav-links is-open" : "nav-links"}
+          aria-label="Primary navigation"
+        >
+          {[
+            ["building", "Building"],
+            ["projects", "Projects"],
+            ["about", "Approach"],
+            ["experience", "Experience"],
+            ["education", "Education"],
+            ["contact", "Contact"],
+          ].map(([id, label]) => (
+            <a key={id} href={`#${id}`} onClick={() => setMenuOpen(false)}>
+              {label}
+            </a>
+          ))}
+        </nav>
+        <div className="header-actions">
+          <button
+            className="theme-toggle"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+          >
+            {theme === "dark" ? "☼" : "☾"}
+          </button>
+          <a
+            className="header-github"
+            href="https://github.com/danielmusselwhite"
+            target="_blank"
+            rel="noreferrer"
+          >
+            GitHub <Arrow />
+          </a>
+          <button
+            className="menu-toggle"
+            aria-label="Toggle navigation"
+            aria-controls="navigation"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            {menuOpen ? "Close" : "Menu"}
+          </button>
+        </div>
+      </header>
+      <main id="main">
+        <div id="home" className="section-band">
+        <section className="intro container">
+          <div className="intro-copy">
+            <p className="eyebrow">
+              <span className="status-dot" /> Daniel Musselwhite · Software
+              Engineer
+            </p>
+            <h1>
+              Big ideas.
+              <br />
+              Real systems.
+              <br />
+              <em>Built with curiosity.</em>
+            </h1>
+            <p className="intro-description">
+              I’m a software engineer working across .NET, Azure and React.
+              My commercial work spans finance, aviation and insurance; my
+              personal projects explore distributed systems and applied AI.
+            </p>
+            <div className="intro-actions">
+              <a className="button button-primary" href="#projects">
+                Explore my work <span aria-hidden="true">↓</span>
+              </a>
+              <a className="text-link" href="#contact">
+                Let’s talk <Arrow />
+              </a>
+            </div>
+            <div className="intro-footnote">
+              <span>BASED IN THE UK</span>
+              <span>BUILDING ACROSS THE STACK</span>
+            </div>
+          </div>
+          <div className="assistant-stage">
+            <div className="assistant-label">
+              <span className="status-dot" /> MEET BLOOP
+              <span>YOUR PORTFOLIO GUIDE</span>
+            </div>
+            <AiAssistant />
+            <p className="assistant-note">
+              A little personality. A lot to ask about.
+            </p>
+          </div>
+        <div className="credentials">
+          <p>
+            Experience across
+            <br />
+            <strong>finance, aviation & insurance</strong>
+          </p>
+          <span>
+            SS&C<span className="credential-sub">TECHNOLOGIES</span>
+          </span>
+          <span>GAMIT</span>
+          <span>Websure</span>
+          <p>
+            Academic foundations
+            <br />
+            <strong>UCL & Nottingham</strong>
+          </p>
+        </div>
+        </section>
+        </div>
+        <div id="building" className="section-band"><CurrentlyBuilding /></div>
+        <div id="projects" className="section-band">
+        <section className="work-section container">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">01 / Selected work</p>
+              <h2>Ideas, engineered.</h2>
+            </div>
+            <p>
+              Personal projects in cloud and desktop engineering.
+              <br />
+              Explore the code and the decisions behind it.
+            </p>
+          </div>
+          {projects.filter(p => ["CommerceFabric", "DotNote"].includes(p.title)).map((project, index) => (
+            <ProjectFeature key={project.slug} project={project} index={index + 1} />
+          ))}
+          <div className="more-work-heading">
+            <h3>More from the workbench</h3>
+            <span>EXPERIMENTS & SMALLER BUILDS</span>
+          </div>
+          <div className="more-work">
+            {projects
+              .filter((p) => !["CommerceFabric", "DotNote"].includes(p.title))
+              .map((project) => (
+                <WorkbenchProject key={project.slug} project={project} />
+              ))}
+          </div>
+        </section>
+        </div>
+        <div id="about" className="section-band">
+        <section className="approach-section">
+          <div className="container">
+            <div className="section-heading">
+              <div>
+                <p className="eyebrow">02 / How I work</p>
+                <h2>
+                  The whole system
+                  <br />
+                  is the interesting part.
+                </h2>
+              </div>
+              <p>
+                I work across requirements, application code, testing and
+                deployment. At GAMIT, I led RDOC from customer conversations
+                through release; at Websure, I’m helping modernise a legacy
+                insurance platform with APIs and Azure services.
+              </p>
+            </div>
+            <div id="skills" className="expertise-grid">
+              {expertise.map((item) => (
+                <article key={item.number}>
+                  <span className="expertise-number">{item.number} /</span>
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
+                  <ul>
+                    {item.skills.map((skill) => (
+                      <li key={skill}>{skill}</li>
+                    ))}
+                  </ul>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+        </div>
+        <div id="experience" className="section-band"><Experience /></div>
+        <div id="education" className="section-band"><Education /></div>
+        <div id="contact" className="section-band">
+        <section className="contact-section container">
+          <p className="eyebrow">05 / Next conversation</p>
+          <div className="contact-heading">
+            <h2>
+              Good software starts
+              <br />
+              with a conversation<span>.</span>
+            </h2>
+            <a
+              className="contact-arrow"
+              href="mailto:danielmusselwhite@outlook.com"
+              aria-label="Email Daniel"
+            >
+              <Arrow />
+            </a>
+          </div>
+          <div className="contact-socials">
+            <a className="text-link" href="https://www.linkedin.com/in/daniel-musselwhite/" target="_blank" rel="noreferrer">Connect on LinkedIn <Arrow /></a>
+          </div>
+          <div className="contact-bottom">
+            <p>
+              Have an interesting engineering challenge or a role in mind?
+              <br />
+              I’d like to hear about it.
+            </p>
+            <a href="mailto:danielmusselwhite@outlook.com">
+              danielmusselwhite@outlook.com <Arrow />
+            </a>
+          </div>
+        </section>
+        </div>
+      </main>
+      <footer className="site-footer container">
+        <p>© {new Date().getFullYear()} Daniel Musselwhite</p>
+        <span>Built with care. And a little help from Bloop.</span>
+        <div>
+          <a
+            href="https://github.com/danielmusselwhite"
+            target="_blank"
+            rel="noreferrer"
+          >
+            GitHub <Arrow />
+          </a>
+          <a
+            href="https://www.linkedin.com/in/daniel-musselwhite/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            LinkedIn <Arrow />
+          </a>
+          <a href="#home">Back to top ↑</a>
+        </div>
+      </footer>
     </div>
   );
 }
-
-export default App;

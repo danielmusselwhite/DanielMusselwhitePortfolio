@@ -8,21 +8,23 @@ For more technical information please see the [Technical Documentation](./docs/T
 
 ## ✨ Features
 
-* Responsive single-page portfolio
-* Light and dark theme support
-* Persistent theme preference using local storage
-* Interactive animated particle background
-* Pointer-reactive visual effects
-* Scroll-based section animations
-* Reduced-motion accessibility support
-* Projects showcase
-* Technical skills section
-* Professional experience timeline
-* Education section
-* Contact information
-* AI-powered portfolio assistant
-* Netlify serverless backend
-* Responsive design for desktop and mobile
+- Responsive single-page portfolio
+- Light and dark theme support
+- Persistent theme preference using local storage
+- Bold teal-and-navy design with comic-inspired panels and interactive particles
+- Fixed navigation that remains visible while scrolling
+- Currently building section featuring IncidentIQ with a WIP badge
+- Expandable engineering case studies
+- Manually controlled project screenshot galleries
+- Reduced-motion accessibility support
+- Projects showcase
+- Technical skills section
+- Professional experience timeline
+- Education section
+- Contact information
+- AI-powered portfolio assistant
+- Netlify serverless backend
+- Responsive design for desktop and mobile
 
 ## 🌐 Project Architecture
 
@@ -32,24 +34,24 @@ For more technical information please see the [Technical Documentation](./docs/T
 
 ### Frontend
 
-* **React 19**
-* **TypeScript**
-* **Vite**
-* **CSS**
-* **React Markdown**
-* **Remark GFM**
+- **React 19**
+- **TypeScript**
+- **Vite**
+- **CSS**
+- **React Markdown**
+- **Remark GFM**
 
 ### Backend & Hosting
 
-* **Netlify**
-* **Netlify Functions**
-* **OpenAI Responses API**
+- **Netlify**
+- **Netlify Functions**
+- **OpenAI Responses API**
 
 ### Development
 
-* **Oxlint**
-* **TypeScript Compiler**
-* **npm**
+- **Oxlint**
+- **TypeScript Compiler**
+- **npm**
 
 ## 🤖 AI Portfolio Assistant
 
@@ -59,13 +61,13 @@ The assistant is implemented as a **Netlify Function** and communicates with the
 
 The backend:
 
-* Keeps the OpenAI API key server-side
-* Provides portfolio-specific context to the model
-* Accepts conversational questions from visitors
-* Restricts the assistant to portfolio-related topics
-* Includes request validation and error handling
-* Implements rate limiting
-* Supports configurable OpenAI models
+- Keeps the OpenAI API key server-side
+- Provides portfolio-specific context to the model
+- Accepts conversational questions from visitors
+- Restricts the assistant to portfolio-related topics
+- Includes request validation and error handling
+- Implements rate limiting
+- Supports configurable OpenAI models
 
 The API endpoint is:
 
@@ -115,12 +117,12 @@ DanielMusselwhitePortfolio/
 
 Make sure you have the following installed:
 
-* [Node.js](https://nodejs.org/)
-* npm
+- [Node.js](https://nodejs.org/)
+- npm
 
 ### Clone the Repository
 
-```bash
+```powershell
 git clone https://github.com/danielmusselwhite/DanielMusselwhitePortfolio.git
 
 cd DanielMusselwhitePortfolio
@@ -128,7 +130,7 @@ cd DanielMusselwhitePortfolio
 
 ### Install Dependencies
 
-```bash
+```powershell
 npm install
 ```
 
@@ -152,7 +154,7 @@ OPENAI_MODEL=your_model_name
 
 Because the AI assistant is implemented using a Netlify Function, local development should be started using **Netlify Dev** rather than running the Vite development server directly.
 
-```bash
+```powershell
 npx netlify dev
 ```
 
@@ -184,25 +186,25 @@ When deploying to Netlify, configure these values through Netlify's environment 
 
 To run the full application locally, including the Netlify Function used by the AI assistant:
 
-```bash
+```powershell
 npx netlify dev
 ```
 
 ### Create a production build
 
-```bash
+```powershell
 npm run build
 ```
 
 ### Preview the production build
 
-```bash
+```powershell
 npm run preview
 ```
 
 ### Run the linter
 
-```bash
+```powershell
 npm run lint
 ```
 
@@ -212,18 +214,13 @@ The portfolio includes both dark and light themes.
 
 The selected theme is stored in the browser using `localStorage`, allowing the visitor's preference to persist between sessions.
 
-## 🎨 Interactive Background
+## 🎨 Portfolio design
 
-The site includes a custom canvas-based particle system featuring:
+The homepage puts selected engineering projects first, followed by technical approach, commercial experience, education, and contact details. Project case studies describe the challenge, approach, and result using the existing project metadata.
 
-* Dynamically generated particles
-* Connections between nearby particles
-* Cursor interaction
-* Pointer-following glow effects
-* Theme-aware colours
-* Responsive particle counts based on viewport size
+Bloop's mascot implementation and AI chat logic are preserved. The surrounding page is styled in `src/App.css`, including responsive layouts and both themes. The mascot and chat retain their component styles.
 
-The animation also respects the user's `prefers-reduced-motion` accessibility setting for section transitions.
+Screenshot galleries are manually controlled. Case studies use native expandable details, navigation supports keyboard focus, and reduced-motion preferences are respected.
 
 ## ☁️ Deployment
 

@@ -9,6 +9,7 @@ import type { AiBlobState } from "./AiMascot";
 import "./AiChat.css";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { readChatAnswer } from "./chatResponse";
 
 interface AiChatProps {
     assistantState: AiBlobState;
@@ -21,11 +22,6 @@ interface ChatMessage {
     id: number;
     role: "user" | "assistant";
     content: string;
-}
-
-interface ChatApiResponse {
-    answer?: string;
-    error?: string;
 }
 
 const initialMessages: ChatMessage[] = [
@@ -426,15 +422,7 @@ export default function AiChat({
                 },
             );
 
-            const data =
-                (await response.json()) as ChatApiResponse;
-
-            if (!response.ok || !data.answer) {
-                throw new Error(
-                    data.error ||
-                    "The assistant could not reply.",
-                );
-            }
+            const answer = await readChatAnswer(response);
 
             if (busyTimerRef.current !== null) {
                 window.clearTimeout(
@@ -448,7 +436,7 @@ export default function AiChat({
                 {
                     id: nextIdRef.current++,
                     role: "assistant",
-                    content: data.answer!,
+                    content: answer,
                 },
             ]);
 
@@ -484,7 +472,7 @@ export default function AiChat({
                     id: nextIdRef.current++,
                     role: "assistant",
                     content:
-                        "I couldn't reach the assistant backend. " +
+                        "I couldn't get a reply. " +
                         message,
                 },
             ]);

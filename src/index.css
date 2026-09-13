@@ -1,87 +1,72 @@
 :root {
-  --bg: #0b1117;
-  --bg-strong: #101a22;
-  --panel: rgba(14, 24, 30, 0.9);
-  --panel-soft: rgba(19, 30, 38, 0.8);
-  --panel-strong: #0f1c24;
-  --text: #e2edf3;
-  --muted: #9eb8c4;
-  --accent: #6ee7d1;
-  --accent-rgb: 110, 231, 209;
-  --accent-strong: #7bd7cb;
-  --accent-soft: rgba(110, 231, 209, 0.12);
-  --border: rgba(148, 163, 184, 0.14);
-  --shadow: rgba(2, 6, 23, 0.4);
-  --sans: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --mono: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
-
-  font-family: var(--sans);
-  line-height: 1.5;
-  font-weight: 400;
-  color: var(--text);
-  background: var(--bg);
-  color-scheme: dark;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #080f1d;
+  color: #edf5ff;
+  --sans: Inter, "Segoe UI", Arial, sans-serif;
+  --mono: "SFMono-Regular", Consolas, monospace;
+  --accent: #6ee7d1;
+  --accent-rgb: 110, 231, 209;
 }
-
 * {
   box-sizing: border-box;
 }
-
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 100px;
 }
-
 body {
   margin: 0;
   min-width: 320px;
-  background:
-    radial-gradient(circle at top, rgba(94, 234, 212, 0.12), transparent 28%),
-    linear-gradient(180deg, #0b1117 0%, #0d171f 100%);
-  color: var(--text);
 }
-
-body,
+button,
+input {
+  font: inherit;
+}
 button,
 a {
-  font-family: var(--sans);
+  -webkit-tap-highlight-color: transparent;
 }
-
-#root {
-  min-height: 100vh;
+button {
+  cursor: pointer;
 }
-
-main {
-  display: block;
+a {
+  color: inherit;
+  text-decoration: none;
 }
-
 img {
   max-width: 100%;
+  display: block;
 }
-
 h1,
 h2,
 h3,
 h4,
-p,
-figure,
-blockquote {
-  margin: 0;
-}
-
 p {
   margin: 0;
 }
-
-code,
-pre {
-  font-family: var(--mono);
+button:focus-visible,
+a:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
 }
-
 ::selection {
-  background: rgba(110, 231, 209, 0.28);
-  color: #ecfeff;
+  background: #6ee7d1;
+  color: #172018;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -1,0 +1,35 @@
+const incidentIQ = {
+  title: "IncidentIQ",
+  repository: "https://github.com/danielmusselwhite/IncidentIQ",
+  technologies: [".NET", "React", "Azure", "Cosmos DB", "RAG", "Service Bus"],
+};
+
+export default function CurrentlyBuilding() {
+  return (
+    <section className="building-section container" aria-labelledby="building-title">
+      <div className="building-heading">
+        <p className="eyebrow">On my workbench</p>
+        <span className="wip-badge">WIP · IN DEVELOPMENT</span>
+      </div>
+      <div className="building-grid">
+        <div>
+          <h2 id="building-title">Currently building<span>_</span></h2>
+          <h3>{incidentIQ.title}</h3>
+          <p>An AI-powered incident analysis tool. I’m building it to help engineers investigate failures using relevant past incidents and operational runbooks, with evidence behind the suggested causes and next steps.</p>
+          <div className="tags">{incidentIQ.technologies.map(technology => <span key={technology}>{technology}</span>)}</div>
+          <a className="button button-primary" href={incidentIQ.repository} target="_blank" rel="noreferrer">Follow the build on GitHub <span aria-hidden="true">↗</span></a>
+        </div>
+        <aside className="build-notes" aria-label="IncidentIQ design goals">
+          <span className="build-notes-label">THE IDEA</span>
+          <h4>Less digging.<br />More understanding.</h4>
+          <ul>
+            <li>Process incident analysis asynchronously</li>
+            <li>Retrieve relevant incidents and runbooks</li>
+            <li>Generate explanations grounded in evidence</li>
+          </ul>
+          <p>Active personal project · Features evolving</p>
+        </aside>
+      </div>
+    </section>
+  );
+}

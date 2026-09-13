@@ -1,0 +1,135 @@
+/* One rhythm: particles, printed halftone, repeat. Content may exceed a viewport. */
+.site-shell { --header-height: 98px; }
+.section-band {
+  min-height: calc(100svh - var(--header-height));
+  display: flex;
+  align-items: center;
+  padding-block: clamp(48px, 7vh, 88px);
+  position: relative;
+  border-bottom: 1px solid var(--border);
+}
+.section-band:nth-child(even) {
+  background-color: var(--surface-alt);
+  background-image: radial-gradient(rgba(var(--accent-rgb), .16) .9px, transparent 1px);
+  background-size: 8px 8px;
+}
+.section-band > section { flex: 1; min-width: 0; }
+.section-band > .container { flex: none; }
+.section-band .intro { padding-block: 0; }
+.intro .credentials { grid-column: 1 / -1; width: 100%; margin-top: 12px; }
+.section-band .building-section { margin-block: 0; }
+.section-band .work-section { padding-block: 0; }
+.section-band .approach-section,
+.site-shell .section-band .section { padding-block: 0; border: 0; background: transparent; }
+.section-band .contact-section { margin-block: 0; background: var(--surface); }
+.site-shell .education-card:nth-child(2),
+.expertise-grid article:nth-child(2) { border-top-color: var(--accent); }
+.site-shell .experience:first-child { border-left-color: var(--accent); }
+.more-work { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+/* Frameless Bloop, with ink contours and cel-shaded colour bands. */
+.site-shell .assistant-stage {
+  border: 0; border-radius: 0; background: transparent;
+  box-shadow: none; padding: 0; isolation: isolate;
+}
+.assistant-stage .assistant-label { justify-content: center; gap: 8px; }
+.assistant-stage .assistant-label > span:last-child { display: none; }
+.assistant-stage .assistant-label .status-dot { background: var(--yellow); margin: 0; }
+.assistant-stage .ai-blob__glow,
+.assistant-stage .ai-blob::before,
+.assistant-stage .ai-blob__body--back,
+.assistant-stage .ai-blob__shine,
+.assistant-stage .ai-blob__shimmer { display: none; }
+.assistant-stage .ai-blob__svg { filter: drop-shadow(5px 7px 0 rgba(5, 23, 37, .65)); }
+.assistant-stage .ai-blob__body:not(.ai-blob__body--back) { stroke: #102b37; stroke-width: 4; stroke-linejoin: round; paint-order: stroke fill; }
+.assistant-stage .ai-blob__sclera { stroke: #102b37; stroke-width: 2.5; }
+.assistant-stage .assistant-note { background: var(--yellow); color: var(--ink); border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); padding: 7px 12px; }
+@media (max-width: 760px) {
+  .site-shell { --header-height: 76px; }
+  .section-band { padding-block: 44px; }
+  .more-work { grid-template-columns: 1fr; }
+
+}
+
+/* Anchor the band itself exactly beneath the fixed header. */
+html { scroll-padding-top: 98px; }
+.intro-actions { flex-wrap: wrap; }
+.section-band:nth-child(even) .section-heading,
+.section-band:nth-child(even) .education__heading {
+  padding: 28px; background: var(--surface); border: 2px solid var(--border);
+  box-shadow: 5px 5px 0 rgba(var(--accent-rgb), .16);
+}
+.site-shell .section-band:nth-child(even) .education__heading { max-width: 780px; }
+/* The SVG aura shares the actual drag group, including spring return. */
+.assistant-stage .ai-blob__comic-aura { opacity: .65; }
+.assistant-stage .ai-blob__party-glow,
+.assistant-stage .ai-blob__party-orbs { display: none !important; }
+.assistant-stage .ai-blob--party .ai-blob__comic-aura {
+  opacity: .95; animation: bloop-comic-aura var(--party-speed, 3.2s) linear infinite;
+}
+@keyframes bloop-comic-aura { to { filter: hue-rotate(360deg); } }
+@media (max-width: 760px) {
+  html { scroll-padding-top: 76px; }
+  .section-band:nth-child(even) .section-heading,
+  .section-band:nth-child(even) .education__heading { padding: 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .assistant-stage .ai-blob--party .ai-blob__comic-aura { animation: none; }
+}
+
+/* Comic chat chrome; the existing ReactMarkdown + GFM renderer remains intact. */
+.site-shell .assistant-stage .ai-chat {
+  background: var(--surface); border: 3px solid var(--text); border-radius: 0;
+  box-shadow: 7px 7px 0 var(--accent); overflow: visible;
+}
+.site-shell .assistant-stage .ai-chat__header {
+  background: var(--yellow); color: var(--ink); border-bottom: 3px solid var(--text);
+  border-radius: 0; padding: 12px 16px; font: 800 12px var(--mono);
+}
+/* Child colours must be explicit: the legacy title does not inherit. */
+.site-shell .assistant-stage .ai-chat__header-title,
+.site-shell .assistant-stage .ai-chat__header-actions,
+.site-shell .assistant-stage .ai-chat__status-label { color: var(--ink); }
+.site-shell .assistant-stage .ai-chat__status-dot {
+  width: 11px; height: 11px; border: 2px solid var(--ink); border-radius: 0;
+  background: var(--ink); box-shadow: 2px 2px 0 rgba(16, 27, 42, .25); animation: none;
+}
+.site-shell .assistant-stage .ai-chat--thinking .ai-chat__status-dot,
+.site-shell .assistant-stage .ai-chat--busy .ai-chat__status-dot { background: #6350c7; }
+.site-shell .assistant-stage .ai-chat--error .ai-chat__status-dot { background: #b82e45; }
+.site-shell .assistant-stage .ai-chat--speaking .ai-chat__status-dot { background: #16815b; }
+.site-shell .assistant-stage .ai-chat__messages { max-height: 300px; padding: 16px; }
+.site-shell .assistant-stage .ai-chat__message {
+  border: 1px solid var(--border); border-left: 3px solid var(--accent);
+  border-radius: 0; background: var(--surface-alt); color: var(--text);
+  padding: 12px; font-size: 13px; line-height: 1.65;
+}
+.site-shell .assistant-stage .ai-chat__message--user { border-left-color: var(--yellow); }
+.site-shell .ai-chat__message-prefix { color: var(--text); font-weight: 800; }
+.site-shell .assistant-stage .ai-chat__composer { background: var(--surface-alt); border: 2px solid var(--border); border-radius: 0; }
+.site-shell .assistant-stage .ai-chat__composer input { color: var(--text); min-width: 0; }
+.site-shell .assistant-stage .ai-chat__composer button { background: var(--yellow); color: var(--ink); border: 2px solid var(--ink); border-radius: 0; box-shadow: 2px 2px 0 var(--ink); }
+.site-shell .assistant-stage .ai-chat__composer button:disabled { opacity: .5; cursor: not-allowed; }
+.site-shell .ai-chat__markdown { min-width: 0; overflow-wrap: anywhere; }
+.site-shell .ai-chat__markdown a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.site-shell .ai-chat__markdown pre { overflow-x: auto; max-width: 100%; }
+.site-shell .ai-chat__markdown table { display: block; overflow-x: auto; max-width: 100%; }
+.contact-socials { margin-top: 28px; }
+.contact-socials a { display: inline-flex; align-items: center; gap: 18px; padding: 12px 16px; background: var(--yellow); color: var(--ink); border: 2px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); font-weight: 750; }
+.contact-socials a:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--ink); }
+@media (min-width: 761px) and (max-width: 1150px) {
+  .site-header { padding-inline: 22px; gap: 15px; }
+  .nav-links { gap: 13px; font-size: 12px; }
+  .header-actions { gap: 12px; }
+}
+
+/* Finish the shared shapes and readable text treatment in both themes. */
+.site-shell .status-dot { border-radius: 0; }
+.site-shell .theme-toggle { border-radius: 0; border: 2px solid var(--border); }
+.site-shell .assistant-stage .ai-chat__markdown :is(h1,h2,h3,h4,th,strong) { color: var(--text); }
+.site-shell .assistant-stage .ai-chat__markdown h2 { font-size: 16px; letter-spacing: 0; }
+.site-shell .assistant-stage .ai-chat__markdown blockquote { color: var(--muted); border-left: 3px solid var(--accent); }
+.site-shell .assistant-stage .ai-chat__footer { color: var(--muted); }
+@media (min-width: 761px) and (max-width: 1000px) {
+  .header-github { display: none; }
+}
