@@ -355,26 +355,6 @@ h2 {
 .work-card--2 .work-visual {
   background: var(--gallery-bg);
 }
-.window-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 9px 12px;
-  background: var(--gallery-bar);
-  color: var(--gallery-text);
-  font: 8px var(--mono);
-  border-radius: 6px 6px 0 0;
-}
-.window-bar > span:first-child {
-  display: flex;
-  gap: 4px;
-}
-.window-bar i {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #6c7c70;
-}
 .work-visual > a {
   display: flex;
   background: #e9ebee;

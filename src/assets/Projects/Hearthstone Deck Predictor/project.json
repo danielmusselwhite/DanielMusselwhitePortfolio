@@ -15,8 +15,8 @@
   "technologies": [
     "C#",
     ".NET",
-    "WPF",
-    "REST APIs"
+    "Selenium",
+    "WPF"
   ],
   "prominence": "standard",
   "order": 5,

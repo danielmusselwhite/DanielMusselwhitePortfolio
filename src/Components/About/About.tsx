@@ -14,10 +14,9 @@ export default function About() {
                             </h2>
                         </div>
                         <p>
-                            I like being involved beyond a single feature: understanding the
-                            problem, working out how the pieces fit together, and seeing what
-                            happens when the software is used. These are the areas I work
-                            across most often.
+                            I work from the problem outward: understand the user, choose clear
+                            boundaries, and build in testing and delivery. My experience spans
+                            customer requirements, application architecture, and release support.
                         </p>
                     </div>
                     <Skills />

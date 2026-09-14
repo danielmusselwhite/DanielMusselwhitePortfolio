@@ -1,257 +1,114 @@
-# Daniel Musselwhite - Portfolio
+# Daniel Musselwhite — Portfolio
 
-A modern, interactive developer portfolio built to showcase my projects, technical skills, professional experience, education, and background.
+My developer portfolio, covering professional experience, personal projects, education, and technical background.
 
-Built with **React**, **TypeScript**, and **Vite**, with an interactive visual design, light and dark themes, responsive layouts, and an AI-powered portfolio assistant.
+Built with React, TypeScript, and Vite, and hosted on Netlify. The site includes an AI assistant, Bloop, that answers questions using curated information about my work.
 
-For more technical information please see the [Technical Documentation](./docs/TECHNICAL.md).
+[Live site](https://danielmusselwhite.netlify.app) · [Technical documentation](./docs/TECHNICAL.md)
 
-## ✨ Features
+## Overview
 
-- Responsive single-page portfolio
-- Light and dark theme support
-- Persistent theme preference using local storage
-- Bold teal-and-navy design with comic-inspired panels and interactive particles
-- Fixed navigation that remains visible while scrolling
-- Currently building section featuring IncidentIQ with a WIP badge
-- Expandable engineering case studies
-- Manually controlled project screenshot galleries
-- Reduced-motion accessibility support
-- Projects showcase
-- Technical skills section
-- Professional experience timeline
-- Education section
-- Contact information
-- AI-powered portfolio assistant
-- Netlify serverless backend
-- Responsive design for desktop and mobile
+The portfolio brings together:
 
-## 🌐 Project Architecture
+- IncidentIQ, my current AI incident-analysis project.
+- Selected projects with screenshots, engineering case studies, and expandable technology lists.
+- Professional experience across finance, aviation, and insurance.
+- Education and technical skills.
+- Contact details and links to my GitHub and LinkedIn profiles.
 
-![Portfolio Architecture Diagram](./docs/images/PortfolioArchitecture.png)
+The interface uses a teal-and-navy palette, bold borders, and offset shadows. It supports desktop and mobile layouts, light and dark themes, keyboard navigation, and reduced-motion preferences. Theme selection persists between visits.
 
-## 🛠️ Tech Stack
+Project galleries rotate automatically, with controls for pausing and selecting individual screenshots.
 
-### Frontend
+## Stack
 
-- **React 19**
-- **TypeScript**
-- **Vite**
-- **CSS**
-- **React Markdown**
-- **Remark GFM**
+| Area | Technologies |
+| --- | --- |
+| Frontend | React 19, TypeScript, Vite, CSS |
+| Markdown rendering | React Markdown, Remark GFM |
+| Backend | Netlify Functions, OpenAI Responses API |
+| Hosting | Netlify |
+| Development | npm, TypeScript compiler, Oxlint |
 
-### Backend & Hosting
+## Architecture
 
-- **Netlify**
-- **Netlify Functions**
-- **OpenAI Responses API**
+![Portfolio architecture](./docs/images/PortfolioArchitecture.png)
 
-### Development
+The React application serves the portfolio and chat interface. Chat requests are sent to `/api/portfolio-chat`, which is handled by a Netlify Function.
 
-- **Oxlint**
-- **TypeScript Compiler**
-- **npm**
+The function combines curated background information with project metadata and passes that context to the OpenAI Responses API. It also handles request validation, rate limiting, and API errors.
 
-## 🤖 AI Portfolio Assistant
+The assistant is instructed to keep answers relevant to the portfolio and distinguish professional experience from personal projects and work in progress.
 
-The portfolio includes an AI assistant that visitors can use to ask questions about my background, experience, projects, skills, and education.
+## Local development
 
-The assistant is implemented as a **Netlify Function** and communicates with the **OpenAI Responses API**.
-
-The backend:
-
-- Keeps the OpenAI API key server-side
-- Provides portfolio-specific context to the model
-- Accepts conversational questions from visitors
-- Restricts the assistant to portfolio-related topics
-- Includes request validation and error handling
-- Implements rate limiting
-- Supports configurable OpenAI models
-
-The API endpoint is:
-
-```text
-/api/portfolio-chat
-```
-
-## 📁 Project Structure
-
-```text
-DanielMusselwhitePortfolio/
-├── netlify/
-│   └── functions/
-│       └── portfolio-chat.mts
-│
-├── public/
-│
-├── src/
-│   ├── Components/
-│   │   ├── About/
-│   │   ├── Contact/
-│   │   ├── Education/
-│   │   ├── Experience/
-│   │   ├── Hero/AiAssistant/
-│   │   ├── Navbar/
-│   │   ├── Projects/
-│   │   └── Skills/
-│   │
-│   ├── Types/
-│   ├── Utils/
-│   ├── assets/
-│   ├── App.css
-│   ├── App.tsx
-│   ├── index.css
-│   └── main.tsx
-│
-├── index.html
-├── netlify.toml
-├── package.json
-├── tsconfig.json
-└── vite.config.ts
-```
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-Make sure you have the following installed:
-
-- [Node.js](https://nodejs.org/)
-- npm
-
-### Clone the Repository
+Install Node.js and npm, then clone the repository and install dependencies:
 
 ```powershell
 git clone https://github.com/danielmusselwhite/DanielMusselwhitePortfolio.git
-
 cd DanielMusselwhitePortfolio
+npm ci
 ```
 
-### Install Dependencies
-
-```powershell
-npm install
-```
-
-### Configure Environment Variables
-
-To use the AI portfolio assistant locally, create a `.env` file in the root of the project:
+To enable the assistant, create a `.env` file in the repository root:
 
 ```env
 OPENAI_API_KEY=your_openai_api_key
 ```
 
-An alternative OpenAI model can optionally be configured:
+Set `OPENAI_MODEL` if you want to override the backend's default model.
 
-```env
-OPENAI_MODEL=your_model_name
-```
-
-> **Important:** Never commit your `.env` file or OpenAI API key to the repository.
-
-### Start the Development Server
-
-Because the AI assistant is implemented using a Netlify Function, local development should be started using **Netlify Dev** rather than running the Vite development server directly.
+Start the frontend and Netlify Function together:
 
 ```powershell
-npx netlify dev
+npm run dev:full
 ```
 
-Netlify Dev will start the frontend development server and make the Netlify Function available locally, allowing the AI portfolio assistant to work during development.
-
-## 🔐 Environment Variables
-
-The AI portfolio assistant requires an OpenAI API key.
-
-For local development, create a `.env` file in the project root containing:
-
-```env
-OPENAI_API_KEY=your_openai_api_key
-```
-
-An alternative OpenAI model can optionally be configured with:
-
-```env
-OPENAI_MODEL=your_model_name
-```
-
-When deploying to Netlify, configure these values through Netlify's environment variable settings rather than committing them to the repository.
-
-> **Important:** Never commit your API key or `.env` file to the repository.
-
-## 📜 Available Scripts
-
-### Start local development
-
-To run the full application locally, including the Netlify Function used by the AI assistant:
+For frontend-only development:
 
 ```powershell
-npx netlify dev
+npm run dev
 ```
 
-### Create a production build
+The assistant endpoint requires Netlify Dev.
 
-```powershell
-npm run build
-```
+## Scripts
 
-### Preview the production build
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start the Vite development server |
+| `npm run dev:full` | Start the frontend and functions through Netlify Dev |
+| `npm run build` | Run TypeScript checks and create the production build |
+| `npm run preview` | Preview the frontend production build |
+| `npm run lint` | Run Oxlint |
 
-```powershell
-npm run preview
-```
+## Project organisation
 
-### Run the linter
+| Path | Contents |
+| --- | --- |
+| `src/Components/` | Portfolio sections and shared UI components |
+| `src/Components/Hero/AiAssistant/` | Bloop's mascot, interactions, and chat interface |
+| `src/Components/Projects/` | Project cards, galleries, and engineering case studies |
+| `src/assets/Projects/` | Project metadata and screenshots |
+| `src/assets/portfolio-context.txt` | Curated background information for the assistant |
+| `src/Types/` | Shared TypeScript types |
+| `src/Utils/` | Project loading and other utilities |
+| `src/styles/` | Additional layout and presentation styles |
+| `netlify/functions/portfolio-chat.mts` | Assistant backend |
+| `docs/TECHNICAL.md` | Implementation details |
 
-```powershell
-npm run lint
-```
+## Updating the portfolio
 
-## 🌗 Theme System
+Project descriptions, technologies, links, and engineering notes are defined in each project's `project.json` under `src/assets/Projects/`. Screenshots sit alongside that metadata in an `Images` directory.
 
-The portfolio includes both dark and light themes.
+The assistant reads project metadata and `src/assets/portfolio-context.txt`. The context file covers employment, education, and project background, including IncidentIQ's current status and planned capabilities.
 
-The selected theme is stored in the browser using `localStorage`, allowing the visitor's preference to persist between sessions.
+Page styling is split between `src/App.css`, `src/styles/Comic.css`, and `src/styles/Sections.css`. The assistant retains its own component styles.
 
-## 🎨 Portfolio design
+## Deployment
 
-The homepage puts selected engineering projects first, followed by technical approach, commercial experience, education, and contact details. Project case studies describe the challenge, approach, and result using the existing project metadata.
+The site deploys through Netlify using `npm run build`, with `dist` as the publish directory. Functions are located in `netlify/functions/`.
 
-Bloop's mascot implementation and AI chat logic are preserved. The surrounding page is styled in `src/App.css`, including responsive layouts and both themes. The mascot and chat retain their component styles.
+Configure `OPENAI_API_KEY` in the Netlify environment settings. `OPENAI_MODEL` is optional.
 
-Screenshot galleries are manually controlled. Case studies use native expandable details, navigation supports keyboard focus, and reduced-motion preferences are respected.
-
-## ☁️ Deployment
-
-The project is configured for deployment with **Netlify**.
-
-The frontend is built with Vite, while the AI assistant runs through a Netlify serverless function.
-
-Before deploying, ensure that the following environment variable has been configured in Netlify:
-
-```text
-OPENAI_API_KEY
-```
-
-Optionally:
-
-```text
-OPENAI_MODEL
-```
-
-## 👨‍💻 Author
-
-**Daniel Musselwhite**
-
-GitHub: [@danielmusselwhite](https://github.com/danielmusselwhite)
-
-## 📄 License
-
-This repository currently does not include a licence.
-
-Unless a licence is added, the source code should be considered **all rights reserved** by default.
-
----
-
-Built by **Daniel Musselwhite**.
+See [the technical documentation](./docs/TECHNICAL.md) for further details.

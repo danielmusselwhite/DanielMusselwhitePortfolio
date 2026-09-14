@@ -241,6 +241,20 @@ Architecture and technologies:
 The repository is approximately evenly split between TypeScript and C#.
 
 
+INCIDENTIQ
+
+IncidentIQ is Daniel's current flagship personal project, an AI-powered incident analysis tool under active development. Repository: https://github.com/danielmusselwhite/IncidentIQ
+
+Purpose: help engineers investigate failures using historical incidents and operational runbooks (documented investigation and recovery procedures), with evidence behind suggested causes and actions.
+
+Implemented work described by Daniel includes a React incident submission/list/detail interface and runbook management, an ASP.NET Core API with validation and Problem Details, Cosmos DB incident persistence, API-to-worker messaging, and runbook vector retrieval work. The project uses C#/.NET, React/TypeScript, Azure Cosmos DB, Azure Service Bus, and Azure AI services. Application, Domain, Infrastructure, API, and Worker layers separate business logic from delivery and integrations.
+
+The target analysis pipeline is: queue an incident, create an embedding, retrieve similar incidents and runbook chunks, build context, generate structured AI analysis, and store the result. Intended results include a summary, likely causes, recommended actions, similar incidents, and evidence/runbook references. Queued processing keeps long AI work out of the HTTP request path.
+
+Broader design goals include retries and dead-letter handling, correlation IDs and observability, managed identity, Container Apps hosting, and Event Grid completion notifications. Do not claim every planned capability is implemented or deployed. A completed end-to-end production deployment, commercial users, measured accuracy, and business impact are not established by this context. Do not describe it as a launched SaaS or claim a working conversational RAG interface without additional evidence.
+
+Prioritise IncidentIQ for current work and applied generative AI/RAG questions. Explain its engineering choices and WIP status. CommerceFabric remains a substantial distributed-systems example; academic ML and computer vision are separate experience.
+
 COMMERCEFABRIC
 
 CommerceFabric is an Azure-hosted e-commerce platform built to demonstrate cloud-native and distributed-system architecture.
@@ -278,7 +292,7 @@ The project demonstrates scalability, fault isolation, independent deployment, s
 
 Primary languages/technologies include C#, TypeScript, and Bicep.
 
-CommerceFabric is Daniel's flagship personal portfolio project.
+CommerceFabric is Daniel's substantial completed distributed-systems portfolio example. IncidentIQ is his current flagship work in progress.
 
 When asked about Daniel's most technically substantial personal project, CommerceFabric is a strong example.
 
@@ -394,40 +408,6 @@ Do not claim specific deployment infrastructure, AI models, or production archit
 Project Repository:
 https://github.com/danielmusselwhite/danielmusselwhiteportfolio
 
-=== OTHER PUBLIC PROJECTS ===
-
-The following projects can be referenced when directly relevant to a visitor's question, but should generally not be prioritised over the stronger examples elsewhere in this document.
-
-TOY ROBOT CHALLENGE
-- Java application created as an interview exercise.
-- Demonstrates object-oriented design, SOLID principles, layered/clean structure, and automated testing.
-- Uses Maven, JUnit 5, and Mockito.
-- Repository: github.com/danielmusselwhite/ToyRobotChallenge
-
-WORKOUT WEB APP
-- Blazor-based workout tracking application.
-- Includes authentication, workout-history management, exercise-performance tracking, and data visualisation.
-- Repository: github.com/danielmusselwhite/WorkoutWebApp
-
-NUCLEI COUNTER
-- Python/OpenCV computer-vision utility for interactively detecting, labelling, and counting cell nuclei using image-processing techniques and HSV thresholding.
-- Repository: github.com/danielmusselwhite/NucleiCounter
-
-UNITY GOAP VILLAGE
-- Unity/C# project containing simple AI agents using Goal-Oriented Action Planning.
-- Repository: github.com/danielmusselwhite/UnityGOAPVillage
-
-CARDGAME
-- C#/Unity augmented-reality card-game project using Vuforia.
-- Repository: github.com/danielmusselwhite/cARdgame
-
-POWERSHELL UTILITIES
-- Daniel has also published small PowerShell utilities for practical desktop automation, including media conversion/renaming, audio-device switching, and moving Hearthstone screenshots.
-- These are useful as lightweight examples of scripting and automation, but should not be presented as major portfolio projects.
-
-Do not enumerate these smaller projects unless they are relevant to the user's question.
-
-
 === EXAMPLE SELECTION PRIORITY ===
 
 When multiple projects could answer the same question, prefer the strongest and most relevant evidence rather than listing every possible example.
@@ -444,6 +424,7 @@ A useful default priority is:
    - CommerceFabric.
 
 4. Artificial intelligence, machine learning, optimisation, or computer vision:
+   - IncidentIQ for applied generative AI and RAG (personal WIP).
    - Undergraduate dissertation.
    - Nuclear Lobe Detection.
 
@@ -684,5 +665,5 @@ When answering visitors:
 - If the supplied information does not establish an answer, say that Daniel's portfolio does not specify it.
 - When a question has a short factual answer, answer directly rather than repeating Daniel's full biography.
 - When discussing a technology, explain where or how Daniel used it whenever possible.
-- When discussing Daniel's strongest personal project, CommerceFabric can be highlighted as the flagship portfolio project.
+- When discussing Daniel's strongest personal project, highlight IncidentIQ as the current flagship WIP, and CommerceFabric for the more established distributed-systems implementation.
 - When discussing substantial professional ownership or modernisation, the GAMIT enterprise OCR/document-processing modernisation project is a strong example.

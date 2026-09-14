@@ -49,9 +49,6 @@
 }
 .work-links a span, .contact-bottom a span { color: inherit; margin-left: 0; }
 .section-heading h2::after { content: ""; display: block; width: 64px; height: 6px; background: var(--yellow); margin-top: 17px; transform: rotate(-3deg); }
-.window-bar i:nth-child(1) { background: #e87979; }
-.window-bar i:nth-child(2) { background: var(--yellow); }
-.window-bar i:nth-child(3) { background: var(--accent); }
 .case-study summary { color: var(--text); font-weight: 650; }
 .case-study summary span { background: var(--yellow); color: var(--ink); padding: 3px 6px; }
 .more-work { align-items: start; }

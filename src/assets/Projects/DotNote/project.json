@@ -1,10 +1,10 @@
 {
   "title": "DotNote",
-  "shortDescription": "A cloud-connected WPF note-taking application built with MVVM, combining rich text editing, per-user data isolation, file storage, and speech-to-text.",
+  "shortDescription": "A WPF notebook app with rich-text editing, cloud persistence, and live speech-to-text dictation.",
   "overview": "DotNote is a desktop note-taking application inspired by Evernote, built to explore maintainable WPF architecture and the integration of multiple managed cloud services. It supports notebooks, rich text notes, user profiles, file storage, and speech-to-text while keeping presentation logic, application behaviour, and external service integrations clearly separated through MVVM.",
-  "problem": "I wanted to build a desktop application that could persist user-owned content in the cloud while supporting rich text editing, uploaded files, authentication, and clear separation between presentation logic and external service integrations.",
-  "solution": "I structured the application using MVVM to separate WPF presentation logic from application behaviour and cloud integrations. Firebase Authentication provides user identity, while Firebase Realtime Database stores structured note and notebook data using user-specific paths. Azure Blob Storage handles uploaded files and profile images, and Azure Speech Services provides real-time speech-to-text dictation within the editor.",
-  "outcome": "The project demonstrates how a desktop application can combine MVVM, authenticated cloud persistence, file storage, and managed speech services while maintaining clear boundaries between UI, application logic, and infrastructure concerns.",
+  "problem": "Combine a responsive desktop editor with user-owned cloud content, uploaded files, and dictation while keeping service integrations out of the UI.",
+  "solution": "MVVM separates presentation and application logic. Firebase provides authentication and notebook data; Azure Blob Storage handles files and profile images. Azure Speech Services turns dictation into note content.",
+  "outcome": "An end-to-end desktop application connecting identity, rich-text editing, per-user persistence, and managed speech services behind a WPF interface.",
   "highlights": [
     "Structured the WPF application around MVVM to separate presentation, application logic, and external services",
     "Implemented authenticated per-user note and notebook persistence with Firebase Authentication and Realtime Database",
@@ -15,12 +15,12 @@
   "technologies": [
     "C#",
     ".NET",
-    "WPF",
-    "MVVM",
     "Firebase Authentication",
     "Firebase Realtime Database",
     "Azure Blob Storage",
-    "Azure Speech Services"
+    "Azure Speech Services",
+    "MVVM",
+    "WPF"
   ],
   "prominence": "featured",
   "order": 2,

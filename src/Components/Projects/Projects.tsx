@@ -17,12 +17,12 @@ export default function Projects() {
                     <div className="section-heading">
                         <div>
                             <p className="eyebrow">01 / Selected projects</p>
-                            <h2>Things I’ve built</h2>
+                            <h2>Systems, shipped in code.</h2>
                         </div>
                         <p>
-                            These are personal projects, from a distributed e-commerce system
-                            to desktop tools. Each has screenshots, source code, and a bit
-                            about how it works.
+                            Personal projects with real implementation to inspect: service
+                            boundaries, asynchronous workflows, authentication, and the
+                            interfaces that bring them together.
                         </p>
                     </div>
                     {projects

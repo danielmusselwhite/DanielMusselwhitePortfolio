@@ -50,9 +50,9 @@ export default function Experience() {
           <h2>Where I’ve worked</h2>
 
           <p>
-            I’ve worked on financial software, an aviation application, and now
-            an insurance platform. The roles have involved a mix of application
-            development, testing, and deployment.
+            From engineering tools and CI/CD at SS&C to leading RDOC development
+            at GAMIT and now modernising insurance software at Websure.
+            Increasing ownership across design, implementation, and delivery.
           </p>
         </div>
 

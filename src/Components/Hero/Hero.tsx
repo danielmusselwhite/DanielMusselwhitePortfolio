@@ -10,19 +10,19 @@ export default function Hero() {
             Engineer
           </p>
           <h1>
-            Full-Stack Engineer
+            Full-stack engineer.
             <br />
-            <em>Cloud & Distributed systems enthusiast.</em>
+            <em>From interface to infrastructure.</em>
           </h1>
           <p className="intro-description">
-            I work mainly with .NET, Azure and React. At the moment, I'm helping
-            modernise an insurance platform. Outside work, I build projects to
-            get hands-on with things I want to understand better-most recently,
-            distributed systems and AI-assisted incident analysis.
+            I build applications with .NET, Azure and React. My work spans
+            financial software, aviation and insurance—from leading an aviation
+            application’s development to modernising a legacy platform.
+            Now exploring AI incident analysis with IncidentIQ.
           </p>
           <div className="intro-actions">
-            <a className="button button-primary" href="#projects">
-              See my projects <span aria-hidden="true">↓</span>
+            <a className="button button-primary" href="#building">
+              Explore my work <span aria-hidden="true">↓</span>
             </a>
             <a className="text-link" href="#contact">
               Get in touch <span aria-hidden="true">↗</span>
@@ -39,7 +39,7 @@ export default function Hero() {
           </div>
           <AiAssistant />
           <p className="assistant-note">
-            Ask him about a project. Or try /party.
+            Ask about IncidentIQ, my experience, or a technical decision.
           </p>
         </div>
         <div className="credentials">

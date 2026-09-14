@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import type { Project } from "../../Types/Project";
-
 export default function ProjectScreenshots({ project }: { project: Project }) {
   const [imageIndex, setImageIndex] = useState(() =>
     Math.max(
@@ -15,8 +14,9 @@ export default function ProjectScreenshots({ project }: { project: Project }) {
     ),
   );
   const [isPaused, setIsPaused] = useState(false);
+  const [isInteracting, setIsInteracting] = useState(false);
   useEffect(() => {
-    if (project.images.length < 2 || isPaused) return;
+    if (project.images.length < 2 || isPaused || isInteracting) return;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (reduceMotion.matches) return;
     const timer = window.setInterval(() => {
@@ -28,19 +28,18 @@ export default function ProjectScreenshots({ project }: { project: Project }) {
   return (
     <div
       className="work-visual"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onFocusCapture={() => setIsPaused(true)}
-      onBlurCapture={() => setIsPaused(false)}
+      onMouseEnter={() => setIsInteracting(true)}
+      onMouseLeave={() => setIsInteracting(false)}
+      onFocusCapture={() => setIsInteracting(true)}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) {
+          setIsInteracting(false);
+        }
+      }}
     >
-      <div className="window-bar">
-        <span>
-          <i />
-          <i />
-          <i />
-        </span>
-        <span>{project.title.toLowerCase()} / application</span>
-        <span aria-hidden="true">↗</span>
+      <div className="gallery-caption">
+        <span>{project.title} / In focus</span>
+        <span>{String(imageIndex + 1).padStart(2, "0")} / {String(project.images.length).padStart(2, "0")}</span>
       </div>
       {project.images.length > 0 && (
         <a

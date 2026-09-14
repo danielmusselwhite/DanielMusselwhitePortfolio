@@ -16,10 +16,10 @@
     "C#",
     ".NET",
     "WPF",
-    "MVVM",
-    "XAML",
     "Windows Shell",
-    "File System APIs"
+    "File System APIs",
+    "MVVM",
+    "XAML"
   ],
   "prominence": "featured",
   "order": 3,

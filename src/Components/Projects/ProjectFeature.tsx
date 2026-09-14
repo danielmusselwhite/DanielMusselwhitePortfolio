@@ -1,8 +1,12 @@
+import ProjectDetails from "./ProjectDetails";
 import ProjectScreenshots from "./ProjectScreenshots";
+import ProjectTechnologies from "./ProjectTechnologies";
 import type { Project } from "../../Types/Project";
+
 function Arrow() {
   return <span aria-hidden="true">↗</span>;
 }
+
 export default function ProjectFeature({
   project,
   index,
@@ -14,25 +18,30 @@ export default function ProjectFeature({
     typeof project.demo === "string"
       ? { url: project.demo, label: "View demo" }
       : project.demo;
+
   return (
     <article className={`work-card work-card--${index}`}>
       <div className="work-copy">
         <p className="eyebrow">
           0{index} / {index === 1 ? "Distributed systems" : "Desktop & cloud"}
         </p>
+
         <h3>{project.title}</h3>
         <p className="work-description">{project.shortDescription}</p>
-        <div className="tags">
-          {project.technologies.slice(0, 5).map((skill) => (
-            <span key={skill}>{skill}</span>
-          ))}
-        </div>
+
+        <ProjectTechnologies
+          technologies={project.technologies}
+          projectTitle={project.title}
+          initialCount={5}
+        />
+
         <div className="work-links">
           {project.github && (
             <a href={project.github} target="_blank" rel="noreferrer">
               Explore code <Arrow />
             </a>
           )}
+
           {demo && (
             <a href={demo.url} target="_blank" rel="noreferrer">
               {demo.label} <Arrow />
@@ -40,25 +49,15 @@ export default function ProjectFeature({
           )}
         </div>
       </div>
+
       <ProjectScreenshots project={project} />
+
       <details className="case-study">
         <summary>
-          Behind the build <span aria-hidden="true">+</span>
+          Explore the engineering <span aria-hidden="true">+</span>
         </summary>
-        <div className="case-study-grid">
-          {[
-            ["Why I built it", project.problem],
-            ["How it works", project.solution],
-            ["What it covers", project.outcome],
-          ].map(([title, body]) => (
-            <div key={title}>
-              <h4>{title}</h4>
-              <p>{body}</p>
-            </div>
-          ))}
-        </div>
+        <ProjectDetails project={project} />
       </details>
     </article>
   );
 }
-
