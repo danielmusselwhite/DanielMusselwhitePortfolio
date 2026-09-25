@@ -4,7 +4,7 @@ export default function Contact() {
             <section className="contact-section container">
                 <div className="contact-top">
                     <div>
-                        <p className="eyebrow">05 / Contact</p>
+                        <p className="eyebrow">06 / Contact</p>
                         <h2>
                             Want to get in touch<span>?</span>
                         </h2>

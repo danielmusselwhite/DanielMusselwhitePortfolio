@@ -6,7 +6,7 @@ export default function About() {
                 <div className="container">
                     <div className="section-heading">
                         <div>
-                            <p className="eyebrow">02 / How I work</p>
+                            <p className="eyebrow">03 / How I work</p>
                             <h2>
                                 How I approach
                                 <br />

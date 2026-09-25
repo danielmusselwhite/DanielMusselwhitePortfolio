@@ -26,7 +26,7 @@ export default function Education() {
     <section className="section education">
       <div className="section__content">
         <div className="education__heading">
-          <p className="section__eyebrow">04 / Education</p>
+          <p className="section__eyebrow">05 / Education</p>
 
           <h2>Where I studied</h2>
 

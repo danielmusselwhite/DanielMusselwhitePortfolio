@@ -221,6 +221,14 @@ ProjectCard
 
 This means a new project can largely be added by creating a new project folder rather than modifying the React application itself.
 
+## Contributions
+
+`Contributions` renders immediately after `Projects` in `App.tsx`, with a `#contributions` navigation anchor. Its component and theme-aware CSS live under `src/Components/Contributions/`.
+
+`contributionsData.ts` holds typed entries: repository, title, summary, changes, technologies, pull request URL, status, and verification date. Add an entry to extend the section without changing its markup. Status supports `open`, `merged`, and `closed` (not merged). The page displays the verification date and links to GitHub for current status; it makes no runtime GitHub requests.
+
+Keep the corresponding dated entry in `src/assets/portfolio-context.txt` aligned so the assistant does not imply an open PR has been accepted or released.
+
 ## Project Types
 
 TypeScript interfaces define the expected shape of project data.

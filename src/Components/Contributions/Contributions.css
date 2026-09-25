@@ -1,0 +1,33 @@
+.contributions-list { display: grid; gap: 28px; }
+.contribution-card { min-width: 0; border: 2px solid var(--border); background: var(--surface); box-shadow: 6px 6px 0 rgba(var(--accent-rgb), .2); }
+.contribution-card__header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; padding: 18px 28px; border-bottom: 2px solid var(--border); background: var(--surface-alt); }
+.contribution-card__repo { margin: 0; color: var(--text); font: 700 12px var(--mono); overflow-wrap: anywhere; }
+.contribution-card__repo span { color: var(--muted); font-weight: 400; }
+.contribution-status { padding: 7px 10px; border: 2px solid var(--ink); background: var(--yellow); color: var(--ink); font: 800 11px var(--mono); box-shadow: 3px 3px 0 var(--ink); }
+.contribution-status--merged { background: var(--accent); }
+.contribution-status--closed { background: var(--surface); color: var(--text); border-color: var(--text); }
+.contribution-card__body { display: grid; grid-template-columns: 1.1fr 1fr; gap: 40px; padding: 32px 28px; }
+.contribution-card__body > div { min-width: 0; }
+.contribution-card h3 { font-size: clamp(23px, 2.5vw, 32px); line-height: 1.25; letter-spacing: -.7px; }
+.contribution-card__summary { margin-top: 18px; color: var(--muted); font-size: 14px; line-height: 1.85; }
+.contribution-card__tags { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 22px 0 0; }
+.contribution-card__tags li { padding: 7px 9px; border: 1px solid var(--border); font: 11px var(--mono); color: var(--text); }
+.contribution-card__changes { border-left: 3px solid var(--accent); padding-left: 24px; }
+.contribution-card h4 { margin: 0 0 16px; font-size: 15px; }
+.contribution-card__changes ul { display: grid; gap: 16px; padding-left: 18px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.8; }
+.contribution-card__changes li::marker { color: var(--accent); }
+.contribution-card__footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; padding: 20px 28px; border-top: 1px solid var(--border); }
+.contribution-card__footer .work-links { margin: 0; }
+.contribution-card__footer p { margin: 0; color: var(--muted); font: 10px/1.8 var(--mono); }
+.contribution-card a:focus-visible { outline: 3px solid var(--accent); outline-offset: 5px; }
+@media (max-width: 760px) {
+  .contribution-card__body { grid-template-columns: 1fr; gap: 28px; padding: 24px 20px; }
+  .contribution-card__header, .contribution-card__footer { padding: 18px 20px; }
+  .contribution-card__repo span { display: block; margin-top: 8px; }
+  .contribution-card__changes { padding-left: 18px; }
+}
+/* Keep the extra navigation item comfortable on small laptops. */
+@media (min-width: 761px) and (max-width: 1150px) {
+  .site-header .nav-links { gap: 12px; font-size: 11px; }
+  .site-header .header-github { display: none; }
+}

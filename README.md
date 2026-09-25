@@ -12,6 +12,7 @@ The portfolio brings together:
 
 - IncidentIQ, my current AI incident-analysis project.
 - Selected projects with screenshots, engineering case studies, and expandable technology lists.
+- Open-source contributions with pull request links and clearly labelled status.
 - Professional experience across finance, aviation, and insurance.
 - Education and technical skills.
 - Contact details and links to my GitHub and LinkedIn profiles.
@@ -104,6 +105,12 @@ Project descriptions, technologies, links, and engineering notes are defined in 
 The assistant reads project metadata and `src/assets/portfolio-context.txt`. The context file covers employment, education, and project background, including IncidentIQ's current status and planned capabilities.
 
 Page styling is split between `src/App.css`, `src/styles/Comic.css`, and `src/styles/Sections.css`. The assistant retains its own component styles.
+
+## Contributions
+
+The Contributions section sits directly after Projects. Add entries in `src/Components/Contributions/contributionsData.ts`; the shared component renders each card automatically. Set `status` to `open`, `merged`, or `closed`, and update `checkedOn` after checking GitHub. Status is a dated snapshot, not a live API feed. Only mark a contribution merged once GitHub confirms it.
+
+Styles live alongside the component in `Contributions.css`. If a contribution changes, also update its dated summary in `src/assets/portfolio-context.txt` so Bloop stays accurate.
 
 ## Deployment
 
