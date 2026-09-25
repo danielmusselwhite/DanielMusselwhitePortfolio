@@ -25,11 +25,11 @@ export default function Education() {
   return (
     <section className="section education">
       <div className="section__content">
-        <div className="education__heading">
-          <p className="section__eyebrow">05 / Education</p>
-
-          <h2>Where I studied</h2>
-
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">05 / Education</p>
+            <h2>Where I studied</h2>
+          </div>
           <p>
             I studied Computer Science with AI at Nottingham, then Software
             Systems Engineering at UCL. My MSc included team projects with

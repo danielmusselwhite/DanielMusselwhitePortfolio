@@ -44,11 +44,11 @@ export default function Experience() {
   return (
     <section className="section">
       <div className="section__content">
-        <div className="experience__heading">
-          <p className="section__eyebrow">04 / Experience</p>
-
-          <h2>Where I’ve worked</h2>
-
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">04 / Experience</p>
+            <h2>Where I’ve worked</h2>
+          </div>
           <p>
             From engineering tools and CI/CD at SS&C to leading RDOC development
             at GAMIT and now modernising insurance software at Websure.
