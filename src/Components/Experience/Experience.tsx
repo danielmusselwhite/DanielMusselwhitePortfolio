@@ -46,7 +46,7 @@ export default function Experience() {
       <div className="section__content">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">04 / Experience</p>
+            <p className="eyebrow">03 / Experience</p>
             <h2>Where I’ve worked</h2>
           </div>
           <p>
