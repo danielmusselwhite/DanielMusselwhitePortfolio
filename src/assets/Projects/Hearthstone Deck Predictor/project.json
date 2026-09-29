@@ -13,10 +13,11 @@
     "Surfaced likely remaining cards and matchup information to help players anticipate threats during play"
   ],
   "technologies": [
+    "WPF",
     "C#",
-    ".NET",
+    "Data Structures",
     "Selenium",
-    "WPF"
+    ".NET"
   ],
   "prominence": "standard",
   "order": 5,

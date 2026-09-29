@@ -8,7 +8,6 @@ type Props = {
 const links = [
   ["building", "Building"],
   ["projects", "Projects"],
-  ["contributions", "Contributions"],
   ["about", "Approach"],
   ["experience", "Experience"],
   ["education", "Education"],

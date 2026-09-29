@@ -23,7 +23,7 @@ export default function ProjectScreenshots({ project }: { project: Project }) {
       setImageIndex((current) => (current + 1) % project.images.length);
     }, 5000);
     return () => window.clearInterval(timer);
-  }, [isPaused, project.images.length]);
+  }, [isPaused, isInteracting, project.images.length]);
   if (!project.images.length) return null;
   return (
     <div

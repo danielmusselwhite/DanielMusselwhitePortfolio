@@ -1,7 +1,7 @@
 import { loadProjects } from "../../Utils/loadProjects";
 import CurrentlyBuilding from "./CurrentlyBuilding";
-import ProjectFeature from "./ProjectFeature";
-import WorkbenchProject from "./WorkbenchProject";
+import ProjectBrowser from "./ProjectBrowser";
+import { contributions } from "../Contributions/contributionsData";
 const hiddenProjects = new Set(["Activity Web App", "Developer Portfolio"]);
 const projects = loadProjects().filter(
     (project) => !hiddenProjects.has(project.title),
@@ -13,38 +13,19 @@ export default function Projects() {
                 <CurrentlyBuilding />
             </div>
             <div id="projects" className="section-band">
+                <span id="contributions" className="contributions-anchor" aria-hidden="true" />
                 <section className="work-section container">
                     <div className="section-heading">
                         <div>
-                            <p className="eyebrow">01 / Selected projects</p>
-                            <h2>Systems, shipped in code.</h2>
+                            <p className="eyebrow">01 / Selected work</p>
+                            <h2>Projects & contributions</h2>
                         </div>
                         <p>
-                            Personal projects with real implementation to inspect: service
-                            boundaries, asynchronous workflows, authentication, and the
-                            interfaces that bring them together.
+                            Applications I’ve built and improvements to tools I use.
+                            Watch a demo, explore the engineering, or read the pull request.
                         </p>
                     </div>
-                    {projects
-                        .filter((p) => ["CommerceFabric", "DotNote"].includes(p.title))
-                        .map((project, index) => (
-                            <ProjectFeature
-                                key={project.slug}
-                                project={project}
-                                index={index + 1}
-                            />
-                        ))}
-                    <div className="more-work-heading">
-                        <h3>Other projects</h3>
-                        <span>SMALLER BUILDS</span>
-                    </div>
-                    <div className="more-work">
-                        {projects
-                            .filter((p) => !["CommerceFabric", "DotNote"].includes(p.title))
-                            .map((project) => (
-                                <WorkbenchProject key={project.slug} project={project} />
-                            ))}
-                    </div>
+                    <ProjectBrowser projects={projects} contributions={contributions} />
                 </section>
             </div>
         </>

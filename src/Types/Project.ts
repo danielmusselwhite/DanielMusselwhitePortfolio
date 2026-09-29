@@ -16,11 +16,8 @@ export interface ProjectMetadata {
     highlights?: string[];
 
     /**
-     * Controls the visual importance and default state of the project.
-     *
-     * flagship -> full-width and open by default
-     * featured -> open by default
-     * standard -> minimized by default
+     * Editorial prominence. The browser labels the flagship;
+     * order controls the list position and default selection.
      */
     prominence?: ProjectProminence;
 

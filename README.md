@@ -10,7 +10,6 @@ Built with React, TypeScript, and Vite, and hosted on Netlify. The site includes
 
 The portfolio brings together:
 
-- IncidentIQ, my current AI incident-analysis project.
 - Selected projects with screenshots, engineering case studies, and expandable technology lists.
 - Open-source contributions with pull request links and clearly labelled status.
 - Professional experience across finance, aviation, and insurance.
@@ -102,9 +101,15 @@ The assistant endpoint requires Netlify Dev.
 
 Project descriptions, technologies, links, and engineering notes are defined in each project's `project.json` under `src/assets/Projects/`. Screenshots sit alongside that metadata in an `Images` directory.
 
-The assistant reads project metadata and `src/assets/portfolio-context.txt`. The context file covers employment, education, and project background, including IncidentIQ's current status and planned capabilities.
+`ProjectBrowser.tsx` renders the finished-project list and selected detail panel. Search matches all words across descriptions, engineering notes, and technologies; the technology filter is combined with search. If the selected project is filtered out, the first matching result is displayed. Empty results include a reset action. Desktop panes scroll independently; mobile details use normal page scrolling.
+
+Set `order` to control the default sequence (IncidentIQ: 0, CommerceFabric: 1). Keep one project marked `prominence: "flagship"`. A demo object can include `embedUrl` for a click-to-load video when no screenshots are available; `url` remains the external fallback link. `CurrentlyBuilding.tsx` holds Career Signal's proposed scope.
+
+The assistant reads project metadata and `src/assets/portfolio-context.txt`. Keep both up to date when project status changes. IncidentIQ is completed; Career Signal's technologies and workflow are plans, not implemented features.
 
 Page styling is split between `src/App.css`, `src/styles/Comic.css`, and `src/styles/Sections.css`. The assistant retains its own component styles.
+
+Project-browser layout is scoped in `src/Components/Projects/ProjectBrowser.css` and uses the shared theme colours.
 
 ## Contributions
 

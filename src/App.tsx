@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Hero from "./Components/Hero/Hero";
 import Navbar from "./Components/Navbar/Navbar";
-import Contributions from "./Components/Contributions/Contributions";
 import Projects from "./Components/Projects/Projects";
 import About from "./Components/About/About";
 import Experience from "./Components/Experience/Experience";
@@ -60,7 +59,6 @@ export default function App() {
       <main id="main">
         <Hero />
         <Projects />
-        <Contributions />
         <About />
         <div id="experience" className="section-band">
           <Experience />

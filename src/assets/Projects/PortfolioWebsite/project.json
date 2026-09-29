@@ -16,9 +16,10 @@
   "technologies": [
     "React",
     "TypeScript",
-    "CSS",
     "Netlify Functions",
-    "OpenAI Responses API"
+    "OpenAI Responses API",
+    "CSS",
+    "Vite"
   ],
   "prominence": "standard",
   "order": 6,

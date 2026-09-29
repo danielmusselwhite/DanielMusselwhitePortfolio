@@ -18,7 +18,7 @@ export default function Hero() {
             I build applications with .NET, Azure and React. My work spans
             financial software, aviation and insurance—from leading an aviation
             application’s development to modernising a legacy platform.
-            Now exploring AI incident analysis with IncidentIQ.
+            My latest project: IncidentIQ, an AI incident analysis application.
           </p>
           <div className="intro-actions">
             <a className="button button-primary" href="#building">

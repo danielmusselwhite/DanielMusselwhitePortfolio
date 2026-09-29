@@ -13,13 +13,12 @@
     "Integrated with Windows Explorer so generated icons are applied directly to the selected folder"
   ],
   "technologies": [
-    "C#",
-    ".NET",
     "WPF",
+    "C#",
+    "Image Processing",
     "Windows Shell",
-    "File System APIs",
     "MVVM",
-    "XAML"
+    ".NET"
   ],
   "prominence": "featured",
   "order": 3,

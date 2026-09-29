@@ -1,0 +1,44 @@
+{
+  "title": "IncidentIQ",
+  "shortDescription": "An AI incident analysis application that retrieves relevant incidents and runbooks to explain likely causes and next steps.",
+  "overview": "I built IncidentIQ to bring incident reporting, background AI analysis, and evidence-based investigation into one application. A custom RAG pipeline connects the analysis to relevant operational knowledge.",
+  "problem": "Investigating an incident means piecing together past failures and runbooks. An AI-generated answer is only useful if the engineer can inspect the evidence behind it.",
+  "solution": "A React interface submits incidents to an ASP.NET Core API. Queued processing keeps AI analysis outside the request path, while semantic retrieval supplies relevant incidents and runbook content to the RAG pipeline.",
+  "outcome": "A completed personal project combining asynchronous application workflows with retrieval-augmented AI. The demo walks through the application; the source shows how the API, worker, and retrieval pipeline fit together.",
+  "highlights": [
+    "Incident submission, listing, and detail views with runbook management",
+    "API-to-worker messaging for asynchronous incident analysis",
+    "Custom retrieval pipeline for evidence-grounded explanations",
+    "Separate application, domain, infrastructure, API, and worker layers"
+  ],
+  "technologies": [
+    "RAG",
+    "Azure",
+    "ASP.NET Core",
+    "React",
+    "Cosmos DB",
+    "REST APIs",
+    "Azure Service Bus",
+    "Distributed Systems",
+    "Azure OpenAI",
+    "Vector Search",
+    "TypeScript",
+    "C#",
+    ".NET",
+    "Microsoft Entra ID",
+    "OpenTelemetry",
+    "Azure Container Apps",
+    "Docker",
+    "Bicep",
+    "GitHub Actions",
+    "CI/CD",
+    "xUnit"
+  ],
+  "prominence": "flagship",
+  "order": 0,
+  "github": "https://github.com/danielmusselwhite/IncidentIQ",
+  "demo": {
+    "url": "https://youtu.be/4An0kOLyoSQ",
+    "label": "Watch walkthrough"
+  }
+}

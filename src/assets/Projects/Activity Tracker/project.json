@@ -13,13 +13,14 @@
     "Separated frontend, API, authentication, and persistence concerns across a clear client-server architecture"
   ],
   "technologies": [
-    "C#",
     "ASP.NET Core",
-    "ASP.NET Identity",
     "React",
-    "TypeScript",
     "REST APIs",
-    "SQLite"
+    "SQLite",
+    "ASP.NET Core Identity",
+    "TypeScript",
+    "C#",
+    ".NET"
   ],
   "prominence": "standard",
   "order": 4,

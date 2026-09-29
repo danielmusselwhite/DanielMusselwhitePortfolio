@@ -1,34 +1,34 @@
-const incidentIQ = {
-  title: "IncidentIQ",
-  repository: "https://github.com/danielmusselwhite/IncidentIQ",
-  technologies: [".NET", "React", "Azure", "Cosmos DB", "RAG", "Service Bus"],
+const careerSignal = {
+  title: "Career Signal",
+  technologies: ["Python", "Java", "React / TypeScript", "Semantic search"],
 };
 
 export default function CurrentlyBuilding() {
   return (
     <section className="building-section container" aria-labelledby="building-title">
       <div className="building-heading">
-        <p className="eyebrow">Featured build / Applied AI</p>
-        <span className="wip-badge">WIP · IN DEVELOPMENT</span>
+        <p className="eyebrow">Up next / Career Signal</p>
+        <span className="wip-badge">UNDER CONSTRUCTION · PLANNING</span>
       </div>
       <div className="building-grid">
         <div>
           <h2 id="building-title">Currently building<span>_</span></h2>
-          <h3>{incidentIQ.title}</h3>
-          <p>An AI-powered incident analysis tool. I’m building it to help engineers investigate failures using relevant past incidents and operational runbooks, with evidence behind the suggested causes and next steps.</p>
-          <div className="tags">{incidentIQ.technologies.map(technology => <span key={technology}>{technology}</span>)}</div>
-          <a className="button button-primary" href={incidentIQ.repository} target="_blank" rel="noreferrer">View progress on GitHub <span aria-hidden="true">↗</span></a>
+          <h3>{careerSignal.title}</h3>
+          <p>An AI job search assistant to help people find roles that fit their experience and priorities. I’m planning a workflow that filters out unsuitable roles, ranks relevant matches, and explains why each one might be worth a closer look.</p>
+          <p><strong>Planned technologies</strong></p>
+          <div className="tags">{careerSignal.technologies.map(technology => <span key={technology}>{technology}</span>)}</div>
+          <p>Python for ingestion and matching, Java for the application API, and React for reviewing opportunities. The architecture is still being worked out.</p>
         </div>
-        <aside className="build-notes" aria-label="IncidentIQ design goals">
-          <span className="build-notes-label">THE ANALYSIS PIPELINE</span>
-          <h4>Less digging.<br />More understanding.</h4>
+        <aside className="build-notes" aria-label="Career Signal planned workflow">
+          <span className="build-notes-label">PROPOSED WORKFLOW</span>
+          <h4>From preferences<br />to a useful shortlist.</h4>
           <ul>
-            <li>Submit incident reports for asynchronous AI analysis </li>
-            <li>Retrieve relevant incidents and runbooks using semantic search</li>
-            <li>Generate structured likely causes, recommended actions, and evidence-linked explanations through a custom RAG pipeline</li>
-            <li>Explore reliable processing with queued jobs, retries, and failure handling</li>
+            <li>Build a profile from a CV, experience, and job preferences.</li>
+            <li>Gather job listings and apply constraints such as location and experience level.</li>
+            <li>Rank matches using semantic search and explain the fit.</li>
+            <li>Review shortlisted roles and decide which to pursue.</li>
           </ul>
-          <p>Personal project in development · Pipeline design goals</p>
+          <p>Planned personal project · Features and stack may change</p>
         </aside>
       </div>
     </section>

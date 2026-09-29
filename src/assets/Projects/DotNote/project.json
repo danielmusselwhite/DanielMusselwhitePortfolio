@@ -13,14 +13,14 @@
     "Integrated Azure Speech Services for real-time speech-to-text dictation"
   ],
   "technologies": [
+    "WPF",
     "C#",
-    ".NET",
-    "Firebase Authentication",
-    "Firebase Realtime Database",
-    "Azure Blob Storage",
-    "Azure Speech Services",
     "MVVM",
-    "WPF"
+    "Azure",
+    "Firebase",
+    "Azure Speech Services",
+    "Azure Blob Storage",
+    ".NET"
   ],
   "prominence": "featured",
   "order": 2,
