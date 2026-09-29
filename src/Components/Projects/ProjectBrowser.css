@@ -10,7 +10,7 @@
 .work-kind button { background: var(--surface-alt); color: var(--text); padding: 10px 12px; border: 1px solid var(--border); box-shadow: 2px 2px 0 var(--border); font-size: 12px; font-weight: 700; min-height: 44px; transition: background .15s, color .15s; }
 .work-kind button span { font: 10px var(--mono); margin-left: 5px; opacity: .7; }
 .work-kind button[aria-pressed="true"] { background: var(--yellow); color: var(--ink); border-color: var(--ink); box-shadow: 2px 2px 0 var(--ink); }
-.work-kind button:hover { background: --accent; color: var(--ink); border-color: var(--ink); }
+.work-kind button:hover { background: var(--accent); color: var(--ink); border-color: var(--ink); }
 .work-search { flex: 1; min-width: 0; }
 .work-search input { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 0; color: var(--text); background: var(--surface-alt); font-size: 13px; min-height: 44px; }
 .work-filter-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; margin-top: 16px; }
