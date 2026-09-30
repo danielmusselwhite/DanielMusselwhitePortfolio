@@ -31,7 +31,7 @@ export const contributions: Contribution[] = [
     technologies: ["TypeScript", "VS Code API", "SVN", "Regression tests"],
     pullRequest: 713,
     url: "https://github.com/opista/svn-blamer/pull/713",
-    status: "open",
+    status: "merged",
     checkedOn: "2026-09-25",
   },
 ];
