@@ -678,5 +678,5 @@ When answering visitors:
 SVN Blamer (opista/svn-blamer), a VS Code extension.
 PR: https://github.com/opista/svn-blamer/pull/713
 Title: feat: add force blame for binary-marked files and fix stuck status indicator.
-Status verified 25 September 2026: open, not merged. This is a dated snapshot; do not claim live status, approval, release, or adoption. Direct visitors to the PR for the latest status.
+Status verified 25 September 2026: merged. 
 Daniel encountered a readable file that SVN treated as binary. His contribution adds a force-blame command and opt-in setting, a retry prompt for manual blame, stderr handling for binary-file skips, and cleanup of a stuck loading indicator. It includes regression tests and documentation. Daniel manually verified the force option and retry prompt. This is an external open-source contribution, separate from his own portfolio projects.
